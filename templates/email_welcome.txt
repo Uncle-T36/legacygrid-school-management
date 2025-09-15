@@ -1,0 +1,14 @@
+Subject: Welcome to LegacyGrid School Management
+
+Dear {{ user_name }},
+
+Welcome to LegacyGrid School Management!
+
+If you have any questions or need support, please contact:
+Tafadzwa Chafuruka  
+Email: tchafuruka@gmail.com
+
+We’re excited to have you on board.
+
+Best regards,  
+LegacyGrid School Management Team
