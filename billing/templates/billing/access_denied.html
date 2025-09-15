@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 50px 20px; max-width: 600px; margin: 0 auto;">
+    <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 30px; margin: 20px 0;">
+        <h2 style="color: #d35400; margin: 0 0 20px 0;">🚫 Access Denied</h2>
+        
+        {% if login_required %}
+            <p style="margin: 15px 0; font-size: 1.1em;">{{ message }}</p>
+            <div style="margin: 30px 0;">
+                <a href="/admin/login/?next=/billing/" 
+                   style="background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    🔐 Login as Owner
+                </a>
+            </div>
+        {% else %}
+            <p style="margin: 15px 0; font-size: 1.1em;">{{ message }}</p>
+            {% if current_user %}
+                <p style="margin: 15px 0; color: #6c757d;">Current user: <strong>{{ current_user }}</strong></p>
+            {% endif %}
+            
+            <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 20px 0; text-align: left;">
+                <h4 style="margin: 0 0 10px 0; color: #1976d2;">ℹ️ Owner-Only Features</h4>
+                <p style="margin: 0;">The billing and subscription management system is restricted to the system owner (<strong>Uncle-T36</strong>) only. This includes:</p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>Billing dashboard and analytics</li>
+                    <li>Payment and subscription management</li>
+                    <li>Currency and exchange rate settings</li>
+                    <li>Payment provider configuration</li>
+                    <li>Multi-language message templates</li>
+                </ul>
+            </div>
+            
+            <div style="margin: 30px 0;">
+                <a href="/admin/logout/?next=/" 
+                   style="background: #6c757d; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px;">
+                    🚪 Logout
+                </a>
+                <a href="/admin/login/?next=/billing/" 
+                   style="background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    🔐 Login as Owner
+                </a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div style="background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; text-align: left;">
+        <h4 style="margin: 0 0 10px 0; color: #e65100;">🇿🇼 Zimbabwe School Management</h4>
+        <p style="margin: 0;">This system is designed specifically for Zimbabwean schools with support for local payment methods (EcoCash, OneMoney, Telecash), multi-currency handling (ZWL/USD), and multi-language communications (English, Shona, Ndebele).</p>
+    </div>
+</div>
+{% endblock %}

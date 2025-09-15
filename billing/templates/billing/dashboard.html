@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Billing Dashboard - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="billing-section">
+    <h2>🏦 Billing Dashboard</h2>
+    <p><strong>Owner Access Only</strong> - Complete billing and subscription management</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+    <!-- Summary Cards -->
+    <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3 style="color: #1976d2; margin: 0;">Total Revenue</h3>
+        <p style="font-size: 2em; margin: 10px 0; color: #333;">${{ total_revenue|floatformat:2 }}</p>
+        <small>All-time USD</small>
+    </div>
+    
+    <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3 style="color: #2e7d32; margin: 0;">Active Subscriptions</h3>
+        <p style="font-size: 2em; margin: 10px 0; color: #333;">{{ active_subscriptions }}</p>
+        <small>Currently active</small>
+    </div>
+    
+    <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+        <h3 style="color: #f57c00; margin: 0;">Pending Payments</h3>
+        <p style="font-size: 2em; margin: 10px 0; color: #333;">{{ pending_payments }}</p>
+        <small>Awaiting processing</small>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 30px 0;">
+    <a href="{% url 'billing:subscription_management' %}" style="background: #f5f5f5; padding: 20px; text-decoration: none; color: #333; border-radius: 8px; text-align: center; border: 2px solid #ddd;">
+        <h4 style="margin: 0 0 10px 0;">📋 Subscriptions</h4>
+        <p style="margin: 0; font-size: 0.9em;">Manage all user subscriptions</p>
+    </a>
+    
+    <a href="{% url 'billing:payment_management' %}" style="background: #f5f5f5; padding: 20px; text-decoration: none; color: #333; border-radius: 8px; text-align: center; border: 2px solid #ddd;">
+        <h4 style="margin: 0 0 10px 0;">💳 Payments</h4>
+        <p style="margin: 0; font-size: 0.9em;">View and manage payments</p>
+    </a>
+    
+    <a href="{% url 'billing:currency_management' %}" style="background: #f5f5f5; padding: 20px; text-decoration: none; color: #333; border-radius: 8px; text-align: center; border: 2px solid #ddd;">
+        <h4 style="margin: 0 0 10px 0;">💱 Currencies</h4>
+        <p style="margin: 0; font-size: 0.9em;">Manage exchange rates</p>
+    </a>
+    
+    <a href="{% url 'billing:provider_management' %}" style="background: #f5f5f5; padding: 20px; text-decoration: none; color: #333; border-radius: 8px; text-align: center; border: 2px solid #ddd;">
+        <h4 style="margin: 0 0 10px 0;">🏛️ Providers</h4>
+        <p style="margin: 0; font-size: 0.9em;">Payment provider settings</p>
+    </a>
+    
+    <a href="{% url 'billing:message_templates' %}" style="background: #f5f5f5; padding: 20px; text-decoration: none; color: #333; border-radius: 8px; text-align: center; border: 2px solid #ddd;">
+        <h4 style="margin: 0 0 10px 0;">📨 Messages</h4>
+        <p style="margin: 0; font-size: 0.9em;">Multi-language templates</p>
+    </a>
+</div>
+
+<!-- Recent Payments -->
+<div style="margin: 30px 0;">
+    <h3>Recent Payments</h3>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <thead style="background: #f8f9fa;">
+                <tr>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">User</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Amount</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Provider</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Status</th>
+                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in recent_payments %}
+                <tr>
+                    <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">{{ payment.user.username }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">{{ payment.amount }} {{ payment.currency.code }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">{{ payment.provider.name }}</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">
+                        <span style="padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold;
+                            {% if payment.status == 'completed' %}background: #d4edda; color: #155724;
+                            {% elif payment.status == 'pending' %}background: #fff3cd; color: #856404;
+                            {% elif payment.status == 'failed' %}background: #f8d7da; color: #721c24;
+                            {% endif %}">
+                            {{ payment.get_status_display }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">{{ payment.created_at|date:"M d, Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="padding: 20px; text-align: center; color: #6c757d;">No payments yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Zimbabwe Localization Notice -->
+<div style="background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
+    <h4 style="margin: 0 0 10px 0; color: #e65100;">🇿🇼 Zimbabwe Focus</h4>
+    <p style="margin: 0;">This system is optimized for Zimbabwe with support for ZWL/USD currencies, local mobile money (EcoCash, OneMoney, Telecash), and multi-language notifications (English, Shona, Ndebele).</p>
+</div>
+
+<script>
+// Auto-refresh dashboard every 30 seconds
+setTimeout(() => {
+    window.location.reload();
+}, 30000);
+</script>
+{% endblock %}

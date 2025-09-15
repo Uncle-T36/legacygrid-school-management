@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Currency Management - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="billing-section">
+    <h2>💱 Currency Management</h2>
+    <p><strong>Owner Access Only</strong> - Manage supported currencies and exchange rates</p>
+</div>
+
+<div style="margin: 20px 0;">
+    <form method="post" style="display: inline-block;">
+        {% csrf_token %}
+        <button type="submit" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            🔄 Update Exchange Rates
+        </button>
+    </form>
+    <small style="margin-left: 15px; color: #6c757d;">Updates rates from external API to USD base</small>
+</div>
+
+<div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <thead style="background: #f8f9fa;">
+            <tr>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Code</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Name</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Symbol</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Rate to USD</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Status</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for currency in currencies %}
+            <tr>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">
+                    <strong>{{ currency.code }}</strong>
+                    {% if currency.code == 'ZWL' or currency.code == 'USD' %}
+                        <span style="background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; font-size: 0.7em; margin-left: 5px;">🇿🇼 ZIM</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">{{ currency.name }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">{{ currency.symbol }}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">
+                    {% if currency.code == 'USD' %}
+                        <strong>1.000000</strong> (Base)
+                    {% else %}
+                        {{ currency.exchange_rate_to_usd|floatformat:6 }}
+                    {% endif %}
+                </td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">
+                    {% if currency.is_active %}
+                        <span style="background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">✓ Active</span>
+                    {% else %}
+                        <span style="background: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">✗ Inactive</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 12px; border-bottom: 1px solid #f1f3f4;">{{ currency.updated_at|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="padding: 20px; text-align: center; color: #6c757d;">No currencies configured yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Zimbabwe Focus Information -->
+<div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 20px 0;">
+    <h4 style="margin: 0 0 10px 0; color: #1976d2;">🇿🇼 Zimbabwe Multi-Currency Support</h4>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        <div>
+            <h5 style="margin: 0 0 5px 0;">Supported Currencies:</h5>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>USD</strong> - Primary accounting currency</li>
+                <li><strong>ZWL</strong> - Zimbabwean Dollar</li>
+                <li><strong>ZAR</strong> - South African Rand</li>
+                <li><strong>NGN</strong> - Nigerian Naira</li>
+                <li><strong>KES</strong> - Kenyan Shilling</li>
+            </ul>
+        </div>
+        <div>
+            <h5 style="margin: 0 0 5px 0;">Auto-Conversion:</h5>
+            <p style="margin: 0;">All payments are automatically converted to USD for internal accounting while preserving original currency for user display.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Currency Integration Info -->
+<div style="background: #fff8e1; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
+    <h4 style="margin: 0 0 10px 0; color: #e65100;">💡 Currency Management Tips</h4>
+    <ul style="margin: 10px 0; padding-left: 20px;">
+        <li><strong>Exchange Rates:</strong> Automatically updated from external APIs</li>
+        <li><strong>Payment Processing:</strong> Each payment provider supports specific currencies</li>
+        <li><strong>Mobile Money:</strong> EcoCash and OneMoney support both ZWL and USD</li>
+        <li><strong>International Cards:</strong> Stripe and PayPal handle major currencies</li>
+    </ul>
+</div>
+
+<div style="margin: 20px 0;">
+    <a href="{% url 'billing:dashboard' %}" style="background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+        ← Back to Dashboard
+    </a>
+</div>
+{% endblock %}
