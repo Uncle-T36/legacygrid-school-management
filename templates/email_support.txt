@@ -1,0 +1,14 @@
+Subject: LegacyGrid School Management Support
+
+Dear {{ user_name }},
+
+Thank you for reaching out to LegacyGrid School Management.
+For support, billing, or account inquiries, please contact:
+
+Tafadzwa Chafuruka  
+Email: tchafuruka@gmail.com
+
+We aim to respond to all requests within 24 hours.
+
+Best regards,  
+LegacyGrid School Management Team
