@@ -1,8 +1,10 @@
 Subject: School Fees Payment Receipt
 
-Hello {{user_name}},
+Dear {{parent_name}},
 
-This is a receipt for your school fees payment of {{amount}} on {{date}}.
+We have received a payment of {{amount}} for {{student_name}} on {{date}}.
 
-Thank you,
-LegacyGrid Team
+Thank you for your prompt payment.
+
+Best regards,
+LegacyGrid School Administration
