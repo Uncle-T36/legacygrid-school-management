@@ -1,8 +1,8 @@
-Subject: School Fees Payment Receipt
+Subject: Payment Receipt
 
-Dear {{parent_name}},
+Dear ${parent_name},
 
-We have received a payment of {{amount}} for {{student_name}} on {{date}}.
+This is to confirm that we have received payment of ${amount} for ${student_name} on ${date}.
 
 Thank you for your prompt payment.
 
