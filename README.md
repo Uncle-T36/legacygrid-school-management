@@ -1,14 +1,14 @@
 # LegacyGrid Automated Email System
 
-This module automates emails for school events (payments, registrations, etc.) using templated messages.
+Automated email notifications for school events (payments, registrations, etc.), using customizable templates.
 
 ## Setup
 
-1. Place your SMTP credentials in `smtp_config_example.py` (rename/copy as needed).
-2. Add/edit templates in the `templates/` directory (`.txt` files).
-3. Use `auto_emailer.py` for sending emails based on events.
+1. Fill in your SMTP credentials in `smtp_config_example.py`.
+2. Add/edit templates in the `templates/` directory.
+3. Use `auto_emailer.py` to send emails for different events.
 
-## Usage Example
+## Example Usage
 
 ```python
 from auto_emailer import send_event_email
@@ -30,9 +30,9 @@ send_event_email(
 
 ## Error Logging
 
-Any errors will be logged in `email_error.log`.
+All errors are logged in `email_error.log`.
 
 ## Extending
 
-- Add more templates and map them in `TEMPLATE_MAP` in `auto_emailer.py`.
-- Customize templates with additional fields as needed.
+- Add more templates to the `templates/` directory.
+- Map new events/templates in `TEMPLATE_MAP` in `auto_emailer.py`.
