@@ -1,13 +1,7 @@
 Subject: Registration Confirmation
 
-Dear ${parent_name},
+Dear $parent_name,
 
-We are pleased to inform you that ${student_name} has been successfully registered at LegacyGrid School.
+This is to confirm that $student_name has been successfully registered on $date.
 
-Registration Date: ${date}
-Grade/Class: ${grade}
-
-Thank you for choosing LegacyGrid School.
-
-Best regards,
-LegacyGrid School Administration
+Welcome to our school!
