@@ -1,0 +1,3 @@
+# requirements.txt
+
+# No external packages required for basic email sending.
