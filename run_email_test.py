@@ -1,46 +1,46 @@
-import getpass
-from email_utils import render_template, send_email
+import os
+from email_utils import load_template, fill_template, send_email
+
+def get_available_templates():
+    return [f for f in os.listdir('templates') if f.endswith('.txt')]
+
+def prompt_template_vars(template_content):
+    import re
+    vars = re.findall(r'{{(.*?)}}', template_content)
+    context = {}
+    for var in set(vars):
+        context[var] = input(f'Enter value for {var}: ')
+    return context
 
 def main():
-    print("LegacyGrid Email Tester")
-    template_choices = [
-        "email_billing_receipt.txt",
-        "email_password_reset.txt",
-        "email_welcome.txt",
-        "email_school_fees_receipt.txt"
-    ]
+    print("LegacyGrid Email Test Utility\n")
+    templates = get_available_templates()
     print("Available templates:")
-    for i, tmpl in enumerate(template_choices):
-        print(f"{i+1}. {tmpl}")
-    choice = int(input("Select a template (1-4): ")) - 1
-    template_name = template_choices[choice]
+    for i, tname in enumerate(templates):
+        print(f"{i+1}. {tname}")
+    tindex = int(input("Select a template by number: ")) - 1
+    template_name = templates[tindex]
+    template_content = load_template(template_name)
+    context = prompt_template_vars(template_content)
+    filled = fill_template(template_content, context)
+    subject_line = filled.splitlines()[0].replace('Subject:', '').strip()
+    body = '\n'.join(filled.splitlines()[1:]).strip()
+    print("\nSample email preview:")
+    print("-" * 40)
+    print(f"Subject: {subject_line}")
+    print(body)
+    print("-" * 40)
 
-    # Collect context variables
-    context = {}
-    print("Enter template variables (leave blank to skip):")
-    with open(f"templates/{template_name}") as f:
-        for line in f:
-            # Detect variables in template: {{variable}}
-            while "{{" in line and "}}" in line:
-                start = line.find("{{") + 2
-                end = line.find("}}")
-                var = line[start:end].strip()
-                if var not in context:
-                    context[var] = input(f"{var}: ") or f"<{{var}}>"
-                line = line[end+2:]  # Continue to find more variables in the line
+    send_it = input("Send this email? (y/N): ").lower()
+    if send_it == 'y':
+        to_email = input("Recipient email: ")
+        from_email = input("Sender email: ")
+        smtp_server = input("SMTP server (e.g. smtp.gmail.com): ")
+        smtp_port = int(input("SMTP port (e.g. 587): "))
+        smtp_user = input("SMTP username: ")
+        smtp_password = input("SMTP password: ")
+        send_email(subject_line, body, to_email, from_email, smtp_server, smtp_port, smtp_user, smtp_password)
+        print("Email sent!")
 
-    smtp_server = input("SMTP server (e.g., smtp.gmail.com): ")
-    smtp_port = int(input("SMTP port (e.g., 465): "))
-    from_email = input("Your email: ")
-    smtp_user = input("SMTP username (often same as email): ")
-    smtp_pass = getpass.getpass("SMTP password: ")
-    to_email = input("Recipient email: ")
-
-    rendered = render_template(template_name, context)
-    subject = rendered.splitlines()[0].replace("Subject: ", "")
-    body = "\n".join(rendered.splitlines()[1:])
-    send_email(subject, body, to_email, from_email, smtp_server, smtp_port, smtp_user, smtp_pass)
-    print(f"Sent '{subject}' to {to_email}")
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
