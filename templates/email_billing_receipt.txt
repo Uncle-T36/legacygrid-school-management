@@ -1,15 +1,8 @@
-Subject: Payment Receipt for LegacyGrid Premium
+Subject: Billing Receipt
 
-Dear {{ user_name }},
+Hello {{user_name}},
 
-Thank you for your payment for LegacyGrid Premium features.
+Thank you for your payment of {{amount}} on {{date}}.
 
-Amount Paid: {{ amount }}
-Date: {{ date }}
-
-If you have any questions or need help, please contact:
-Tafadzwa Chafuruka  
-Email: tchafuruka@gmail.com
-
-Best regards,  
-LegacyGrid School Management Team
+Best regards,
+LegacyGrid Team
