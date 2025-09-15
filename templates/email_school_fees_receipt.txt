@@ -1,10 +1,7 @@
-Subject: Payment Receipt
+Subject: School Fees Payment Received
 
-Dear ${parent_name},
+Dear $parent_name,
 
-This is to confirm that we have received payment of ${amount} for ${student_name} on ${date}.
+This is to confirm that payment of $amount for $student_name has been received on $date.
 
-Thank you for your prompt payment.
-
-Best regards,
-LegacyGrid School Administration
+Thank you!
