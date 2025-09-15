@@ -1,3 +1,30 @@
-{% if school.logo %}
-  <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" width="120">
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
+        .content { max-width: 800px; }
+        .billing-section { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LegacyGrid School Management System</h1>
+        {% if user.is_authenticated %}
+            <p>Welcome, {{ user.username }}! 
+            {% if user.username == 'Uncle-T36' %}
+                <span style="color: #007bff; font-weight: bold;">[OWNER]</span>
+            {% endif %}
+            </p>
+        {% endif %}
+    </div>
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
