@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'schools',
+    'billing',
 ]
 
 MIDDLEWARE = [
@@ -95,6 +96,11 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Login/Logout URLs
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Stripe Configuration (Test Mode)
 STRIPE_SECRET_KEY = 'sk_test_placeholder_key_replace_with_actual_test_key'
