@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>School Profile</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+  {% if school.logo %}
+    <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" width="150">
+  {% endif %}
+{% endblock %}
