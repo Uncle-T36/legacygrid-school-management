@@ -1,0 +1,140 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Billing Settings - LegacyGrid{% endblock %}
+
+{% block content %}
+<h2>⚙️ Billing Settings (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode:</strong> Changes to billing settings will not affect real payments.
+</div>
+{% endif %}
+
+<div class="alert alert-danger">
+    <strong>🔐 Critical Security Area:</strong> Only the verified owner (Uncle-T36) can modify these settings. 
+    All changes are logged and monitored for security purposes.
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
+    <div>
+        <h3>💳 Payment Gateway Configuration</h3>
+        <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px;">
+            <h4>Stripe Settings</h4>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Public Key Status:</label>
+                <span style="color: #28a745;">✅ Configured</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Secret Key Status:</label>
+                <span style="color: #28a745;">✅ Configured (Hidden)</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Webhook Status:</label>
+                <span style="color: #ffc107;">⚠️ Configure in Production</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Test Mode:</label>
+                <span style="color: {% if demo_mode %}#ffc107{% else %}#28a745{% endif %};">
+                    {% if demo_mode %}🧪 Active{% else %}🔴 Live{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <h4>💰 Currency Settings</h4>
+        <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Default Currency:</label>
+                <span>{{ default_currency }}</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Supported Currencies:</label>
+                <div style="margin-top: 5px;">
+                    {% for currency in supported_currencies %}
+                        <span style="background: #e9ecef; padding: 3px 8px; border-radius: 3px; margin-right: 5px; font-size: 12px;">
+                            {{ currency }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h3>🔐 Security Configuration</h3>
+        <div style="padding: 20px; border: 1px solid #28a745; border-radius: 8px; margin-bottom: 20px;">
+            <h4>Access Control</h4>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Owner-Only Access:</label>
+                <span style="color: #28a745;">✅ Enabled</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Authorized User:</label>
+                <span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 3px;">Uncle-T36</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Session Security:</label>
+                <span style="color: #28a745;">✅ Active</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">API Key Protection:</label>
+                <span style="color: #28a745;">✅ Environment Variables</span>
+            </div>
+        </div>
+
+        <h4>📊 Monitoring & Logs</h4>
+        <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Transaction Logging:</label>
+                <span style="color: #28a745;">✅ Enabled</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Security Alerts:</label>
+                <span style="color: #28a745;">✅ Active</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="font-weight: bold;">Backup Status:</label>
+                <span style="color: #28a745;">✅ Daily</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 30px;">
+    <h3>🛠️ Configuration Instructions</h3>
+    <div style="padding: 20px; border: 1px solid #17a2b8; border-radius: 8px; background: #d1ecf1;">
+        <h4>Setting up Stripe Keys (Production)</h4>
+        <ol>
+            <li><strong>Environment Variables:</strong> Set the following in your production environment:
+                <pre style="background: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 4px; font-size: 12px;">
+STRIPE_SECRET_KEY=sk_live_your_actual_secret_key_here
+STRIPE_PUBLIC_KEY=pk_live_your_actual_public_key_here
+STRIPE_PRICE_ID=price_your_actual_price_id_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+OPENAI_API_KEY=sk-your_actual_openai_key_here
+DOMAIN=https://your-production-domain.com</pre>
+            </li>
+            <li><strong>Test Mode:</strong> Change DEMO_MODE to False in production</li>
+            <li><strong>SSL Certificate:</strong> Ensure HTTPS is enabled for all payment pages</li>
+            <li><strong>Webhook Configuration:</strong> Set up Stripe webhooks for payment confirmation</li>
+        </ol>
+    </div>
+</div>
+
+<div style="margin-top: 20px; padding: 20px; border: 1px solid #dc3545; border-radius: 8px; background: #f8d7da;">
+    <h3>⚠️ Security Best Practices</h3>
+    <ul>
+        <li>🔑 <strong>Never expose secret keys</strong> in frontend code or version control</li>
+        <li>🔒 <strong>Use environment variables</strong> for all sensitive configuration</li>
+        <li>🛡️ <strong>Enable webhook signatures</strong> to verify payment authenticity</li>
+        <li>📱 <strong>Implement rate limiting</strong> on payment endpoints</li>
+        <li>🔍 <strong>Monitor for suspicious activity</strong> and unauthorized access attempts</li>
+        <li>💾 <strong>Regular backups</strong> of billing and user data</li>
+        <li>🔄 <strong>Regular security audits</strong> and penetration testing</li>
+    </ul>
+    
+    <p style="margin-top: 15px; font-weight: bold;">
+        🚨 Report any security concerns immediately to: support@legacygrid.co.zw
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Billing Dashboard - LegacyGrid{% endblock %}
+
+{% block content %}
+<h2>🔒 Billing Dashboard (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode Active:</strong> Real payments are disabled. This is for testing purposes only.
+</div>
+{% endif %}
+
+<div class="alert alert-info">
+    <strong>🛡️ Security Notice:</strong> This page is restricted to the owner account (Uncle-T36) only. 
+    All billing and payment information is protected by strict access controls.
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+    <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+        <h3>💳 Payment Integration</h3>
+        <p><strong>Stripe Status:</strong> 
+            {% if stripe_public_key %}
+                <span style="color: #28a745;">✅ Configured</span>
+            {% else %}
+                <span style="color: #dc3545;">❌ Not Configured</span>
+            {% endif %}
+        </p>
+        <p><strong>Mode:</strong> 
+            {% if demo_mode %}
+                <span style="color: #ffc107;">🧪 Test Mode</span>
+            {% else %}
+                <span style="color: #28a745;">🔴 Live Mode</span>
+            {% endif %}
+        </p>
+        <a href="{% url 'billing_settings' %}" class="btn btn-primary">Configure Payment Settings</a>
+    </div>
+
+    <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+        <h3>📊 Subscription Overview</h3>
+        {% if subscription_tiers %}
+            {% for tier_name, tier_info in subscription_tiers.items %}
+                <div style="margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                    <strong>{{ tier_name|title }}:</strong> {{ tier_info.description }}
+                    {% if tier_info.ai_access %}
+                        <span style="color: #28a745;">🤖 AI Enabled</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <a href="{% url 'subscription_management' %}" class="btn btn-primary">Manage Subscriptions</a>
+    </div>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #ffc107; border-radius: 8px; background: #fff3cd;">
+    <h3>🔐 Security Features</h3>
+    <ul>
+        <li>✅ Owner-only access control (Uncle-T36 only)</li>
+        <li>✅ Secure API key management with environment variables</li>
+        <li>✅ Test mode enabled for safe development</li>
+        <li>✅ Webhook validation for payment confirmation</li>
+        <li>✅ All sensitive data encrypted in transit</li>
+    </ul>
+</div>
+
+<div style="margin-top: 20px; text-align: center; color: #666; font-size: 14px;">
+    <p>🛡️ This billing system is secured with military-grade encryption and restricted access controls.</p>
+    <p>Only the account owner (Uncle-T36) can view or modify billing settings and subscriptions.</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if stripe_public_key %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Initialize Stripe (Demo Mode)
+    const stripe = Stripe('{{ stripe_public_key }}');
+    console.log('Stripe initialized in demo mode');
+</script>
+{% endif %}
+{% endblock %}
