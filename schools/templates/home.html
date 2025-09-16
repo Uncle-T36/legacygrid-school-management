@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegacyGrid School Management System</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 30px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            margin: 0 0 10px 0;
+            font-weight: 300;
+        }
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin: 0;
+        }
+        .welcome-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .welcome-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .feature-card .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        .navigation-section {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .navigation-section h2 {
+            margin-bottom: 20px;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+            transform: translateY(-1px);
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #1e7e34;
+            transform: translateY(-1px);
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #6c757d;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .zimbabwe-flag {
+            font-size: 1.2em;
+            margin: 0 5px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            .header h1 {
+                font-size: 2.2em;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏫 LegacyGrid School Management</h1>
+            <p class="subtitle">Comprehensive School Management System with Secure Billing</p>
+        </div>
+
+        <div class="welcome-section">
+            <h2>🌟 Welcome to LegacyGrid</h2>
+            <p>A powerful, secure, and comprehensive Django-based school management system designed specifically for educational institutions. Built with modern web technologies and robust security features.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">💳</span>
+                    Secure Billing & Payments
+                </h3>
+                <p>Advanced billing system with Stripe integration, multi-currency support, and owner-only access controls. Secure payment processing with comprehensive audit logging.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">📋</span>
+                    Subscription Management
+                </h3>
+                <p>Flexible subscription tiers with automated billing cycles. Free and premium plans with feature-based access control and real-time status monitoring.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">🌍</span>
+                    Multi-Currency Support
+                </h3>
+                <p>Support for multiple currencies including USD, ZWL, ZAR, NGN, GBP, and EUR. Automatic currency conversion and localized payment processing.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">🇿🇼</span>
+                    Zimbabwe Localization
+                </h3>
+                <p>Specifically designed for Zimbabwean educational institutions with local currency support, timezone settings, and region-specific compliance features.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">🔒</span>
+                    Owner-Only Access
+                </h3>
+                <p>Strict security controls with owner-only access to billing and financial data. Multi-layer authentication and comprehensive access logging for maximum security.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">⚡</span>
+                    Stripe Integration
+                </h3>
+                <p>Seamless Stripe payment gateway integration with test and production modes. Secure API key management and webhook support for real-time updates.</p>
+            </div>
+        </div>
+
+        <div class="navigation-section">
+            <h2>🚀 Get Started</h2>
+            <p>Access the main areas of the LegacyGrid School Management System:</p>
+            
+            <div class="nav-buttons">
+                <a href="/schools/" class="btn btn-primary">
+                    🏫 School Management
+                </a>
+                <a href="/billing/dashboard/" class="btn btn-secondary">
+                    💼 Billing & Finance
+                </a>
+                <a href="/admin/" class="btn btn-success">
+                    ⚙️ Admin Panel
+                </a>
+            </div>
+
+            <div style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+                <p>💡 <strong>Note:</strong> Billing areas require owner-level access for security.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>
+                <span class="zimbabwe-flag">🇿🇼</span>
+                <strong>LegacyGrid School Management System</strong>
+                <span class="zimbabwe-flag">🇿🇼</span>
+            </p>
+            <p>Secure • Reliable • Comprehensive</p>
+        </div>
+    </div>
+</body>
+</html>

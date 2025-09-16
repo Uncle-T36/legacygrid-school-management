@@ -6,6 +6,10 @@ from .forms import SchoolLogoForm
 def is_owner(user):
     return user.is_superuser or user.groups.filter(name='Owner').exists()
 
+def homepage(request):
+    """Homepage view - no authentication required"""
+    return render(request, "home.html")
+
 @login_required
 @user_passes_test(is_owner)
 def school_profile(request):

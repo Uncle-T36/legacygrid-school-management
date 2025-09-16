@@ -2,6 +2,19 @@
 
 A comprehensive Django-based school management system with secure billing and subscription management.
 
+## 🏠 Homepage & Access
+
+Visit **http://localhost:8000/** to access the main homepage, which provides:
+
+- **Welcome Interface**: Overview of all system features and capabilities
+- **Feature Summary**: Billing, subscription management, multi-currency support, Zimbabwe localization, owner-only access, and Stripe integration
+- **Quick Navigation**: Direct links to key areas:
+  - `/schools/` - School management and profiles
+  - `/billing/dashboard/` - Billing and financial management (owner-only)
+  - `/admin/` - Django admin panel
+- **No Authentication Required**: Public homepage for easy access and information
+- **Responsive Design**: Works on desktop and mobile devices
+
 ## 🔐 Security Features
 
 This system implements **strict owner-only access controls** for all billing and subscription management:
@@ -94,14 +107,24 @@ DEMO_MODE=False  # Set to True for development
 
 ## 🔒 Access Control
 
+### Public Access
+- `/` - Homepage (no authentication required)
+
+### School Management
+- `/schools/` - School profiles and management features
+
 ### Billing Pages (Owner-Only)
 - `/billing/dashboard/` - Billing overview and status
 - `/billing/subscription/` - Subscription management
 - `/billing/settings/` - Payment configuration
 - `/billing/not-authorized/` - Access denied page
 
+### Admin Areas
+- `/admin/` - Django admin panel (authentication required)
+
 ### Security Measures
-- **Authentication Required**: All billing pages require login
+- **Homepage Access**: Public access for easy discovery and navigation
+- **Authentication Required**: All billing and admin pages require login
 - **Owner Verification**: Username must match `Uncle-T36`
 - **Automatic Redirection**: Non-owners redirected to access denied page
 - **Session Security**: Secure session management
