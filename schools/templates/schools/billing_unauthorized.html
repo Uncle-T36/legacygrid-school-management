@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - LegacyGrid School Management</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            max-width: 600px; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .error-icon { font-size: 4em; color: #dc3545; margin-bottom: 20px; }
+        .error-title { color: #dc3545; font-size: 2em; margin-bottom: 15px; font-weight: bold; }
+        .error-message { color: #666; font-size: 1.1em; line-height: 1.6; margin-bottom: 25px; }
+        .owner-info { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+            border-left: 4px solid #007cba;
+        }
+        .btn { 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            margin: 5px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        .btn-primary { background: #007cba; color: white; }
+        .btn-primary:hover { background: #005a8b; transform: translateY(-2px); }
+        .security-note { 
+            background: #fff3cd; 
+            border: 1px solid #ffeaa7; 
+            color: #856404; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .features-list {
+            text-align: left;
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-icon">🚫</div>
+        <h1 class="error-title">Access Denied</h1>
+        
+        <div class="error-message">
+            {{ error_message|default:"You do not have permission to access this billing feature." }}
+        </div>
+
+        <div class="owner-info">
+            <h3>🔒 Owner-Only Access</h3>
+            <p>Billing and subscription management features are restricted to the system owner only.</p>
+            <p><strong>Authorized User:</strong> {{ owner_username|default:"Uncle-T36" }}</p>
+        </div>
+
+        <div class="features-list">
+            <h4>Protected Features Include:</h4>
+            <ul>
+                <li>💳 Payment and billing dashboard</li>
+                <li>📊 Subscription management</li>
+                <li>⚙️ Stripe configuration settings</li>
+                <li>📈 Revenue and analytics</li>
+                <li>🔗 Webhook management</li>
+                <li>💰 Pricing tier administration</li>
+            </ul>
+        </div>
+
+        <a href="/schools/profile/" class="btn btn-primary">Return to Dashboard</a>
+
+        <div class="security-note">
+            <strong>🛡️ Security:</strong> This restriction ensures that only authorized personnel can manage 
+            sensitive financial data and payment configurations. All billing access attempts are logged for security purposes.
+        </div>
+    </div>
+</body>
+</html>
