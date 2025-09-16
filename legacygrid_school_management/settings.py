@@ -96,6 +96,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Login/logout URLs
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/schools/profile/'
+LOGOUT_REDIRECT_URL = '/'
+
 # === STRIPE PAYMENT SETTINGS ===
 # Get from environment variables for security
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'pk_test_51HxxxYourTestKeyHere')
