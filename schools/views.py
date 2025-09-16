@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from .models import School
 from .forms import SchoolLogoForm
 
+def home(request):
+    return render(request, "home.html")
+
 def is_owner(user):
     return user.is_superuser or user.groups.filter(name='Owner').exists()
 
