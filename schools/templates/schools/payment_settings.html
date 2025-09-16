@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Settings - LegacyGrid School Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { border-bottom: 2px solid #007cba; padding-bottom: 15px; margin-bottom: 20px; }
+        .owner-badge { background: #28a745; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9em; display: inline-block; margin-left: 10px; }
+        .card { background: #f8f9fa; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #007cba; }
+        .alert { padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .alert-warning { background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        .alert-danger { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin: 5px; }
+        .btn-primary { background: #007cba; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .config-section { margin: 20px 0; }
+        .config-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .config-label { font-weight: bold; flex: 1; }
+        .config-value { flex: 2; color: #666; font-family: monospace; }
+        .masked-key { background: #f8f9fa; padding: 5px 10px; border-radius: 3px; border: 1px solid #ddd; }
+        .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+        .status-active { background: #28a745; }
+        .status-inactive { background: #dc3545; }
+        .form-group { margin: 15px 0; }
+        .form-label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .form-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Payment Settings</h1>
+            <span class="owner-badge">👑 Owner Only</span>
+            <p>Configure payment gateways and security settings</p>
+        </div>
+
+        {% if demo_mode %}
+        <div class="alert alert-warning">
+            <strong>⚠️ Demo Mode:</strong> Payment settings are in demo mode. Real transactions are disabled.
+        </div>
+        {% endif %}
+
+        <div class="alert alert-danger">
+            <strong>🔒 Security Warning:</strong> Never expose secret keys in your code or version control. 
+            Always use environment variables for sensitive configuration in production.
+        </div>
+
+        <div class="card">
+            <h2>💳 Stripe Configuration</h2>
+            <div class="config-section">
+                <div class="config-item">
+                    <div class="config-label">
+                        <span class="status-indicator {% if stripe_config.mode == 'test' %}status-active{% else %}status-inactive{% endif %}"></span>
+                        API Mode
+                    </div>
+                    <div class="config-value">{{ stripe_config.mode|upper }}</div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Publishable Key</div>
+                    <div class="config-value">
+                        <span class="masked-key">{{ stripe_config.publishable_key|slice:":12" }}...</span>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Secret Key</div>
+                    <div class="config-value">
+                        <span class="masked-key">{{ stripe_config.secret_key_masked|default:"Not configured" }}</span>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Webhook Secret</div>
+                    <div class="config-value">
+                        <span class="masked-key">{{ stripe_config.webhook_secret_masked|default:"Not configured" }}</span>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">API Version</div>
+                    <div class="config-value">{{ stripe_config.api_version }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🌍 Payment Gateways</h2>
+            {% for gateway_name, gateway_config in payment_gateways.items %}
+            <div class="config-section">
+                <h3>{{ gateway_name|title }}</h3>
+                <div class="config-item">
+                    <div class="config-label">Status</div>
+                    <div class="config-value">
+                        <span class="status-indicator {% if gateway_config.mode == 'test' or gateway_config.mode == 'sandbox' %}status-active{% else %}status-inactive{% endif %}"></span>
+                        {{ gateway_config.mode|upper }}
+                    </div>
+                </div>
+                {% for key, value in gateway_config.items %}
+                {% if key != 'mode' %}
+                <div class="config-item">
+                    <div class="config-label">{{ key|title }}</div>
+                    <div class="config-value">
+                        {% if 'secret' in key or 'key' in key %}
+                            <span class="masked-key">{{ value|slice:":8" }}...</span>
+                        {% else %}
+                            {{ value }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card">
+            <h2>📋 Environment Variables Setup</h2>
+            <p>For production deployment, set these environment variables:</p>
+            <div style="background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.9em;">
+export STRIPE_PUBLISHABLE_KEY="pk_live_your_publishable_key"<br>
+export STRIPE_SECRET_KEY="sk_live_your_secret_key"<br>
+export STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"<br>
+export STRIPE_PREMIUM_PRICE_ID="price_your_premium_price_id"<br>
+export OPENAI_API_KEY="sk-your_openai_api_key"
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔗 Webhook Configuration</h2>
+            <p><strong>Webhook URL:</strong> <code>https://yourdomain.com/schools/billing/webhook/stripe/</code></p>
+            <p><strong>Events to listen for:</strong></p>
+            <ul>
+                <li>payment_intent.succeeded</li>
+                <li>invoice.payment_succeeded</li>
+                <li>customer.subscription.created</li>
+                <li>customer.subscription.updated</li>
+                <li>customer.subscription.deleted</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'billing_dashboard' %}" class="btn btn-primary">Back to Billing Dashboard</a>
+            <a href="{% url 'subscription_management' %}" class="btn btn-secondary">Subscription Management</a>
+        </div>
+    </div>
+</body>
+</html>

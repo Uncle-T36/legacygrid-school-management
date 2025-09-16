@@ -96,6 +96,123 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# === STRIPE PAYMENT SETTINGS ===
+# Get from environment variables for security
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', 'pk_test_51HxxxYourTestKeyHere')
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_51HxxxYourTestKeyHere')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', 'whsec_test_webhook_secret')
+
+# Stripe Configuration
+STRIPE_SETTINGS = {
+    'publishable_key': STRIPE_PUBLISHABLE_KEY,
+    'secret_key': STRIPE_SECRET_KEY,
+    'webhook_secret': STRIPE_WEBHOOK_SECRET,
+    'currency': 'USD',
+    'mode': 'test',  # change to 'live' when ready for production
+    'api_version': '2023-10-16',  # Use latest Stripe API version
+}
+
+# === PAYMENT GATEWAYS ===
+PAYMENT_GATEWAYS = {
+    'stripe': {
+        'api_key': STRIPE_SECRET_KEY,
+        'public_key': STRIPE_PUBLISHABLE_KEY,
+        'currency': 'USD',
+        'mode': 'test',  # change to 'live' when ready
+    },
+    'paypal': {
+        'client_id': 'test-client-id',
+        'client_secret': 'test-client-secret',
+        'mode': 'sandbox',  # change to 'live'
+    },
+    # Zimbabwe Mobile Money Placeholders
+    'ecocash': {
+        'merchant_code': 'test-merchant',
+        'api_url': 'https://api.sandbox.ecocash.co.zw/',
+        'mode': 'test',
+    },
+    'onemoney': {
+        'merchant_code': 'test-merchant',
+        'api_url': 'https://sandbox.onemoney.co.zw/api/',
+        'mode': 'test',
+    },
+    # Add more as needed
+}
+
+# === CURRENCY CONVERSION ===
+DEFAULT_CURRENCY = 'USD'
+SUPPORTED_CURRENCIES = ['USD', 'ZWL', 'ZAR', 'NGN', 'GBP', 'EUR']
+CURRENCY_CONVERSION_API_URL = 'https://api.exchangeratesapi.io/latest'  # Free for dev, use premium for live
+
+# === SUBSCRIPTION TIERS ===
+SUBSCRIPTION_TIERS = {
+    'free': {
+        'features': ['basic_dashboard', 'basic_messaging'],
+        'ai_access': False,
+        'description': 'Free plan with limited features, no AI access.',
+        'stripe_price_id': None,  # No payment required
+        'monthly_price': 0,
+    },
+    'premium': {
+        'features': ['basic_dashboard', 'premium_dashboard', 'ai_reports', 'ai_chat', 'advanced_messaging'],
+        'ai_access': True,
+        'description': 'Premium plan with full access to all features including AI.',
+        'stripe_price_id': os.environ.get('STRIPE_PREMIUM_PRICE_ID', 'price_test_premium'),
+        'monthly_price': 29.99,
+    }
+}
+DEFAULT_TIER = 'free'
+PREMIUM_TIER = 'premium'
+AUTO_ACTIVATE_ON_PAYMENT = True  # instantly upgrades user tier on payment webhook
+
+# === AI SETTINGS ===
+AI_PROVIDER = 'openai'     # You pay for this one subscription only
+AI_API_KEY = os.environ.get('OPENAI_API_KEY', 'sk_test_ai_key')  # Use environment variable
+
+# === PAID FEATURE LOGIC ===
+AI_FEATURES_REQUIRE_PAYMENT = True
+PREMIUM_FEATURES_REQUIRE_PAYMENT = True
+
+# === OWNER-ONLY BILLING SETTINGS ===
+BILLING_OWNER_USERNAME = 'Uncle-T36'
+ALLOW_ONLY_OWNER_BILLING = True
+
+# Security: Only allow specific user to access billing
+BILLING_ACCESS_CONTROL = {
+    'enabled': True,
+    'owner_username': BILLING_OWNER_USERNAME,
+    'unauthorized_message': 'Access Denied: Only the system owner can access billing and subscription management.',
+    'redirect_url': '/schools/profile/',  # Where to redirect unauthorized users
+}
+
+# === MESSAGING SETTINGS ===
+DEFAULT_LANGUAGES = ['en', 'sn', 'nd']  # English, Shona, Ndebele
+LANGUAGE_TEMPLATES = {
+    'en': 'templates/messages_en.txt',
+    'sn': 'templates/messages_sn.txt',
+    'nd': 'templates/messages_nd.txt',
+}
+SEND_SMS = True
+SEND_EMAIL = True
+
+# === PARENT PROFILE ===
+PARENT_LANGUAGE_FIELD = 'preferred_language'
+
+# === SECURITY ===
+ALLOW_ONLY_OWNER_BILLING = True  # Only Uncle-T36 can see/manage billing
+
+# Security Headers for Production
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# === DOCS & SUPPORT ===
+DOCUMENTATION_URL = 'https://github.com/Uncle-T36/legacygrid-school-management/blob/main/README.md'
+SUPPORT_EMAIL = 'support@legacygrid.co.zw'
+
+# === DEMO MODE ===
+DEMO_MODE = True  # disables real payments until you switch to live mode
+
 # === PAYMENT SETTINGS ===
 PAYMENT_GATEWAYS = {
     'stripe': {
