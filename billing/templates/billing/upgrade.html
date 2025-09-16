@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upgrade Subscription - LegacyGrid</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f5f5f5; 
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .tier-card { 
+            border: 2px solid #ddd; 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 8px; 
+            position: relative; 
+        }
+        .tier-card.premium { 
+            border-color: #007bff; 
+            background: #f8f9ff; 
+        }
+        .tier-card h3 { 
+            margin-top: 0; 
+            color: #007bff; 
+        }
+        .price { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #28a745; 
+            margin: 10px 0; 
+        }
+        .features { 
+            list-style: none; 
+            padding: 0; 
+        }
+        .features li { 
+            padding: 5px 0; 
+        }
+        .features li:before { 
+            content: "✓ "; 
+            color: #28a745; 
+            font-weight: bold; 
+        }
+        .form-group { 
+            margin: 15px 0; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: bold; 
+        }
+        .form-group select, .form-group input { 
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+            font-size: 14px; 
+        }
+        .btn { 
+            background: #007bff; 
+            color: white; 
+            padding: 12px 24px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+        }
+        .btn:hover { 
+            background: #0056b3; 
+        }
+        .back-link { 
+            color: #007bff; 
+            text-decoration: none; 
+            margin-bottom: 20px; 
+            display: inline-block; 
+        }
+        .zimbabwe-features { 
+            background: #e8f5e8; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 20px 0; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'billing:dashboard' %}" class="back-link">← Back to Dashboard</a>
+        
+        <h1>Upgrade Your Subscription</h1>
+        
+        {% if current_subscription.tier.name != 'free' %}
+            <p>Current plan: <strong>{{ current_subscription.tier.name|title }}</strong></p>
+        {% endif %}
+
+        <div class="zimbabwe-features">
+            <h3>🇿🇼 Zimbabwe-Optimized Billing</h3>
+            <ul>
+                <li>Multiple currency support (ZWL, USD, ZAR)</li>
+                <li>Mobile money payments (EcoCash, OneMoney)</li>
+                <li>Local pricing in Zimbabwe-friendly rates</li>
+                <li>Multi-language support (English, Shona, Ndebele)</li>
+            </ul>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for tier in tiers %}
+                <div class="tier-card {% if tier.name == 'premium' %}premium{% endif %}">
+                    <h3>{{ tier.name|title }} Plan</h3>
+                    <p>{{ tier.description }}</p>
+                    
+                    <div class="price" id="price-{{ tier.id }}">
+                        Select currency to see pricing
+                    </div>
+                    
+                    <ul class="features">
+                        {% for feature in tier.features %}
+                            <li>{{ feature|title|replace:"_":" " }}</li>
+                        {% endfor %}
+                        {% if tier.ai_access %}
+                            <li>AI Access Enabled</li>
+                        {% endif %}
+                    </ul>
+                    
+                    <input type="radio" name="tier" value="{{ tier.name }}" id="tier-{{ tier.id }}" required>
+                    <label for="tier-{{ tier.id }}">Select {{ tier.name|title }}</label>
+                </div>
+            {% endfor %}
+            
+            <div class="form-group">
+                <label for="billing_cycle">Billing Cycle:</label>
+                <select name="billing_cycle" id="billing_cycle" required>
+                    <option value="monthly">Monthly</option>
+                    <option value="annual">Annual (Save 17%)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="currency">Currency:</label>
+                <select name="currency" id="currency" required onchange="updatePricing()">
+                    {% for currency in currencies %}
+                        <option value="{{ currency.code }}" 
+                                {% if currency.code in zimbabwe_currencies %}selected{% endif %}>
+                            {{ currency.name }} ({{ currency.symbol }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="payment_provider">Payment Method:</label>
+                <select name="payment_provider" id="payment_provider" required>
+                    {% for provider in payment_providers %}
+                        <option value="{{ provider.name }}">{{ provider.display_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <p><strong>Demo Mode Active:</strong> No real payments will be processed. All transactions are simulated for testing purposes.</p>
+            </div>
+            
+            <button type="submit" class="btn">Upgrade Subscription</button>
+        </form>
+    </div>
+
+    <script>
+        // Mock pricing data (in a real app this would come from the API)
+        const pricing = {
+            {% for tier in tiers %}
+                '{{ tier.id }}': {
+                    {% for price in tier.prices.all %}
+                        '{{ price.currency.code }}': {
+                            'monthly': {{ price.monthly_price }},
+                            'annual': {{ price.annual_price|default:"null" }}
+                        }{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        function updatePricing() {
+            const currency = document.getElementById('currency').value;
+            const billingCycle = document.getElementById('billing_cycle').value;
+            
+            {% for tier in tiers %}
+                const priceElement{{ tier.id }} = document.getElementById('price-{{ tier.id }}');
+                const tierPricing = pricing['{{ tier.id }}'];
+                
+                if (tierPricing && tierPricing[currency]) {
+                    const price = tierPricing[currency][billingCycle];
+                    if (price) {
+                        const currencySymbol = document.querySelector(`option[value="${currency}"]`).textContent.match(/\(([^)]+)\)/)[1];
+                        priceElement{{ tier.id }}.textContent = `${currencySymbol}${price}/${billingCycle}`;
+                    } else {
+                        priceElement{{ tier.id }}.textContent = 'Pricing not available';
+                    }
+                } else {
+                    priceElement{{ tier.id }}.textContent = 'Pricing not available';
+                }
+            {% endfor %}
+        }
+        
+        // Update pricing on page load
+        document.addEventListener('DOMContentLoaded', updatePricing);
+        document.getElementById('billing_cycle').addEventListener('change', updatePricing);
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Billing Dashboard - LegacyGrid School Management</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f5f5f5; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .header { 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 20px; 
+            margin-bottom: 20px; 
+        }
+        .subscription-status { 
+            background: #e8f5e8; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-bottom: 20px; 
+        }
+        .subscription-status.free { 
+            background: #fff3cd; 
+        }
+        .btn { 
+            background: #007bff; 
+            color: white; 
+            padding: 10px 20px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            display: inline-block; 
+            margin: 5px; 
+        }
+        .btn:hover { 
+            background: #0056b3; 
+        }
+        .btn-success { 
+            background: #28a745; 
+        }
+        .payment-history { 
+            margin-top: 30px; 
+        }
+        .payment-item { 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 3px; 
+        }
+        .nav { 
+            margin-bottom: 20px; 
+        }
+        .nav a { 
+            margin-right: 15px; 
+            padding: 8px 12px; 
+            background: #f8f9fa; 
+            text-decoration: none; 
+            border-radius: 3px; 
+        }
+        .nav a:hover { 
+            background: #e9ecef; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LegacyGrid Billing Dashboard</h1>
+            <div class="nav">
+                <a href="{% url 'billing:dashboard' %}">Dashboard</a>
+                <a href="{% url 'billing:upgrade' %}">Upgrade</a>
+                <a href="{% url 'billing:payment_history' %}">Payment History</a>
+                {% if user.username == 'Uncle-T36' %}
+                    <a href="{% url 'billing:admin_dashboard' %}">Admin</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="subscription-status {% if subscription.tier.name == 'free' %}free{% endif %}">
+            <h2>Current Subscription</h2>
+            <p><strong>Plan:</strong> {{ subscription.tier.name|title }}</p>
+            <p><strong>Status:</strong> {{ subscription.status|title }}</p>
+            {% if subscription.expires_at %}
+                <p><strong>Expires:</strong> {{ subscription.expires_at|date:"F j, Y" }}</p>
+            {% endif %}
+            <p><strong>Features:</strong></p>
+            <ul>
+                {% for feature in subscription.tier.features %}
+                    <li>{{ feature|title|replace:"_":" " }}</li>
+                {% endfor %}
+            </ul>
+            {% if subscription.tier.ai_access %}
+                <p><strong>✓ AI Access Enabled</strong></p>
+            {% else %}
+                <p><strong>✗ AI Access Not Available</strong></p>
+            {% endif %}
+        </div>
+
+        {% if not is_premium %}
+            <div style="background: #d4edda; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <h3>Upgrade to Premium</h3>
+                <p>Get access to AI features, advanced analytics, and premium support.</p>
+                <a href="{% url 'billing:upgrade' %}" class="btn btn-success">Upgrade Now</a>
+            </div>
+        {% endif %}
+
+        {% if recent_payments %}
+            <div class="payment-history">
+                <h3>Recent Payments</h3>
+                {% for payment in recent_payments %}
+                    <div class="payment-item">
+                        <strong>{{ payment.amount }} {{ payment.currency.code }}</strong> - 
+                        {{ payment.status|title }} - 
+                        {{ payment.created_at|date:"M j, Y" }}
+                        {% if payment.subscription %}
+                            ({{ payment.subscription.tier.name|title }} subscription)
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <a href="{% url 'billing:payment_history' %}" class="btn">View All Payments</a>
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
+            <p><strong>Zimbabwe Localization Features:</strong></p>
+            <ul>
+                <li>Multi-currency support (ZWL, USD, ZAR, NGN, KES)</li>
+                <li>Mobile money integration (EcoCash, OneMoney)</li>
+                <li>Africa/Harare timezone</li>
+                <li>Multi-language support coming soon</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

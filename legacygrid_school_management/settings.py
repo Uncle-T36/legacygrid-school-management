@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'schools',
+    'billing',
     # add any new payment/messaging apps here
 ]
 
