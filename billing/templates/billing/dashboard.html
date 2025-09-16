@@ -96,7 +96,7 @@
             <p><strong>Features:</strong></p>
             <ul>
                 {% for feature in subscription.tier.features %}
-                    <li>{{ feature|title|replace:"_":" " }}</li>
+                    <li>{{ feature|title }}</li>
                 {% endfor %}
             </ul>
             {% if subscription.tier.ai_access %}

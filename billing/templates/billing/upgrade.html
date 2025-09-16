@@ -127,7 +127,7 @@
                     
                     <ul class="features">
                         {% for feature in tier.features %}
-                            <li>{{ feature|title|replace:"_":" " }}</li>
+                            <li>{{ feature|title }}</li>
                         {% endfor %}
                         {% if tier.ai_access %}
                             <li>AI Access Enabled</li>

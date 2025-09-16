@@ -1,0 +1,26 @@
+# English Messages
+billing_dashboard=Billing Dashboard
+current_subscription=Current Subscription
+upgrade_subscription=Upgrade Subscription
+payment_history=Payment History
+subscription_status=Subscription Status
+payment_methods=Payment Methods
+mobile_money=Mobile Money
+credit_card=Credit Card
+demo_mode_warning=Demo Mode Active: No real payments will be processed
+upgrade_to_premium=Upgrade to Premium
+ai_features_available=AI Features Available
+basic_features=Basic Features
+select_currency=Select Currency
+select_payment_method=Select Payment Method
+billing_cycle=Billing Cycle
+monthly=Monthly
+annual=Annual
+zimbabwe_optimized=Zimbabwe-Optimized Billing
+multi_currency_support=Multi-currency support
+mobile_money_payments=Mobile money payments
+local_pricing=Local pricing in Zimbabwe-friendly rates
+subscription_upgraded=Subscription successfully upgraded
+payment_failed=Payment failed
+access_denied=Access denied
+owner_only=Only the billing owner can access this section
