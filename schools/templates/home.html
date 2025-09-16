@@ -1,10 +1,110 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>LegacyGrid School Management - Home</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Home - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="hero-section">
     <h1>Welcome to LegacyGrid School Management!</h1>
-    <p>Use the navigation to explore schools, billing, and other features.</p>
-</body>
-</html>
+    <p class="lead">A comprehensive school management system with secure billing and subscription management.</p>
+    
+    {% if user.is_authenticated %}
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="action-buttons">
+                <a href="{% url 'school_profile' %}" class="btn btn-primary">Manage My School</a>
+                <a href="{% url 'school_list' %}" class="btn btn-success">View All Schools</a>
+                {% if user.username == 'Uncle-T36' %}
+                    <a href="{% url 'billing_dashboard' %}" class="btn btn-warning">Billing Dashboard</a>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="get-started">
+            <h3>Get Started</h3>
+            <p>Join our platform to manage your school efficiently.</p>
+            <div class="action-buttons">
+                <a href="{% url 'register' %}" class="btn btn-success">Create Account</a>
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="features">
+        <h3>Features</h3>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h4>🏫 School Management</h4>
+                <p>Create and manage school profiles, upload logos, and update information.</p>
+            </div>
+            <div class="feature-item">
+                <h4>💳 Secure Billing</h4>
+                <p>Protected billing system with owner-only access and subscription management.</p>
+            </div>
+            <div class="feature-item">
+                <h4>📧 Email System</h4>
+                <p>Automated email notifications with customizable templates.</p>
+            </div>
+            <div class="feature-item">
+                <h4>🔒 Security</h4>
+                <p>Built-in authentication and authorization with role-based access control.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.lead {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 40px;
+}
+
+.quick-actions, .get-started, .features {
+    margin: 40px 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.feature-item {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.feature-item h4 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

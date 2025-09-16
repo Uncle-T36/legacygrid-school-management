@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Schools - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="schools-header">
+    <h2>All Schools</h2>
+    <a href="{% url 'school_create' %}" class="btn btn-success">Add New School</a>
+</div>
+
+{% if schools %}
+    <div class="schools-grid">
+        {% for school in schools %}
+            <div class="school-card">
+                {% if school.logo %}
+                    <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" class="school-logo">
+                {% else %}
+                    <div class="school-logo-placeholder">🏫</div>
+                {% endif %}
+                
+                <div class="school-info">
+                    <h3>{{ school.name }}</h3>
+                    {% if school.address %}
+                        <p class="school-address">📍 {{ school.address }}</p>
+                    {% endif %}
+                    <p class="school-owner">Owner: {{ school.owner.username }}</p>
+                    
+                    <div class="school-actions">
+                        {% if school.owner == user or user.is_superuser %}
+                            <a href="{% url 'school_edit' school.id %}" class="btn btn-primary">Edit</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="no-schools">
+        <h3>No schools found</h3>
+        <p>Be the first to add a school to the system!</p>
+        <a href="{% url 'school_create' %}" class="btn btn-success">Create First School</a>
+    </div>
+{% endif %}
+
+<style>
+.schools-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eee;
+}
+
+.schools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.school-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.school-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.school-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: block;
+}
+
+.school-logo-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 15px;
+}
+
+.school-info {
+    text-align: center;
+}
+
+.school-info h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.school-address {
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.school-owner {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.school-actions {
+    margin-top: 15px;
+}
+
+.no-schools {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .schools-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .schools-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
