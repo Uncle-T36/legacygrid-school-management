@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Configuration - LegacyGrid</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .config-section { border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .demo-warning { background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .live-warning { background-color: #f8d7da; padding: 15px; border-radius: 5px; margin: 20px 0; color: #721c24; }
+        .config-item { margin: 10px 0; padding: 10px; background-color: #f8f9fa; border-radius: 5px; }
+        .masked-key { font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Stripe Configuration</h1>
+        <p>Configure Stripe API keys, webhooks, and products (Owner Only)</p>
+    </div>
+    
+    {% if demo_mode %}
+    <div class="demo-warning">
+        <strong>Demo Mode:</strong> Using test Stripe configuration.
+    </div>
+    {% else %}
+    <div class="live-warning">
+        <strong>⚠️ Live Mode:</strong> Real payments are enabled. Handle with care!
+    </div>
+    {% endif %}
+    
+    <div class="config-section">
+        <h3>API Configuration</h3>
+        
+        <div class="config-item">
+            <strong>Mode:</strong> 
+            <span style="padding: 5px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; 
+                         {% if stripe_live_mode %}background-color: #d4edda; color: #155724;{% else %}background-color: #fff3cd; color: #856404;{% endif %}">
+                {% if stripe_live_mode %}LIVE{% else %}TEST{% endif %}
+            </span>
+        </div>
+        
+        <div class="config-item">
+            <strong>Publishable Key:</strong>
+            <code class="masked-key">{{ stripe_config.public_key|default:"Not configured"|truncatechars:20 }}...</code>
+        </div>
+        
+        <div class="config-item">
+            <strong>Secret Key:</strong>
+            <code class="masked-key">{{ stripe_config.api_key|default:"Not configured"|truncatechars:15 }}...</code>
+        </div>
+        
+        <div class="config-item">
+            <strong>Webhook Secret:</strong>
+            <code class="masked-key">{{ stripe_config.webhook_secret|default:"Not configured"|truncatechars:15 }}...</code>
+        </div>
+    </div>
+    
+    <div class="config-section">
+        <h3>Product Configuration</h3>
+        
+        <div class="config-item">
+            <strong>Premium Product ID:</strong>
+            <code>{{ stripe_config.premium_product_id|default:"Not configured" }}</code>
+        </div>
+        
+        <div class="config-item">
+            <strong>Premium Price ID:</strong>
+            <code>{{ stripe_config.premium_price_id|default:"Not configured" }}</code>
+        </div>
+        
+        <div class="config-item">
+            <strong>Currency:</strong>
+            {{ stripe_config.currency|default:"USD" }}
+        </div>
+    </div>
+    
+    <div class="config-section">
+        <h3>Webhook Configuration</h3>
+        
+        <div class="config-item">
+            <strong>Webhook URL:</strong>
+            <code>https://yourdomain.com/schools/billing/webhook/stripe/</code>
+        </div>
+        
+        <div class="config-item">
+            <strong>Required Events:</strong>
+            <ul>
+                <li>payment_intent.succeeded</li>
+                <li>customer.subscription.created</li>
+                <li>customer.subscription.updated</li>
+                <li>customer.subscription.deleted</li>
+                <li>invoice.payment_succeeded</li>
+                <li>invoice.payment_failed</li>
+            </ul>
+        </div>
+    </div>
+    
+    {% if not stripe_live_mode %}
+    <div class="config-section">
+        <h3>Test Mode Instructions</h3>
+        <p>Use these test card numbers:</p>
+        <ul>
+            <li><strong>Success:</strong> 4242 4242 4242 4242</li>
+            <li><strong>Decline:</strong> 4000 0000 0000 0002</li>
+            <li><strong>3D Secure:</strong> 4000 0000 0000 3220</li>
+        </ul>
+        <p>Use any future expiration date and any 3-digit CVC.</p>
+    </div>
+    {% endif %}
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="/schools/billing/" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">← Back to Billing Dashboard</a>
+    </div>
+</body>
+</html>
