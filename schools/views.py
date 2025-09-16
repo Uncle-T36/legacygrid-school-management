@@ -20,4 +20,4 @@ def school_profile(request):
             return redirect('school_profile')
     else:
         form = SchoolLogoForm(instance=school)
-    return render(request, "schools/profile.html", {"form": form, "school": school}).
+    return render(request, "schools/profile.html", {"form": form, "school": school})
