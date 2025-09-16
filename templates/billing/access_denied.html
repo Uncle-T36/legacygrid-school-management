@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - LegacyGrid School Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .access-denied-container {
+            background-color: white;
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .error-icon {
+            font-size: 4em;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            color: #dc3545;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            color: #495057;
+            line-height: 1.5;
+        }
+        .user-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .support-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="access-denied-container">
+        <div class="error-icon">🚫</div>
+        <h1 class="error-title">Access Denied</h1>
+        
+        <div class="error-message">
+            {{ error_message }}
+        </div>
+        
+        {% if current_user %}
+        <div class="user-info">
+            <strong>Current User:</strong> {{ current_user }}
+        </div>
+        {% endif %}
+        
+        <div class="support-info">
+            <h3>Need Access to Billing Features?</h3>
+            <p>
+                <strong>Billing and subscription management is restricted to the system owner (Uncle-T36) only.</strong>
+            </p>
+            <p>
+                For billing assistance, subscription changes, or payment issues, please contact:
+            </p>
+            <p>
+                <strong>Email:</strong> <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+            </p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <a href="javascript:history.back()" class="btn btn-secondary">← Go Back</a>
+            <a href="/" class="btn btn-primary">Home</a>
+        </div>
+        
+        <div style="margin-top: 20px; font-size: 0.9em; color: #6c757d;">
+            <p>
+                <strong>Security Note:</strong> This access restriction is enforced for security and compliance purposes. 
+                All billing access attempts are logged and monitored.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

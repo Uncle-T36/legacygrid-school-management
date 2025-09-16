@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Settings - LegacyGrid</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .payment-gateway { border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .demo-warning { background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .config-item { margin: 10px 0; padding: 10px; background-color: #f8f9fa; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Payment Settings</h1>
+        <p>Configure payment gateways and processing options (Owner Only)</p>
+    </div>
+    
+    {% if demo_mode %}
+    <div class="demo-warning">
+        <strong>Demo Mode:</strong> Real payment processing is disabled.
+    </div>
+    {% endif %}
+    
+    <h2>Configured Payment Gateways</h2>
+    
+    {% for gateway_name, gateway_config in payment_gateways.items %}
+    <div class="payment-gateway">
+        <h3>{{ gateway_name|title }}</h3>
+        
+        {% if gateway_name == 'stripe' %}
+        <div class="config-item">
+            <strong>Mode:</strong> {{ gateway_config.mode|upper }}
+        </div>
+        <div class="config-item">
+            <strong>Currency:</strong> {{ gateway_config.currency|default:"USD" }}
+        </div>
+        <div class="config-item">
+            <strong>API Key:</strong> {{ gateway_config.api_key|default:"Not configured"|truncatechars:20 }}...
+        </div>
+        <div class="config-item">
+            <strong>Public Key:</strong> {{ gateway_config.public_key|default:"Not configured"|truncatechars:20 }}...
+        </div>
+        
+        {% elif gateway_name == 'paypal' %}
+        <div class="config-item">
+            <strong>Mode:</strong> {{ gateway_config.mode|upper }}
+        </div>
+        <div class="config-item">
+            <strong>Client ID:</strong> {{ gateway_config.client_id|default:"Not configured" }}
+        </div>
+        
+        {% else %}
+        <div class="config-item">
+            <strong>Mode:</strong> {{ gateway_config.mode|upper }}
+        </div>
+        {% for key, value in gateway_config.items %}
+        <div class="config-item">
+            <strong>{{ key|title }}:</strong> {{ value }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    {% endfor %}
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="/schools/billing/" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">← Back to Billing Dashboard</a>
+    </div>
+</body>
+</html>

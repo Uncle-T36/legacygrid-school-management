@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Management - LegacyGrid</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .subscription-tier { border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 15px 0; }
+        .tier-free { border-color: #28a745; }
+        .tier-premium { border-color: #007bff; }
+        .demo-warning { background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Subscription Management</h1>
+        <p>Manage subscription tiers and user subscriptions (Owner Only)</p>
+    </div>
+    
+    {% if demo_mode %}
+    <div class="demo-warning">
+        <strong>Demo Mode:</strong> Real subscription changes are disabled.
+    </div>
+    {% endif %}
+    
+    <h2>Available Subscription Tiers</h2>
+    
+    {% for tier_name, tier_info in subscription_tiers.items %}
+    <div class="subscription-tier tier-{{ tier_name }}">
+        <h3>{{ tier_name|title }} Plan</h3>
+        <p><strong>Price:</strong> ${{ tier_info.price|default:"0" }}/month</p>
+        <p><strong>Description:</strong> {{ tier_info.description }}</p>
+        <p><strong>AI Access:</strong> {{ tier_info.ai_access|yesno:"Yes,No" }}</p>
+        <p><strong>Features:</strong></p>
+        <ul>
+            {% for feature in tier_info.features %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+        </ul>
+        {% if tier_info.stripe_price_id %}
+        <p><strong>Stripe Price ID:</strong> {{ tier_info.stripe_price_id }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="/schools/billing/" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">← Back to Billing Dashboard</a>
+    </div>
+</body>
+</html>

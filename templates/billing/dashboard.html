@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Dashboard - LegacyGrid School Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .dashboard-header {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .welcome-message {
+            color: #28a745;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .demo-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .stripe-status {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            color: #495057;
+            margin-top: 0;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .config-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status-live {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-test {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <h1>Billing Dashboard</h1>
+        <div class="welcome-message">
+            Welcome, {{ billing_owner }}! You have full access to billing and subscription management.
+        </div>
+        <p>Current User: <strong>{{ current_user }}</strong></p>
+        
+        {% if demo_mode %}
+        <div class="demo-warning">
+            <strong>⚠️ Demo Mode Active:</strong> Real payments are disabled. Switch to live mode in production.
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="stripe-status">
+        <h3>Stripe Configuration Status</h3>
+        <div class="config-item">
+            <strong>Mode:</strong> 
+            <span class="status-badge {% if stripe_config.mode == 'live' %}status-live{% else %}status-test{% endif %}">
+                {{ stripe_config.mode|upper }}
+            </span>
+        </div>
+        <div class="config-item">
+            <strong>Currency:</strong> {{ stripe_config.currency|default:"USD" }}
+        </div>
+        <div class="config-item">
+            <strong>API Key Configured:</strong> 
+            {% if stripe_config.api_key %}
+                <span style="color: #28a745;">✓ Yes</span>
+            {% else %}
+                <span style="color: #dc3545;">✗ No</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="grid">
+        <div class="card">
+            <h3>Subscription Management</h3>
+            <p>Manage subscription tiers, pricing, and user subscriptions.</p>
+            <div>
+                {% for tier_name, tier_info in subscription_tiers.items %}
+                <div class="config-item">
+                    <strong>{{ tier_name|title }}:</strong> ${{ tier_info.price|default:"0" }}/month
+                    <br><small>{{ tier_info.description }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            <a href="/schools/billing/subscriptions/" class="btn btn-primary">Manage Subscriptions</a>
+        </div>
+        
+        <div class="card">
+            <h3>Payment Settings</h3>
+            <p>Configure payment gateways and processing options.</p>
+            <a href="/schools/billing/payment-settings/" class="btn btn-success">Payment Settings</a>
+        </div>
+        
+        <div class="card">
+            <h3>Stripe Configuration</h3>
+            <p>Configure Stripe API keys, webhooks, and products.</p>
+            <a href="/schools/billing/stripe-config/" class="btn btn-warning">Stripe Config</a>
+        </div>
+        
+        <div class="card">
+            <h3>Security & Access</h3>
+            <p>This dashboard is protected by owner-only access controls.</p>
+            <div class="config-item">
+                <strong>Billing Owner:</strong> {{ billing_owner }}
+            </div>
+            <div class="config-item">
+                <strong>Access Logging:</strong> Enabled
+            </div>
+            <div class="config-item">
+                <strong>Session Timeout:</strong> 5 minutes
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; text-align: center; color: #6c757d;">
+        <p><small>LegacyGrid School Management System - Secure Billing Dashboard</small></p>
+    </div>
+</body>
+</html>
