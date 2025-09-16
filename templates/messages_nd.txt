@@ -1,0 +1,26 @@
+# Ndebele Messages
+billing_dashboard=Ideshibhodi Yokukhokha
+current_subscription=Isubscription Yamanje
+upgrade_subscription=Ukuthuthukisa Isubscription
+payment_history=Umlando Wokukhokha
+subscription_status=Isimo Sesubscription
+payment_methods=Izindlela Zokukhokha
+mobile_money=Imali Yefoni
+credit_card=Ikhadi Lesikweletu
+demo_mode_warning=Demo Mode Iyasebenza: Akukho mali yokwangempela ezakwenziwa
+upgrade_to_premium=Thuthukisa kuya kuPremium
+ai_features_available=AI Features Zikhona
+basic_features=Basic Features
+select_currency=Khetha Currency
+select_payment_method=Khetha Indlela Yokukhokha
+billing_cycle=Billing Cycle
+monthly=Ngenyanga
+annual=Ngomnyaka
+zimbabwe_optimized=Zimbabwe-Optimized Billing
+multi_currency_support=Multi-currency support
+mobile_money_payments=Mobile money payments
+local_pricing=Local pricing ngezinga laseZimbabwe
+subscription_upgraded=Isubscription ithuthukisiwe ngempumelelo
+payment_failed=Ukukhokha kuhlulekile
+access_denied=Ukungena kwenqatshelwe
+owner_only=Umnikazi wedwa angakwazi ukufinyelela lesi sigaba

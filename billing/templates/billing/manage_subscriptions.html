@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Subscriptions - LegacyGrid</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+        .nav { margin-bottom: 20px; }
+        .nav a { margin-right: 15px; padding: 8px 12px; background: #f8f9fa; text-decoration: none; border-radius: 3px; }
+        .nav a:hover { background: #e9ecef; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        .status { padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+        .status.active { background: #d4edda; color: #155724; }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.expired { background: #f8d7da; color: #721c24; }
+        .pagination { text-align: center; margin-top: 20px; }
+        .pagination a { display: inline-block; padding: 8px 12px; margin: 0 4px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; }
+        .pagination a:hover { background: #f8f9fa; }
+        .pagination .current { background: #007bff; color: white; border-color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Manage Subscriptions</h1>
+            <div class="nav">
+                <a href="{% url 'billing:admin_dashboard' %}">Overview</a>
+                <a href="{% url 'billing:manage_subscriptions' %}">Subscriptions</a>
+                <a href="{% url 'billing:manage_payments' %}">Payments</a>
+                <a href="{% url 'billing:analytics' %}">Analytics</a>
+            </div>
+        </div>
+
+        {% if subscriptions %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Tier</th>
+                        <th>Status</th>
+                        <th>Started</th>
+                        <th>Expires</th>
+                        <th>Billing Cycle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subscription in subscriptions %}
+                        <tr>
+                            <td>{{ subscription.user.username }}</td>
+                            <td>{{ subscription.user.email }}</td>
+                            <td>{{ subscription.tier.name|title }}</td>
+                            <td><span class="status {{ subscription.status }}">{{ subscription.status|title }}</span></td>
+                            <td>{{ subscription.started_at|date:"M j, Y" }}</td>
+                            <td>
+                                {% if subscription.expires_at %}
+                                    {{ subscription.expires_at|date:"M j, Y" }}
+                                {% else %}
+                                    Never
+                                {% endif %}
+                            </td>
+                            <td>{{ subscription.billing_cycle|title }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; First</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="current">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+        {% else %}
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <h3>No subscriptions found</h3>
+                <p>No users have subscriptions yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

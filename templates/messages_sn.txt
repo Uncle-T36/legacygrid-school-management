@@ -1,0 +1,26 @@
+# Shona Messages  
+billing_dashboard=Dhashidhoti Rekubhadhara
+current_subscription=Subscription Yazvino
+upgrade_subscription=Kukwevera Subscription
+payment_history=Nhoroondo Yekubhadhara
+subscription_status=Mamiriro eSubscription
+payment_methods=Nzira Dzekubhadhara
+mobile_money=Mari Yenharare
+credit_card=Kadhi Rechikwereti
+demo_mode_warning=Demo Mode Inoshanda: Hapana mari chaiyo ichaprocessa
+upgrade_to_premium=Kwevera kuPremium
+ai_features_available=AI Features Dziripo
+basic_features=Basic Features
+select_currency=Sarudza Currency
+select_payment_method=Sarudza Nzira Yekubhadhara
+billing_cycle=Billing Cycle
+monthly=Pamwedzi
+annual=Pagore
+zimbabwe_optimized=Zimbabwe-Optimized Billing
+multi_currency_support=Multi-currency support
+mobile_money_payments=Mobile money payments
+local_pricing=Local pricing mu Zimbabwe-friendly rates
+subscription_upgraded=Subscription yakweverwa zvakanaka
+payment_failed=Payment yakadimwa
+access_denied=Access yarambwa
+owner_only=Muridzi wega ndiye anogona kuwana chikamu ichi
