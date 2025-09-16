@@ -1,9 +1,13 @@
 # settings.py
 
 INSTALLED_APPS = [
-    ..., 
-    'schools',
-    # add any new payment/messaging apps here
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'schools',  # Your custom app; add others here if needed
 ]
 
 # === PAYMENT SETTINGS ===
