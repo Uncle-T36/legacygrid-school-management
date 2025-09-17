@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow mt-5">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-circle me-2"></i>
+                        Login to LegacyGrid
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-1"></i>Username
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.username.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                <i class="bi bi-lock me-1"></i>Password
+                            </label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ form.password.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            {{ form.remember_me }}
+                            <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
+                                Remember me
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="small text-muted mb-2">Don't have an account?</p>
+                        <a href="{% url 'accounts:register' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Register Here
+                        </a>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="#" class="small text-muted">Forgot your password?</a>
+                    </div>
+                </div>
+                
+                <div class="card-footer text-center text-muted small">
+                    <i class="bi bi-shield-check me-1"></i>
+                    Secure login protected by CSRF
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Demo Users Info -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Demo User Accounts (for testing)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Administrator:</strong><br>
+                            Username: <code>admin</code><br>
+                            Password: <code>admin123</code>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Teacher:</strong><br>
+                            Username: <code>teacher</code><br>
+                            Password: <code>teacher123</code>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <strong>Parent:</strong><br>
+                            Username: <code>parent</code><br>
+                            Password: <code>parent123</code>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Student:</strong><br>
+                            Username: <code>student</code><br>
+                            Password: <code>student123</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

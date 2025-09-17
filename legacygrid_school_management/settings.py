@@ -23,6 +23,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schools',
     'billing',  # New billing app for payment management
+    'accounts',  # Custom user and role management
+    'students',  # Student management, grades, attendance
+    'staff',     # Staff and teacher management  
+    'communications',  # Email/SMS, messaging, notifications
+    'timetables',     # Class schedules, teacher allocation
+    'admissions',     # Online enrollment and applicant tracking
+    'fees',          # Fee management and payment tracking
+    'analytics',     # Analytics dashboard and reporting
 ]
 
 MIDDLEWARE = [
@@ -97,9 +105,46 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Custom User Model and Authentication
+AUTH_USER_MODEL = 'accounts.User'
+
 # Login URLs
-LOGIN_URL = '/admin/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
+LOGOUT_URL = '/accounts/logout/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Session Security
+SESSION_COOKIE_AGE = 3600  # 1 hour
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# CSRF Protection
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = True
+
+# Security Headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# Role-based Access Control
+USER_ROLES = {
+    'owner': {'level': 5, 'permissions': ['all']},
+    'admin': {'level': 4, 'permissions': ['manage_students', 'manage_staff', 'manage_fees', 'view_analytics']},
+    'teacher': {'level': 3, 'permissions': ['manage_classes', 'manage_attendance', 'manage_grades']},
+    'parent': {'level': 2, 'permissions': ['view_children', 'view_fees', 'make_payments']},
+    'student': {'level': 1, 'permissions': ['view_profile', 'view_grades', 'view_timetable']},
+}
+
+# Audit Logging
+AUDIT_LOG_ENABLED = True
+AUDIT_LOG_ACTIONS = ['login', 'logout', 'create', 'update', 'delete', 'payment', 'grade_change']
 
 # === STRIPE PAYMENT SETTINGS ===
 # IMPORTANT: Replace these with your actual Stripe keys in production

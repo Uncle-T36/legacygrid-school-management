@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="bg-primary text-white p-4 rounded">
+                <div class="d-flex align-items-center">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" alt="Profile" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-person-fill fs-2"></i>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <h2 class="mb-1">Welcome back, {{ user.get_full_name }}!</h2>
+                        <p class="mb-0">
+                            <i class="bi bi-person-badge me-1"></i>{{ user.get_role_display }}
+                            {% if user.school %}
+                                at {{ user.school.name }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role-specific Dashboard Content -->
+    {% if user.role == 'owner' or user.is_superuser %}
+        <!-- Owner Dashboard -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-primary text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-people-fill fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-0">{{ total_students|default:0 }}</h4>
+                                <p class="mb-0">Total Students</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-success text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-badge-fill fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-0">{{ total_teachers|default:0 }}</h4>
+                                <p class="mb-0">Total Teachers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-warning text-dark mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-hearts fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-0">{{ total_parents|default:0 }}</h4>
+                                <p class="mb-0">Total Parents</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-card bg-info text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-building fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-0">5</h4>
+                                <p class="mb-0">Active Schools</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning-charge-fill me-2"></i>
+                            Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-4 mb-3">
+                                <a href="#" class="btn btn-outline-primary d-block">
+                                    <i class="bi bi-person-plus-fill d-block fs-3"></i>
+                                    Add User
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 mb-3">
+                                <a href="#" class="btn btn-outline-success d-block">
+                                    <i class="bi bi-building-add d-block fs-3"></i>
+                                    Add School
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 mb-3">
+                                <a href="{% url 'billing:billing_dashboard' %}" class="btn btn-outline-warning d-block">
+                                    <i class="bi bi-credit-card-fill d-block fs-3"></i>
+                                    Billing
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 mb-3">
+                                <a href="#" class="btn btn-outline-info d-block">
+                                    <i class="bi bi-graph-up d-block fs-3"></i>
+                                    Analytics
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 mb-3">
+                                <a href="{% url 'accounts:audit_log' %}" class="btn btn-outline-danger d-block">
+                                    <i class="bi bi-shield-check d-block fs-3"></i>
+                                    Audit Log
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 mb-3">
+                                <a href="#" class="btn btn-outline-secondary d-block">
+                                    <i class="bi bi-gear-fill d-block fs-3"></i>
+                                    Settings
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history me-2"></i>
+                            Recent Activities
+                        </h5>
+                        <a href="{% url 'accounts:audit_log' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if recent_activities %}
+                            <div class="list-group list-group-flush">
+                                {% for activity in recent_activities %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ activity.user.get_full_name }}</strong>
+                                            performed <em>{{ activity.action }}</em>
+                                            {% if activity.model_name %}
+                                                on {{ activity.model_name }}
+                                            {% endif %}
+                                        </div>
+                                        <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No recent activities to display.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif user.role == 'admin' %}
+        <!-- Admin Dashboard -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-primary text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-people-fill fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-0">{{ students_count|default:0 }}</h4>
+                                <p class="mb-0">Students</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-success text-white mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-badge-fill fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-0">{{ teachers_count|default:0 }}</h4>
+                                <p class="mb-0">Teachers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-warning text-dark mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar-week-fill fs-1 me-3"></i>
+                            <div>
+                                <h4 class="mb-0">15</h4>
+                                <p class="mb-0">Classes Today</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif user.role == 'teacher' %}
+        <!-- Teacher Dashboard -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-primary text-white mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-journal-bookmark-fill fs-1"></i>
+                        <h4 class="mt-2">My Classes</h4>
+                        <a href="#" class="btn btn-light btn-sm mt-2">View Classes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-success text-white mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-check2-square fs-1"></i>
+                        <h4 class="mt-2">Attendance</h4>
+                        <a href="#" class="btn btn-light btn-sm mt-2">Take Attendance</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-warning text-dark mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-award-fill fs-1"></i>
+                        <h4 class="mt-2">Grades</h4>
+                        <a href="#" class="btn btn-dark btn-sm mt-2">Enter Grades</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif user.role == 'parent' %}
+        <!-- Parent Dashboard -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card dashboard-card mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person-hearts fs-1 text-primary"></i>
+                        <h4 class="mt-2">My Children</h4>
+                        <p class="text-muted">View your children's progress</p>
+                        <a href="#" class="btn btn-primary">View Children</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card dashboard-card mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-receipt fs-1 text-success"></i>
+                        <h4 class="mt-2">Fees & Payments</h4>
+                        <p class="text-muted">Manage school fees and payments</p>
+                        <a href="#" class="btn btn-success">View Fees</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif user.role == 'student' %}
+        <!-- Student Dashboard -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-primary text-white mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-award-fill fs-1"></i>
+                        <h4 class="mt-2">My Grades</h4>
+                        <a href="#" class="btn btn-light btn-sm mt-2">View Grades</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-success text-white mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-week-fill fs-1"></i>
+                        <h4 class="mt-2">Timetable</h4>
+                        <a href="#" class="btn btn-light btn-sm mt-2">View Schedule</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card dashboard-card bg-warning text-dark mb-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-percent fs-1"></i>
+                        <h4 class="mt-2">Attendance</h4>
+                        <a href="#" class="btn btn-dark btn-sm mt-2">View Attendance</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Notification Modal -->
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="notificationModalLabel">
+                    <i class="bi bi-bell-fill me-2"></i>Notifications
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>You have no new notifications.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-refresh dashboard data every 5 minutes
+setTimeout(function() {
+    location.reload();
+}, 300000);
+</script>
+{% endblock %}
