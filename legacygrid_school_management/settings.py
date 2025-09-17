@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schools',
     'billing',  # New billing app for payment management
+    'disaster_recovery',  # Advanced disaster recovery and backup management
 ]
 
 MIDDLEWARE = [
