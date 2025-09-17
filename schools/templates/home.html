@@ -1,10 +1,196 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>LegacyGrid School Management - Home</title>
-</head>
-<body>
-    <h1>Welcome to LegacyGrid School Management!</h1>
-    <p>Use the navigation to explore schools, billing, and other features.</p>
-</body>
-</html>
+{% extends 'base_modern.html' %}
+
+{% block title %}Welcome to LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Hero Section -->
+        <div class="card gradient-bg text-white mb-4">
+            <div class="card-body py-5">
+                <div class="text-center">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="bi bi-shield-check me-3"></i>LegacyGrid
+                    </h1>
+                    <h2 class="h4 mb-4">School Management System</h2>
+                    <p class="lead mb-4">
+                        Secure, modern, and comprehensive school administration platform
+                    </p>
+                    
+                    {% if user.is_authenticated %}
+                        <div class="d-flex justify-content-center gap-3">
+                            {% if user.username == 'Uncle-T36' %}
+                                <a href="{% url 'billing_dashboard' %}" class="btn btn-light btn-lg">
+                                    <i class="bi bi-credit-card me-2"></i>Billing Dashboard
+                                </a>
+                                <a href="{% url 'security:dashboard' %}" class="btn btn-outline-light btn-lg">
+                                    <i class="bi bi-shield-lock me-2"></i>Security Center
+                                </a>
+                                <a href="{% url 'premium:dashboard' %}" class="btn btn-outline-light btn-lg">
+                                    <i class="bi bi-star me-2"></i>Premium Features
+                                </a>
+                            {% else %}
+                                <a href="#" class="btn btn-light btn-lg">
+                                    <i class="bi bi-building me-2"></i>My School
+                                </a>
+                                <a href="#" class="btn btn-outline-light btn-lg">
+                                    <i class="bi bi-people me-2"></i>Students
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <a href="{% url 'admin:login' %}" class="btn btn-light btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Get Started
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Highlights -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-primary bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-shield-fill-check fs-4"></i>
+                </div>
+                <h4 class="card-title">Enterprise Security</h4>
+                <p class="card-text text-muted">
+                    Advanced security features including 2FA, audit logging, and anti-cloning protection.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-success bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-graph-up-arrow fs-4"></i>
+                </div>
+                <h4 class="card-title">Analytics & Insights</h4>
+                <p class="card-text text-muted">
+                    Comprehensive analytics, usage monitoring, and performance insights for data-driven decisions.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-info bg-gradient text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <i class="bi bi-cloud-arrow-up fs-4"></i>
+                </div>
+                <h4 class="card-title">Cloud Backup</h4>
+                <p class="card-text text-muted">
+                    Automated, encrypted backups with disaster recovery and one-click restoration.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security & Owner Info -->
+{% if user.username == 'Uncle-T36' %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <i class="bi bi-shield-check fs-4 me-3"></i>
+            <div>
+                <h5 class="alert-heading mb-1">Owner Access Confirmed</h5>
+                <p class="mb-0">You have full administrative access to all system features and settings.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- System Status -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-activity me-2"></i>System Status</h5>
+                <span class="badge bg-success">All Systems Operational</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <div class="status-indicator bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>Security Systems</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <div class="status-indicator bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>Backup Services</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <div class="status-indicator bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>Premium Features</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center">
+                            <div class="status-indicator bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                            <span>License Valid</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add animation to feature cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in');
+    });
+    
+    // Status indicator animations
+    const indicators = document.querySelectorAll('.status-indicator');
+    indicators.forEach(indicator => {
+        setInterval(() => {
+            indicator.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                indicator.style.transform = 'scale(1)';
+            }, 200);
+        }, 3000);
+    });
+});
+</script>
+
+<style>
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+}
+
+.status-indicator {
+    transition: transform 0.2s ease;
+}
+</style>
+{% endblock %}

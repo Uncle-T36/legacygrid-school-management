@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="LegacyGrid School Management System - Secure, modern school administration">
+    <meta name="author" content="LegacyGrid">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --bs-primary: #0d6efd;
+            --bs-secondary: #6c757d;
+            --bs-success: #198754;
+            --bs-info: #0dcaf0;
+            --bs-warning: #ffc107;
+            --bs-danger: #dc3545;
+            --bs-light: #f8f9fa;
+            --bs-dark: #212529;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        [data-bs-theme="dark"] {
+            --bs-body-bg: #1a1a1a;
+            --bs-body-color: #ffffff;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .gradient-bg {
+            background: var(--gradient-primary);
+        }
+        
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn {
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .security-badge {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        
+        .theme-toggle {
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+        
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-bs-theme="dark"] .sidebar {
+            background: rgba(33, 37, 41, 0.95);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link {
+            border-radius: 0.5rem;
+            margin: 0.125rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: rgba(13, 110, 253, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .nav-link.active {
+            background: var(--bs-primary);
+            color: white !important;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .loading-spinner {
+            display: none;
+        }
+        
+        .loading .loading-spinner {
+            display: inline-block;
+        }
+        
+        /* PWA specific styles */
+        .pwa-install-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -250px;
+                height: 100vh;
+                width: 250px;
+                z-index: 1040;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .navbar-toggler {
+                display: block;
+            }
+        }
+        
+        /* Accessibility improvements */
+        .focus-visible {
+            outline: 2px solid var(--bs-primary);
+            outline-offset: 2px;
+        }
+        
+        /* Dark mode specific improvements */
+        [data-bs-theme="dark"] .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-bs-theme="dark"] .stats-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Favicon and PWA icons -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+    
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+</head>
+<body>
+    <!-- Theme Toggle Script (Load Early) -->
+    <script>
+        // Theme management
+        const getStoredTheme = () => localStorage.getItem('theme')
+        const setStoredTheme = theme => localStorage.setItem('theme', theme)
+        const getPreferredTheme = () => {
+            const storedTheme = getStoredTheme()
+            if (storedTheme) {
+                return storedTheme
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+        
+        const setTheme = theme => {
+            if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-bs-theme', 'dark')
+            } else {
+                document.documentElement.setAttribute('data-bs-theme', theme)
+            }
+        }
+        
+        setTheme(getPreferredTheme())
+    </script>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark gradient-bg fixed-top">
+        <div class="container-fluid">
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="bi bi-shield-check me-2"></i>LegacyGrid
+            </a>
+            
+            <div class="navbar-nav ms-auto d-flex flex-row align-items-center">
+                <!-- Theme Toggle -->
+                <button class="theme-toggle nav-link border-0 me-3" id="bd-theme" type="button" aria-expanded="false">
+                    <i class="bi bi-sun" id="theme-icon"></i>
+                </button>
+                
+                {% if user.is_authenticated %}
+                    <!-- User Info -->
+                    <div class="dropdown me-3">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                            {% if user.username == 'Uncle-T36' %}
+                                <span class="security-badge ms-2">OWNER</span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                            {% if user.username == 'Uncle-T36' %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'billing_dashboard' %}"><i class="bi bi-credit-card me-2"></i>Billing</a></li>
+                                <li><a class="dropdown-item" href="{% url 'security:dashboard' %}"><i class="bi bi-shield-lock me-2"></i>Security</a></li>
+                                <li><a class="dropdown-item" href="{% url 'premium:dashboard' %}"><i class="bi bi-star me-2"></i>Premium</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'admin:logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'admin:login' %}">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container-fluid" style="padding-top: 76px;">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-lg-2 d-lg-block sidebar collapse" id="sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'home' %}">
+                                <i class="bi bi-house me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-building me-2"></i>Schools
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-people me-2"></i>Students
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-person-badge me-2"></i>Teachers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-graph-up me-2"></i>Reports
+                            </a>
+                        </li>
+                        
+                        {% if user.username == 'Uncle-T36' %}
+                            <hr class="my-3">
+                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                                <span>Owner Controls</span>
+                            </h6>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'billing_dashboard' %}">
+                                    <i class="bi bi-credit-card me-2"></i>Billing
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'security:dashboard' %}">
+                                    <i class="bi bi-shield-lock me-2"></i>Security
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'premium:dashboard' %}">
+                                    <i class="bi bi-star me-2"></i>Premium
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Main Content -->
+            <main class="col-lg-10 ms-sm-auto px-md-4">
+                {% if messages %}
+                    <div class="mt-3">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                {% block content %}
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card stats-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-building display-6 text-primary"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="card-title mb-0">Schools</h5>
+                                        <p class="card-text text-muted">Active schools</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card stats-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-people display-6 text-success"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="card-title mb-0">Students</h5>
+                                        <p class="card-text text-muted">Total enrolled</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card stats-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-shield-check display-6 text-info"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="card-title mb-0">Security</h5>
+                                        <p class="card-text text-muted">All systems secure</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="card stats-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-star display-6 text-warning"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="card-title mb-0">Premium</h5>
+                                        <p class="card-text text-muted">Active features</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+    
+    <!-- PWA Install Prompt -->
+    <div class="pwa-install-prompt d-none">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title"><i class="bi bi-download me-2"></i>Install App</h6>
+                <p class="card-text small">Install LegacyGrid for a better experience</p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm" id="pwa-install-btn">Install</button>
+                    <button class="btn btn-outline-secondary btn-sm" id="pwa-dismiss-btn">Dismiss</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Theme Toggle Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('bd-theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'bi bi-moon';
+                } else {
+                    themeIcon.className = 'bi bi-sun';
+                }
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                setTheme(newTheme);
+                setStoredTheme(newTheme);
+                updateThemeIcon(newTheme);
+            });
+            
+            // Initialize theme icon
+            updateThemeIcon(getPreferredTheme());
+            
+            // Mobile sidebar toggle
+            const sidebarToggle = document.querySelector('.navbar-toggler');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+                
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(e) {
+                    if (window.innerWidth < 992 && !sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                        sidebar.classList.remove('show');
+                    }
+                });
+            }
+            
+            // PWA Install Prompt
+            let deferredPrompt;
+            const pwaPrompt = document.querySelector('.pwa-install-prompt');
+            const installBtn = document.getElementById('pwa-install-btn');
+            const dismissBtn = document.getElementById('pwa-dismiss-btn');
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                pwaPrompt.classList.remove('d-none');
+            });
+            
+            if (installBtn) {
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        deferredPrompt = null;
+                        pwaPrompt.classList.add('d-none');
+                    }
+                });
+            }
+            
+            if (dismissBtn) {
+                dismissBtn.addEventListener('click', () => {
+                    pwaPrompt.classList.add('d-none');
+                });
+            }
+            
+            // Loading states for buttons
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.classList.add('loading');
+                        submitBtn.disabled = true;
+                    }
+                });
+            });
+            
+            // Auto-dismiss alerts
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+        
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Anti-cloning watermark -->
+    <!-- LegacyGrid School Management System -->
+    <!-- Licensed to: {{ school.name|default:"Development" }} -->
+    <!-- Owner: {{ user.username|default:"Uncle-T36" }} -->
+    <!-- Unauthorized duplication is prohibited -->
+    <!-- Contact: support@legacygrid.co.zw -->
+</body>
+</html>
