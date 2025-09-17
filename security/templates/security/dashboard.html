@@ -1,0 +1,255 @@
+{% extends 'base_modern.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Security Dashboard - LegacyGrid{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-shield-lock me-2"></i>Security Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-download me-1"></i>Export Report
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Security Overview Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-shield-check display-6 me-3"></i>
+                    <div>
+                        <h5 class="card-title mb-0">System Secure</h5>
+                        <p class="card-text small">No active threats</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-eye display-6 me-3"></i>
+                    <div>
+                        <h5 class="card-title mb-0">{{ total_audits }}</h5>
+                        <p class="card-text small">Audit logs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle display-6 me-3"></i>
+                    <div>
+                        <h5 class="card-title mb-0">{{ total_events }}</h5>
+                        <p class="card-text small">Security events</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-key display-6 me-3"></i>
+                    <div>
+                        <h5 class="card-title mb-0">Active</h5>
+                        <p class="card-text small">License status</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Security Events -->
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Recent Security Events</h5>
+                <a href="{% url 'security:security_events' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_events %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>IP Address</th>
+                                    <th>Severity</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for event in recent_events %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ event.get_event_type_display }}</span>
+                                    </td>
+                                    <td>{{ event.ip_address }}</td>
+                                    <td>
+                                        {% if event.severity == 'CRITICAL' %}
+                                            <span class="badge bg-danger">{{ event.severity }}</span>
+                                        {% elif event.severity == 'HIGH' %}
+                                            <span class="badge bg-warning">{{ event.severity }}</span>
+                                        {% else %}
+                                            <span class="badge bg-info">{{ event.severity }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ event.timestamp|timesince }} ago</td>
+                                    <td>
+                                        {% if event.is_resolved %}
+                                            <span class="badge bg-success">Resolved</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Open</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-shield-check display-4 text-success"></i>
+                        <p class="text-muted mt-2">No security events recorded</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Security Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'security:license_management' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-key me-2"></i>Manage Licenses
+                    </a>
+                    <a href="{% url 'security:ip_whitelist' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-list-ul me-2"></i>IP Whitelist
+                    </a>
+                    <a href="{% url 'security:setup_2fa' %}" class="btn btn-outline-info">
+                        <i class="bi bi-shield-plus me-2"></i>Setup 2FA
+                    </a>
+                    <a href="{% url 'security:fingerprint' %}" class="btn btn-outline-warning">
+                        <i class="bi bi-fingerprint me-2"></i>Fingerprint
+                    </a>
+                    <a href="{% url 'security:clone_detection' %}" class="btn btn-outline-danger">
+                        <i class="bi bi-search me-2"></i>Clone Detection
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Audit Logs -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-journal-text me-2"></i>Recent Audit Logs</h5>
+                <a href="{% url 'security:audit_logs' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if audit_logs %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>IP Address</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in audit_logs %}
+                                <tr>
+                                    <td>
+                                        {% if log.user %}
+                                            {{ log.user.username }}
+                                            {% if log.user.username == 'Uncle-T36' %}
+                                                <span class="badge bg-success text-xs">OWNER</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">Anonymous</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ log.method }} {{ log.path }}</td>
+                                    <td>{{ log.ip_address }}</td>
+                                    <td>
+                                        {% if log.status_code >= 200 and log.status_code < 300 %}
+                                            <span class="badge bg-success">{{ log.status_code }}</span>
+                                        {% elif log.status_code >= 400 %}
+                                            <span class="badge bg-danger">{{ log.status_code }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ log.status_code }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ log.timestamp|timesince }} ago</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-journal-text display-4 text-muted"></i>
+                        <p class="text-muted mt-2">No audit logs available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-refresh security dashboard every 30 seconds
+    setInterval(function() {
+        if (document.visibilityState === 'visible') {
+            location.reload();
+        }
+    }, 30000);
+    
+    // Add click handlers for action buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Add loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
+            this.disabled = true;
+            
+            // Re-enable after navigation (fallback)
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.disabled = false;
+            }, 2000);
+        });
+    });
+});
+</script>
+{% endblock %}

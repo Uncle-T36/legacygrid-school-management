@@ -1,0 +1,303 @@
+{% extends 'base_modern.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Premium Dashboard - LegacyGrid{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2"><i class="bi bi-star me-2"></i>Premium Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-primary">
+                <i class="bi bi-arrow-up-circle me-1"></i>Upgrade Plan
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Subscription Status -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card gradient-bg text-white">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="card-title">
+                            {% if subscription %}
+                                {{ subscription.tier|title }} Plan
+                                {% if subscription.is_premium %}
+                                    <span class="badge bg-warning">PREMIUM</span>
+                                {% endif %}
+                            {% else %}
+                                Free Plan
+                            {% endif %}
+                        </h4>
+                        <p class="card-text">
+                            {% if subscription and subscription.expires_at %}
+                                Active until {{ subscription.expires_at|date:"F j, Y" }}
+                            {% else %}
+                                Basic features available
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="btn-group">
+                            <a href="{% url 'premium:analytics' %}" class="btn btn-light btn-sm">
+                                <i class="bi bi-graph-up me-1"></i>Analytics
+                            </a>
+                            <a href="{% url 'premium:backups' %}" class="btn btn-light btn-sm">
+                                <i class="bi bi-archive me-1"></i>Backups
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Cards -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-graph-up-arrow display-4 text-primary mb-3"></i>
+                <h5 class="card-title">Usage Analytics</h5>
+                <p class="card-text">Track user engagement and system usage with detailed analytics.</p>
+                <a href="{% url 'premium:analytics' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-eye me-1"></i>View Analytics
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-shield-fill-check display-4 text-success mb-3"></i>
+                <h5 class="card-title">Automated Backups</h5>
+                <p class="card-text">Secure, encrypted backups with disaster recovery capabilities.</p>
+                <a href="{% url 'premium:backups' %}" class="btn btn-outline-success">
+                    <i class="bi bi-archive me-1"></i>Manage Backups
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-globe display-4 text-info mb-3"></i>
+                <h5 class="card-title">Custom Domains</h5>
+                <p class="card-text">Use your own domain for a professional appearance.</p>
+                <a href="{% url 'premium:domains' %}" class="btn btn-outline-info">
+                    <i class="bi bi-link me-1"></i>Manage Domains
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-activity me-2"></i>Recent Activity</h5>
+                <a href="{% url 'premium:activity_monitoring' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_activities %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Resource</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activity in recent_activities %}
+                                <tr>
+                                    <td>
+                                        {% if activity.user %}
+                                            {{ activity.user.username }}
+                                        {% else %}
+                                            <span class="text-muted">System</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ activity.action }}</td>
+                                    <td>{{ activity.resource|default:"-" }}</td>
+                                    <td>{{ activity.timestamp|timesince }} ago</td>
+                                    <td>
+                                        {% if activity.success %}
+                                            <span class="badge bg-success">Success</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Failed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-activity display-4 text-muted"></i>
+                        <p class="text-muted mt-2">No recent activity</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-tools me-2"></i>Premium Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'premium:feedback_list' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-chat-left-text me-2"></i>Feedback & Reports
+                    </a>
+                    <a href="{% url 'premium:updates' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-repeat me-2"></i>System Updates
+                    </a>
+                    <a href="{% url 'premium:security_reviews' %}" class="btn btn-outline-warning">
+                        <i class="bi bi-shield-exclamation me-2"></i>Security Reviews
+                    </a>
+                    <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#supportModal">
+                        <i class="bi bi-headset me-2"></i>Priority Support
+                    </button>
+                </div>
+                
+                <hr class="my-3">
+                
+                <h6 class="text-muted">Quick Stats</h6>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div class="text-center p-2 bg-light rounded">
+                            <div class="fw-bold">{{ recent_analytics|length }}</div>
+                            <small class="text-muted">Analytics Events</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center p-2 bg-light rounded">
+                            <div class="fw-bold">{{ recent_activities|length }}</div>
+                            <small class="text-muted">Activities</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Usage Analytics Summary -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Usage Summary</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_analytics %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Action</th>
+                                    <th>User</th>
+                                    <th>Time</th>
+                                    <th>IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for analytic in recent_analytics %}
+                                <tr>
+                                    <td><span class="badge bg-primary">{{ analytic.feature }}</span></td>
+                                    <td>{{ analytic.action }}</td>
+                                    <td>
+                                        {% if analytic.user %}
+                                            {{ analytic.user.username }}
+                                        {% else %}
+                                            <span class="text-muted">Anonymous</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ analytic.timestamp|timesince }} ago</td>
+                                    <td>{{ analytic.ip_address|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-bar-chart display-4 text-muted"></i>
+                        <p class="text-muted mt-2">No usage data available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Support Modal -->
+<div class="modal fade" id="supportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-headset me-2"></i>Priority Support</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Get priority support as a premium user:</p>
+                <ul>
+                    <li>24/7 technical support</li>
+                    <li>Direct email access</li>
+                    <li>Priority bug fixes</li>
+                    <li>Feature request priority</li>
+                </ul>
+                <p><strong>Contact:</strong> <a href="mailto:support@legacygrid.co.zw">support@legacygrid.co.zw</a></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="mailto:support@legacygrid.co.zw" class="btn btn-primary">Contact Support</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Real-time updates for premium dashboard
+    function updateDashboard() {
+        // Update timestamps
+        document.querySelectorAll('[data-timestamp]').forEach(element => {
+            const timestamp = new Date(element.dataset.timestamp);
+            element.textContent = getTimeAgo(timestamp);
+        });
+    }
+    
+    function getTimeAgo(date) {
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
+        
+        if (diffInSeconds < 60) return 'Just now';
+        if (diffInSeconds < 3600) return Math.floor(diffInSeconds / 60) + ' minutes ago';
+        if (diffInSeconds < 86400) return Math.floor(diffInSeconds / 3600) + ' hours ago';
+        return Math.floor(diffInSeconds / 86400) + ' days ago';
+    }
+    
+    // Update every minute
+    setInterval(updateDashboard, 60000);
+});
+</script>
+{% endblock %}
