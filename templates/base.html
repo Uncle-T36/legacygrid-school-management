@@ -1,3 +1,273 @@
-{% if school.logo %}
-  <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" width="120">
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background-color: #f8f9fa;
+        }
+        
+        .main-content {
+            min-height: calc(100vh - 56px);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dashboard-card {
+            transition: transform 0.2s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .footer {
+            background-color: #343a40;
+            color: white;
+            margin-top: auto;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                {% if school.logo %}
+                    <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" class="me-2">
+                {% else %}
+                    <i class="bi bi-mortarboard-fill me-2"></i>
+                {% endif %}
+                <span>{% if school %}{{ school.name }}{% else %}LegacyGrid School{% endif %}</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">
+                                <i class="bi bi-house-door-fill me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        {% if user.role == 'admin' or user.role == 'owner' or user.is_superuser %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="studentsDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-people-fill me-1"></i>Students
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'student_list' %}">All Students</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'student_add' %}">Add Student</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'attendance_overview' %}">Attendance</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'grades_overview' %}">Grades</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="staffDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-badge-fill me-1"></i>Staff
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'teacher_list' %}">Teachers</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'staff_list' %}">All Staff</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'staff_add' %}">Add Staff</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'timetable_overview' %}">
+                                    <i class="bi bi-calendar-week-fill me-1"></i>Timetable
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'admissions_overview' %}">
+                                    <i class="bi bi-file-earmark-person-fill me-1"></i>Admissions
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'fees_overview' %}">
+                                    <i class="bi bi-credit-card-fill me-1"></i>Fees
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if user.role == 'teacher' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'teacher_classes' %}">
+                                    <i class="bi bi-journal-bookmark-fill me-1"></i>My Classes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'teacher_attendance' %}">
+                                    <i class="bi bi-check2-square me-1"></i>Attendance
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if user.role == 'parent' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'parent_children' %}">
+                                    <i class="bi bi-person-hearts me-1"></i>My Children
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'parent_fees' %}">
+                                    <i class="bi bi-receipt me-1"></i>Fees & Payments
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'messages_inbox' %}">
+                                <i class="bi bi-envelope-fill me-1"></i>Messages
+                                {% if unread_messages_count %}
+                                    <span class="notification-badge">{{ unread_messages_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell-fill"></i>
+                                {% if notifications_count %}
+                                    <span class="notification-badge">{{ notifications_count }}</span>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><h6 class="dropdown-header">Notifications</h6></li>
+                                {% for notification in recent_notifications %}
+                                    <li><a class="dropdown-item" href="{{ notification.url }}">{{ notification.message|truncatechars:50 }}</a></li>
+                                {% empty %}
+                                    <li><span class="dropdown-item-text">No new notifications</span></li>
+                                {% endfor %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'notifications_all' %}">View All</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>{{ user.get_full_name|default:user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'settings' %}"><i class="bi bi-gear me-2"></i>Settings</a></li>
+                                {% if user.username == 'Uncle-T36' %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'billing:billing_dashboard' %}"><i class="bi bi-credit-card me-2"></i>Billing</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'analytics_dashboard' %}"><i class="bi bi-graph-up me-2"></i>Analytics</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'system_settings' %}"><i class="bi bi-tools me-2"></i>System Settings</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}"><i class="bi bi-person-plus me-1"></i>Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages/Alerts -->
+    {% if messages %}
+        <div class="container-fluid mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text-muted">&copy; 2024 LegacyGrid School Management. All rights reserved.</span>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#" class="text-muted me-3">Privacy Policy</a>
+                    <a href="#" class="text-muted me-3">Terms of Service</a>
+                    <a href="#" class="text-muted">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
