@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+.home-header {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.home-header h1 {
+  font-size: 2.9rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.home-header p {
+  font-size: 1.2rem;
+  color: #c2c7f6;
+  margin-top: 15px;
+}
+.feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 40px;
+}
+.feature-card {
+  background: rgba(35, 40, 107, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(62, 243, 255, 0.22);
+  border-radius: 18px;
+  padding: 28px 32px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 220px;
+  max-width: 280px;
+  flex: 1 1 220px;
+}
+.feature-card:hover {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 16px 40px 0 rgba(110, 63, 255, 0.32);
+  background: linear-gradient(135deg, #2fffdc 0%, #6e3fff 100%);
+  color: #fff;
+}
+.feature-icon {
+  font-size: 2.7rem;
+  margin-bottom: 10px;
+  color: #3ef3ff;
+  transition: color 0.2s;
+}
+.feature-card:hover .feature-icon {
+  color: #fff8a8;
+}
+@media (max-width: 768px) {
+  .feature-grid {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+</style>
+<div class="home-header">
+  <h1>LegacyGrid School Management</h1>
+  <p>Welcome, {{ user.username }}! Your futuristic admin dashboard awaits.</p>
+</div>
+<div class="feature-grid">
+  <a href="{% url 'schools:list' %}" class="feature-card text-decoration-none">
+    <span class="feature-icon">&#128218;</span>
+    <h4>Schools</h4>
+    <p>View & manage all schools, students, and staff.</p>
+  </a>
+  <a href="{% url 'messaging:inbox' %}" class="feature-card text-decoration-none">
+    <span class="feature-icon">&#128172;</span>
+    <h4>Messaging</h4>
+    <p>Communicate across your school network securely.</p>
+  </a>
+  <a href="{% url 'reports:overview' %}" class="feature-card text-decoration-none">
+    <span class="feature-icon">&#128202;</span>
+    <h4>Reports</h4>
+    <p>Analyze performance, finances, and registrations.</p>
+  </a>
+  {% if user.username == "Uncle-T36" %}
+  <a href="{% url 'billing:dashboard' %}" class="feature-card text-decoration-none">
+    <span class="feature-icon">&#128179;</span>
+    <h4>Billing</h4>
+    <p>Subscription & payments (owner only).</p>
+  </a>
+  {% endif %}
+  <a href="/admin/" class="feature-card text-decoration-none">
+    <span class="feature-icon">&#9881;</span>
+    <h4>Admin Panel</h4>
+    <p>Advanced settings, users & data management.</p>
+  </a>
+  <a href="{% url 'account:profile' %}" class="feature-card text-decoration-none">
+    <span class="feature-icon">&#128100;</span>
+    <h4>Profile</h4>
+    <p>View and edit your account and preferences.</p>
+  </a>
+</div>
+{% endblock %}
