@@ -1,0 +1,561 @@
+{% extends 'base.html' %}
+
+{% block title %}System Settings - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-0">
+                        <i class="bi bi-gear me-3"></i>System Settings
+                    </h1>
+                    <p class="text-muted">Configure your school management system preferences and settings</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" id="resetSettings">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Reset to Defaults
+                    </button>
+                    <button class="btn btn-lg-primary" id="saveSettings">
+                        <i class="bi bi-check2 me-1"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Settings Navigation -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-list me-2"></i>Settings Categories
+                    </h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#general" class="list-group-item list-group-item-action active" data-section="general">
+                        <i class="bi bi-gear me-2"></i>General Settings
+                    </a>
+                    <a href="#schools" class="list-group-item list-group-item-action" data-section="schools">
+                        <i class="bi bi-building me-2"></i>School Management
+                    </a>
+                    <a href="#students" class="list-group-item list-group-item-action" data-section="students">
+                        <i class="bi bi-people me-2"></i>Student Settings
+                    </a>
+                    <a href="#academic" class="list-group-item list-group-item-action" data-section="academic">
+                        <i class="bi bi-journal-text me-2"></i>Academic Settings
+                    </a>
+                    <a href="#notifications" class="list-group-item list-group-item-action" data-section="notifications">
+                        <i class="bi bi-bell me-2"></i>Notifications
+                    </a>
+                    <a href="#security" class="list-group-item list-group-item-action" data-section="security">
+                        <i class="bi bi-shield-check me-2"></i>Security
+                    </a>
+                    <a href="#backup" class="list-group-item list-group-item-action" data-section="backup">
+                        <i class="bi bi-cloud-download me-2"></i>Backup & Restore
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="col-lg-9">
+            <!-- General Settings -->
+            <div id="general-section" class="settings-section">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-gear me-2"></i>General Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="generalSettingsForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="systemName" class="form-label">System Name</label>
+                                    <input type="text" class="form-control" id="systemName" value="LegacyGrid School Management">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="systemVersion" class="form-label">System Version</label>
+                                    <input type="text" class="form-control" id="systemVersion" value="1.0.0" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="timezone" class="form-label">Default Timezone</label>
+                                    <select class="form-select" id="timezone">
+                                        <option value="UTC">UTC</option>
+                                        <option value="Africa/Harare" selected>Africa/Harare (CAT)</option>
+                                        <option value="Africa/Johannesburg">Africa/Johannesburg (SAST)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="language" class="form-label">Default Language</label>
+                                    <select class="form-select" id="language">
+                                        <option value="en" selected>English</option>
+                                        <option value="sn">Shona</option>
+                                        <option value="nd">Ndebele</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="dateFormat" class="form-label">Date Format</label>
+                                    <select class="form-select" id="dateFormat">
+                                        <option value="DD/MM/YYYY" selected>DD/MM/YYYY</option>
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="currency" class="form-label">Default Currency</label>
+                                    <select class="form-select" id="currency">
+                                        <option value="USD" selected>US Dollar (USD)</option>
+                                        <option value="ZWL">Zimbabwean Dollar (ZWL)</option>
+                                        <option value="ZAR">South African Rand (ZAR)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- School Management Settings -->
+            <div id="schools-section" class="settings-section d-none">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-building me-2"></i>School Management Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="schoolSettingsForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="maxSchools" class="form-label">Maximum Schools</label>
+                                    <input type="number" class="form-control" id="maxSchools" value="50" min="1">
+                                    <div class="form-text">Maximum number of schools that can be registered</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="schoolIdFormat" class="form-label">School ID Format</label>
+                                    <select class="form-select" id="schoolIdFormat">
+                                        <option value="PREFIX_YEAR_NUMBER" selected>PREFIX_YEAR_NUMBER (e.g., HP2024001)</option>
+                                        <option value="SEQUENTIAL">Sequential (e.g., SCH001)</option>
+                                        <option value="CUSTOM">Custom Format</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="autoSchoolApproval" checked>
+                                        <label class="form-check-label" for="autoSchoolApproval">
+                                            Auto-approve new school registrations
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="requireSchoolLogo">
+                                        <label class="form-check-label" for="requireSchoolLogo">
+                                            Require school logo upload
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Settings -->
+            <div id="students-section" class="settings-section d-none">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people me-2"></i>Student Management Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="studentSettingsForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="studentIdFormat" class="form-label">Student ID Format</label>
+                                    <select class="form-select" id="studentIdFormat">
+                                        <option value="SCHOOL_YEAR_NUMBER" selected>SCHOOL_YEAR_NUMBER (e.g., HP2024001)</option>
+                                        <option value="LG_YEAR_NUMBER">LG_YEAR_NUMBER (e.g., LG2024001)</option>
+                                        <option value="CUSTOM">Custom Format</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="maxStudentsPerSchool" class="form-label">Max Students per School</label>
+                                    <input type="number" class="form-control" id="maxStudentsPerSchool" value="1000" min="1">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="enrollmentPeriod" class="form-label">Enrollment Period</label>
+                                    <select class="form-select" id="enrollmentPeriod">
+                                        <option value="ANYTIME" selected>Anytime</option>
+                                        <option value="TERM_BASED">Term-based only</option>
+                                        <option value="YEAR_BASED">Year-based only</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" id="requireParentEmail" checked>
+                                        <label class="form-check-label" for="requireParentEmail">
+                                            Require parent email for enrollment
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Settings -->
+            <div id="academic-section" class="settings-section d-none">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-journal-text me-2"></i>Academic Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="academicSettingsForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="gradingSystem" class="form-label">Grading System</label>
+                                    <select class="form-select" id="gradingSystem">
+                                        <option value="LETTER" selected>Letter Grades (A, B, C, D, F)</option>
+                                        <option value="PERCENTAGE">Percentage (0-100%)</option>
+                                        <option value="POINTS">Points (1-5)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="passingGrade" class="form-label">Minimum Passing Grade</label>
+                                    <input type="number" class="form-control" id="passingGrade" value="50" min="0" max="100">
+                                    <div class="form-text">Percentage required to pass</div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="maxAssignmentsPerSubject" class="form-label">Max Assignments per Subject</label>
+                                    <input type="number" class="form-control" id="maxAssignmentsPerSubject" value="20" min="1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="attendanceRequired" class="form-label">Required Attendance (%)</label>
+                                    <input type="number" class="form-control" id="attendanceRequired" value="80" min="0" max="100">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Settings -->
+            <div id="notifications-section" class="settings-section d-none">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bell me-2"></i>Notification Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="notificationSettingsForm">
+                            <h6 class="mb-3">Email Notifications</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="emailNewEnrollment" checked>
+                                        <label class="form-check-label" for="emailNewEnrollment">
+                                            New student enrollment
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="emailGradeUpdates" checked>
+                                        <label class="form-check-label" for="emailGradeUpdates">
+                                            Grade updates
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="emailAttendanceAlerts">
+                                        <label class="form-check-label" for="emailAttendanceAlerts">
+                                            Attendance alerts
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="emailSystemAlerts" checked>
+                                        <label class="form-check-label" for="emailSystemAlerts">
+                                            System alerts
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <h6 class="mb-3">SMS Notifications</h6>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="enableSMS">
+                                        <label class="form-check-label" for="enableSMS">
+                                            Enable SMS notifications
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="smsProvider" class="form-label">SMS Provider</label>
+                                    <select class="form-select" id="smsProvider" disabled>
+                                        <option value="">Select provider...</option>
+                                        <option value="TWILIO">Twilio</option>
+                                        <option value="AFRICASTALKING">Africa's Talking</option>
+                                        <option value="CUSTOM">Custom Provider</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Settings -->
+            <div id="security-section" class="settings-section d-none">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-shield-check me-2"></i>Security Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="securitySettingsForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="passwordPolicy" class="form-label">Password Policy</label>
+                                    <select class="form-select" id="passwordPolicy">
+                                        <option value="BASIC">Basic (8+ characters)</option>
+                                        <option value="MEDIUM" selected>Medium (8+ chars, mixed case, numbers)</option>
+                                        <option value="STRONG">Strong (12+ chars, mixed case, numbers, symbols)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="sessionTimeout" class="form-label">Session Timeout (minutes)</label>
+                                    <input type="number" class="form-control" id="sessionTimeout" value="60" min="5" max="480">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="enable2FA">
+                                        <label class="form-check-label" for="enable2FA">
+                                            Enable Two-Factor Authentication
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="enableLogging" checked>
+                                        <label class="form-check-label" for="enableLogging">
+                                            Enable security logging
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Backup & Restore Settings -->
+            <div id="backup-section" class="settings-section d-none">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-cloud-download me-2"></i>Backup & Restore Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="backupFrequency" class="form-label">Backup Frequency</label>
+                                <select class="form-select" id="backupFrequency">
+                                    <option value="HOURLY">Hourly</option>
+                                    <option value="DAILY" selected>Daily</option>
+                                    <option value="WEEKLY">Weekly</option>
+                                    <option value="MONTHLY">Monthly</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="backupRetention" class="form-label">Backup Retention (days)</label>
+                                <input type="number" class="form-control" id="backupRetention" value="30" min="1">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="autoBackup" checked>
+                                    <label class="form-check-label" for="autoBackup">
+                                        Enable automatic backups
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h6 class="mb-3">Manual Backup Actions</h6>
+                        <div class="d-flex gap-2 mb-3">
+                            <button type="button" class="btn btn-outline-primary" id="createBackup">
+                                <i class="bi bi-download me-1"></i>Create Backup Now
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="viewBackups">
+                                <i class="bi bi-list me-1"></i>View Backups
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Last backup:</strong> November 17, 2024 at 3:00 AM
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Settings navigation
+    const navLinks = document.querySelectorAll('[data-section]');
+    const settingSections = document.querySelectorAll('.settings-section');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all nav links
+            navLinks.forEach(l => l.classList.remove('active'));
+            
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Hide all sections
+            settingSections.forEach(section => section.classList.add('d-none'));
+            
+            // Show selected section
+            const sectionId = this.dataset.section + '-section';
+            document.getElementById(sectionId).classList.remove('d-none');
+        });
+    });
+
+    // SMS provider toggle
+    const enableSMSCheckbox = document.getElementById('enableSMS');
+    const smsProviderSelect = document.getElementById('smsProvider');
+    
+    enableSMSCheckbox.addEventListener('change', function() {
+        smsProviderSelect.disabled = !this.checked;
+    });
+
+    // Save settings
+    document.getElementById('saveSettings').addEventListener('click', function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Saving...';
+        
+        // Simulate saving
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            
+            // Show success message
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+            alert.innerHTML = `
+                <i class="bi bi-check-circle me-2"></i>Settings saved successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 3000);
+        }, 1500);
+    });
+
+    // Reset settings
+    document.getElementById('resetSettings').addEventListener('click', function() {
+        if (confirm('Are you sure you want to reset all settings to default values? This action cannot be undone.')) {
+            // Reset logic would go here
+            alert('Settings reset to default values.\n\nThis is a demo. In the actual system, all settings would be restored to their default state.');
+        }
+    });
+
+    // Backup actions
+    document.getElementById('createBackup').addEventListener('click', function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Creating...';
+        
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            alert('Backup created successfully!\n\nThis is a demo. In the actual system, a full database backup would be created.');
+        }, 2000);
+    });
+
+    document.getElementById('viewBackups').addEventListener('click', function() {
+        alert('Backup management interface will be implemented in future updates!\n\nThis will show a list of all available backups with options to restore or download.');
+    });
+
+    // Form validation and change tracking
+    const forms = document.querySelectorAll('form');
+    let hasUnsavedChanges = false;
+
+    forms.forEach(form => {
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('change', function() {
+                hasUnsavedChanges = true;
+                console.log('Setting changed:', this.name || this.id);
+            });
+        });
+    });
+
+    // Warn about unsaved changes
+    window.addEventListener('beforeunload', function(e) {
+        if (hasUnsavedChanges) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+
+    // Mark changes as saved when save button is clicked
+    document.getElementById('saveSettings').addEventListener('click', function() {
+        hasUnsavedChanges = false;
+    });
+});
+</script>
+{% endblock %}

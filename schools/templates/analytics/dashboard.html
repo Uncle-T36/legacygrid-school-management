@@ -1,0 +1,575 @@
+{% extends 'base.html' %}
+
+{% block title %}Analytics Dashboard - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-0">
+                        <i class="bi bi-bar-chart-line me-3"></i>Analytics Dashboard
+                    </h1>
+                    <p class="text-muted">Comprehensive insights and performance metrics across all schools</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-calendar me-1"></i>This Quarter
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">This Week</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item active" href="#">This Quarter</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Custom Range</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline-info">
+                        <i class="bi bi-download me-1"></i>Export Report
+                    </button>
+                    <button class="btn btn-lg-primary">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Refresh Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card feature-card h-100 border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-primary fw-bold">Total Students</div>
+                            <div class="h2 fw-bold">2,847</div>
+                            <div class="text-success small">
+                                <i class="bi bi-arrow-up me-1"></i>+5.2% from last quarter
+                            </div>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i class="bi bi-people text-primary fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card feature-card h-100 border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-success fw-bold">Active Schools</div>
+                            <div class="h2 fw-bold">12</div>
+                            <div class="text-success small">
+                                <i class="bi bi-arrow-up me-1"></i>+2 new schools
+                            </div>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i class="bi bi-building text-success fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card feature-card h-100 border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-warning fw-bold">Average Performance</div>
+                            <div class="h2 fw-bold">85.3%</div>
+                            <div class="text-success small">
+                                <i class="bi bi-arrow-up me-1"></i>+2.1% improvement
+                            </div>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <i class="bi bi-graph-up text-warning fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card feature-card h-100 border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-info fw-bold">Teaching Staff</div>
+                            <div class="h2 fw-bold">156</div>
+                            <div class="text-muted small">
+                                <i class="bi bi-dash me-1"></i>No change
+                            </div>
+                        </div>
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <i class="bi bi-person-check text-info fs-3"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Enrollment Trends Chart -->
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>Student Enrollment Trends
+                    </h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary active">Monthly</button>
+                        <button type="button" class="btn btn-outline-secondary">Yearly</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Placeholder for Chart.js chart -->
+                    <div class="bg-light rounded p-4 text-center" style="height: 300px;">
+                        <div class="d-flex align-items-center justify-content-center h-100">
+                            <div>
+                                <i class="bi bi-bar-chart display-1 text-muted mb-3"></i>
+                                <h6 class="text-muted">Enrollment Trends Chart</h6>
+                                <p class="text-muted small">Chart.js integration will display enrollment data over time</p>
+                                <div class="d-flex justify-content-center gap-3 mt-3">
+                                    <span class="badge bg-primary">Primary Schools</span>
+                                    <span class="badge bg-success">Secondary Schools</span>
+                                    <span class="badge bg-info">Combined Schools</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- School Distribution -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart me-2"></i>School Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Placeholder for pie chart -->
+                    <div class="text-center mb-3">
+                        <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 150px; height: 150px;">
+                            <i class="bi bi-pie-chart display-4 text-muted"></i>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-12 mb-2">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-circle-fill text-primary me-2"></i>Primary Schools</span>
+                                <strong>7 (58%)</strong>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-circle-fill text-success me-2"></i>Secondary Schools</span>
+                                <strong>3 (25%)</strong>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-circle-fill text-info me-2"></i>Combined Schools</span>
+                                <strong>2 (17%)</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Analytics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-trophy me-2"></i>School Performance Rankings
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>School Name</th>
+                                    <th>Type</th>
+                                    <th>Students</th>
+                                    <th>Average Grade</th>
+                                    <th>Performance</th>
+                                    <th>Trend</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-warning fs-6 me-2">1</span>
+                                            <i class="bi bi-trophy-fill text-warning"></i>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-building text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Harare Primary School</div>
+                                                <small class="text-muted">Harare, Zimbabwe</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-primary">Primary</span></td>
+                                    <td>450</td>
+                                    <td><span class="badge bg-success">A (88.5%)</span></td>
+                                    <td>
+                                        <div class="progress" style="width: 100px;">
+                                            <div class="progress-bar bg-success" style="width: 88.5%"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-success">
+                                            <i class="bi bi-trending-up me-1"></i>+3.2%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-secondary fs-6 me-2">2</span>
+                                            <i class="bi bi-award-fill text-secondary"></i>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-success bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-mortarboard text-success"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Mufakose High School</div>
+                                                <small class="text-muted">Bulawayo, Zimbabwe</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-success">Secondary</span></td>
+                                    <td>680</td>
+                                    <td><span class="badge bg-success">A (86.2%)</span></td>
+                                    <td>
+                                        <div class="progress" style="width: 100px;">
+                                            <div class="progress-bar bg-success" style="width: 86.2%"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-success">
+                                            <i class="bi bi-trending-up me-1"></i>+1.8%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-secondary fs-6 me-2">3</span>
+                                            <i class="bi bi-award text-secondary"></i>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-info bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-collection text-info"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Mutare Combined School</div>
+                                                <small class="text-muted">Manicaland, Zimbabwe</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-info">Combined</span></td>
+                                    <td>320</td>
+                                    <td><span class="badge bg-warning">B (83.7%)</span></td>
+                                    <td>
+                                        <div class="progress" style="width: 100px;">
+                                            <div class="progress-bar bg-warning" style="width: 83.7%"></div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-warning">
+                                            <i class="bi bi-dash me-1"></i>-0.5%
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Analytics Widgets -->
+    <div class="row">
+        <!-- Subject Performance -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-book me-2"></i>Subject Performance Analysis
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">Mathematics</span>
+                                <span class="badge bg-success">85.2%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 85.2%"></div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">English Literature</span>
+                                <span class="badge bg-success">82.8%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 82.8%"></div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">Science</span>
+                                <span class="badge bg-warning">78.5%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width: 78.5%"></div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">Geography</span>
+                                <span class="badge bg-warning">76.3%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width: 76.3%"></div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold">History</span>
+                                <span class="badge bg-danger">68.9%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-danger" style="width: 68.9%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Recent Analytics Activity
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item px-0 border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                                    <i class="bi bi-graph-up text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Performance Report Generated</h6>
+                                    <p class="mb-1 text-muted small">Quarterly analytics report for all schools</p>
+                                    <small class="text-muted">15 minutes ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0 border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded p-2 me-3">
+                                    <i class="bi bi-trophy text-success"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">School Rankings Updated</h6>
+                                    <p class="mb-1 text-muted small">Performance rankings recalculated</p>
+                                    <small class="text-muted">1 hour ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0 border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 rounded p-2 me-3">
+                                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Performance Alert</h6>
+                                    <p class="mb-1 text-muted small">History subject showing declining trend</p>
+                                    <small class="text-muted">3 hours ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0 border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-info bg-opacity-10 rounded p-2 me-3">
+                                    <i class="bi bi-people text-info"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">Enrollment Milestone</h6>
+                                    <p class="mb-1 text-muted small">Total student count reached 2,850</p>
+                                    <small class="text-muted">1 day ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .progress {
+        height: 8px;
+    }
+    
+    .feature-card {
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Refresh data functionality
+    document.querySelector('.btn-lg-primary').addEventListener('click', function() {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Refreshing...';
+        
+        // Simulate data refresh
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            
+            // Show success message
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            alert.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+            alert.innerHTML = `
+                <i class="bi bi-check-circle me-2"></i>Analytics data refreshed successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.body.appendChild(alert);
+            
+            // Auto-remove alert after 3 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 3000);
+        }, 2000);
+    });
+
+    // Export report functionality
+    document.querySelector('.btn-outline-info').addEventListener('click', function() {
+        alert('Export functionality will be implemented in future updates!\n\nThis will generate a comprehensive PDF report with all analytics data.');
+    });
+
+    // Chart view toggles
+    const chartToggleBtns = document.querySelectorAll('.btn-group button');
+    chartToggleBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from siblings
+            this.parentNode.querySelectorAll('button').forEach(sibling => {
+                sibling.classList.remove('active');
+            });
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            console.log('Chart view changed to:', this.textContent);
+        });
+    });
+
+    // Simulate real-time data updates
+    setInterval(() => {
+        // Update student count with random variation
+        const studentCountElement = document.querySelector('.h2.fw-bold');
+        if (studentCountElement) {
+            const currentCount = parseInt(studentCountElement.textContent.replace(',', ''));
+            const variation = Math.floor(Math.random() * 10) - 5; // Random between -5 and +5
+            const newCount = Math.max(0, currentCount + variation);
+            studentCountElement.textContent = newCount.toLocaleString();
+        }
+    }, 30000); // Update every 30 seconds
+
+    // Performance ranking interaction
+    const performanceRows = document.querySelectorAll('tbody tr');
+    performanceRows.forEach(row => {
+        row.addEventListener('click', function() {
+            const schoolName = this.querySelector('.fw-bold').textContent;
+            console.log('Selected school:', schoolName);
+            // Add visual feedback
+            this.style.backgroundColor = '#f8f9fa';
+            setTimeout(() => {
+                this.style.backgroundColor = '';
+            }, 1000);
+        });
+    });
+});
+</script>
+{% endblock %}
