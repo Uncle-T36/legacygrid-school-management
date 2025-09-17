@@ -117,6 +117,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login URLs
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # === STRIPE PAYMENT SETTINGS ===
 # IMPORTANT: Replace these with your actual Stripe keys in production
@@ -217,12 +218,9 @@ DEMO_MODE = True  # disables real payments until you switch to live mode
 # === ADVANCED SECURITY SETTINGS ===
 
 # Two-Factor Authentication
-TWO_FACTOR_PATCH_ADMIN = True
+TWO_FACTOR_PATCH_ADMIN = False
 TWO_FACTOR_CALL_GATEWAY = None
 TWO_FACTOR_SMS_GATEWAY = None
-LOGIN_URL = 'two_factor:login'
-LOGIN_REDIRECT_URL = 'two_factor:profile'
-LOGOUT_REDIRECT_URL = 'two_factor:login'
 
 # Axes (Brute Force Protection)
 AXES_ENABLED = True
