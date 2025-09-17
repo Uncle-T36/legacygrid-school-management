@@ -31,14 +31,14 @@ class User(AbstractUser):
     failed_login_attempts = models.IntegerField(default=0)
     account_locked_until = models.DateTimeField(blank=True, null=True)
     
-    # School association
-    school = models.ForeignKey(
-        'schools.School', 
-        on_delete=models.CASCADE, 
-        blank=True, 
-        null=True,
-        related_name='users'
-    )
+    # School association - will be added in a separate migration
+    # school = models.ForeignKey(
+    #     'schools.School', 
+    #     on_delete=models.CASCADE, 
+    #     blank=True, 
+    #     null=True,
+    #     related_name='users'
+    # )
     
     class Meta:
         db_table = 'accounts_user'

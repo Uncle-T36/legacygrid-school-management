@@ -155,7 +155,7 @@ class AdminUserForm(forms.ModelForm):
         model = User
         fields = [
             'username', 'first_name', 'last_name', 'email', 'role',
-            'phone_number', 'is_active', 'school'
+            'phone_number', 'is_active'  # , 'school'  # Will be added later
         ]
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -165,7 +165,7 @@ class AdminUserForm(forms.ModelForm):
             'role': forms.Select(attrs={'class': 'form-select'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'school': forms.Select(attrs={'class': 'form-select'}),
+            # 'school': forms.Select(attrs={'class': 'form-select'}),  # Will be added later
         }
     
     def clean_email(self):

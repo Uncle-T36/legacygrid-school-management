@@ -96,10 +96,10 @@
                                     <i class="bi bi-people-fill me-1"></i>Students
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'student_list' %}">All Students</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'student_add' %}">Add Student</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'attendance_overview' %}">Attendance</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'grades_overview' %}">Grades</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'students:student_list' %}">All Students</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'students:student_add' %}">Add Student</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'students:attendance_overview' %}">Attendance</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'students:grades_overview' %}">Grades</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
@@ -107,23 +107,23 @@
                                     <i class="bi bi-person-badge-fill me-1"></i>Staff
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'teacher_list' %}">Teachers</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'staff_list' %}">All Staff</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'staff_add' %}">Add Staff</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'staff:teacher_list' %}">Teachers</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'staff:staff_list' %}">All Staff</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'staff:staff_add' %}">Add Staff</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'timetable_overview' %}">
+                                <a class="nav-link" href="{% url 'timetables:timetable_overview' %}">
                                     <i class="bi bi-calendar-week-fill me-1"></i>Timetable
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'admissions_overview' %}">
+                                <a class="nav-link" href="{% url 'admissions:admission_list' %}">
                                     <i class="bi bi-file-earmark-person-fill me-1"></i>Admissions
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'fees_overview' %}">
+                                <a class="nav-link" href="{% url 'fees:fee_overview' %}">
                                     <i class="bi bi-credit-card-fill me-1"></i>Fees
                                 </a>
                             </li>

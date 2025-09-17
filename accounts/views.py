@@ -167,10 +167,10 @@ def dashboard(request):
             'recent_activities': AuditLog.objects.select_related('user')[:10],
         })
     elif request.user.role == 'admin':
-        # Admin dashboard data
+        # Admin dashboard data - temporarily handle missing school attribute
         context.update({
-            'students_count': User.objects.filter(role='student', school=request.user.school).count(),
-            'teachers_count': User.objects.filter(role='teacher', school=request.user.school).count(),
+            'students_count': User.objects.filter(role='student').count(),  # Remove school filter temporarily
+            'teachers_count': User.objects.filter(role='teacher').count(),  # Remove school filter temporarily
         })
     elif request.user.role == 'teacher':
         # Teacher dashboard data
