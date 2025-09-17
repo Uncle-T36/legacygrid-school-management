@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}International Management - LegacyGrid{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+    }
+    .metric-value {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .metric-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    .owner-badge {
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+    .currency-rate {
+        background: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem 0;
+        border-radius: 0 5px 5px 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="owner-badge">
+                <i class="fas fa-crown"></i> OWNER ACCESS - INTERNATIONAL CONTROL CENTER
+            </div>
+            <h1 class="display-4 fw-bold">🌍 International Management Dashboard</h1>
+            <p class="lead text-muted">Manage global operations, currencies, and multi-tenant features</p>
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="row mb-5 g-4">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">{{ total_countries }}</div>
+                <div class="metric-label">
+                    <i class="fas fa-globe-americas"></i> Active Countries
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">{{ total_tenants }}</div>
+                <div class="metric-label">
+                    <i class="fas fa-school"></i> Active Tenants
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">{{ active_gateways }}</div>
+                <div class="metric-label">
+                    <i class="fas fa-credit-card"></i> Payment Gateways
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-value">{{ supported_currencies|length }}</div>
+                <div class="metric-label">
+                    <i class="fas fa-coins"></i> Currencies
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Management Tools -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tools"></i> Management Tools
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="{% url 'core:manage_countries' %}" class="btn btn-outline-primary w-100 py-3">
+                                <i class="fas fa-globe-americas fa-2x mb-2 d-block"></i>
+                                Manage Countries
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'core:manage_tenants' %}" class="btn btn-outline-success w-100 py-3">
+                                <i class="fas fa-school fa-2x mb-2 d-block"></i>
+                                Manage Tenants
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'core:manage_payment_gateways' %}" class="btn btn-outline-warning w-100 py-3">
+                                <i class="fas fa-credit-card fa-2x mb-2 d-block"></i>
+                                Payment Gateways
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'core:manage_features' %}" class="btn btn-outline-info w-100 py-3">
+                                <i class="fas fa-toggle-on fa-2x mb-2 d-block"></i>
+                                Feature Toggles
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'core:audit_logs' %}" class="btn btn-outline-danger w-100 py-3">
+                                <i class="fas fa-clipboard-list fa-2x mb-2 d-block"></i>
+                                Audit Logs
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'core:export_data' %}" class="btn btn-outline-secondary w-100 py-3">
+                                <i class="fas fa-download fa-2x mb-2 d-block"></i>
+                                Export Data
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Tenants -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-clock"></i> Recent Tenants
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_tenants %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Country</th>
+                                        <th>Tier</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tenant in recent_tenants %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ tenant.name }}</strong>
+                                            <br><small class="text-muted">{{ tenant.subdomain }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ tenant.country.name }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ tenant.subscription_tier }}</span>
+                                        </td>
+                                        <td>{{ tenant.created_at|date:"M d, Y" }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No tenants created yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Currency Rates -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-coins"></i> Live Currency Rates
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <a href="{% url 'core:currency_converter' %}" class="btn btn-sm btn-outline-primary w-100">
+                            <i class="fas fa-exchange-alt"></i> Currency Converter
+                        </a>
+                    </div>
+                    
+                    {% if currency_rates %}
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            {% for currency, rate in currency_rates.items %}
+                                {% if currency in supported_currencies %}
+                                <div class="currency-rate">
+                                    <div class="d-flex justify-content-between">
+                                        <strong>{{ currency }}</strong>
+                                        <span>{{ rate|floatformat:4 }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Currency rates unavailable</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt"></i> Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/admin/" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-cog"></i> Django Admin
+                        </a>
+                        <a href="{% url 'billing:billing_dashboard' %}" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-dollar-sign"></i> Billing Dashboard
+                        </a>
+                        <button class="btn btn-outline-warning btn-sm" onclick="refreshRates()">
+                            <i class="fas fa-sync"></i> Refresh Rates
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security Notice -->
+<div class="alert alert-danger mt-4" role="alert">
+    <h4 class="alert-heading">
+        <i class="fas fa-shield-alt"></i> Security Notice
+    </h4>
+    <p><strong>Owner-Only Access:</strong> This international management system is restricted to the verified owner account (Uncle-T36) only.</p>
+    <p><strong>Data Protection:</strong> All international settings, payment configurations, and tenant data are protected with enterprise-grade security.</p>
+    <p class="mb-0"><strong>Support:</strong> For security issues or access problems, contact support@legacygrid.co.zw</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function refreshRates() {
+        // Add AJAX call to refresh currency rates
+        window.location.reload();
+    }
+</script>
+{% endblock %}

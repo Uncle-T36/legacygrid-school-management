@@ -1,3 +1,306 @@
-{% if school.logo %}
-  <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" width="120">
-{% endif %}
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}" 
+      dir="{% if LANGUAGE_CODE in 'ar,ur,he,fa' %}rtl{% else %}ltr{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- RTL Support -->
+    {% if LANGUAGE_CODE in 'ar,ur,he,fa' %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    {% endif %}
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .owner-indicator {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+        
+        .tenant-info {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        /* Custom tenant branding support */
+        {% if request.tenant and request.tenant.primary_color %}
+        :root {
+            --primary-color: {{ request.tenant.primary_color }};
+        }
+        {% endif %}
+        
+        {% if request.tenant and request.tenant.custom_css %}
+        {{ request.tenant.custom_css|safe }}
+        {% endif %}
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                {% if request.tenant and request.tenant.logo %}
+                    <img src="{{ request.tenant.logo.url }}" alt="{{ request.tenant.name }}" height="40" class="me-2">
+                {% endif %}
+                {% if request.tenant %}
+                    {{ request.tenant.name }}
+                {% else %}
+                    <i class="fas fa-school"></i> LegacyGrid
+                {% endif %}
+            </a>
+            
+            {% if user.is_authenticated and user.username == 'Uncle-T36' %}
+            <span class="owner-indicator">
+                <i class="fas fa-crown"></i> OWNER
+            </span>
+            {% endif %}
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i> {% trans "Home" %}
+                        </a>
+                    </li>
+                    
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'school_profile' %}">
+                            <i class="fas fa-school"></i> {% trans "School" %}
+                        </a>
+                    </li>
+                    
+                    <!-- Owner-only menu items -->
+                    {% if user.username == 'Uncle-T36' %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="ownerDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-crown"></i> {% trans "Owner Panel" %}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'core:international_dashboard' %}">
+                                <i class="fas fa-globe"></i> {% trans "International Management" %}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'billing:billing_dashboard' %}">
+                                <i class="fas fa-dollar-sign"></i> {% trans "Billing Dashboard" %}
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'core:manage_tenants' %}">
+                                <i class="fas fa-school"></i> {% trans "Manage Tenants" %}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:manage_countries' %}">
+                                <i class="fas fa-globe-americas"></i> {% trans "Manage Countries" %}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:manage_payment_gateways' %}">
+                                <i class="fas fa-credit-card"></i> {% trans "Payment Gateways" %}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:manage_features' %}">
+                                <i class="fas fa-toggle-on"></i> {% trans "Feature Toggles" %}
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'core:audit_logs' %}">
+                                <i class="fas fa-clipboard-list"></i> {% trans "Audit Logs" %}
+                            </a></li>
+                            <li><a class="dropdown-item" href="/admin/">
+                                <i class="fas fa-cog"></i> {% trans "Django Admin" %}
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <!-- Language Selector -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-language"></i> 
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {{ LANGUAGE_CODE|upper }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% get_available_languages as LANGUAGES %}
+                            {% for lang_code, lang_name in LANGUAGES %}
+                            <li>
+                                <a class="dropdown-item {% if lang_code == LANGUAGE_CODE %}active{% endif %}" 
+                                   href="{% url 'set_language' %}?language={{ lang_code }}">
+                                    {{ lang_name }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">
+                                <i class="fas fa-user-cog"></i> {% trans "Profile" %}
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'admin:logout' %}">
+                                <i class="fas fa-sign-out-alt"></i> {% trans "Logout" %}
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:login' %}">
+                            <i class="fas fa-sign-in-alt"></i> {% trans "Login" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tenant Information Bar -->
+    {% if request.tenant %}
+    <div class="tenant-info">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <strong>{{ request.tenant.name }}</strong> 
+                    <span class="badge bg-secondary">{{ request.tenant.country.name }}</span>
+                    <span class="badge bg-primary">{{ request.tenant.subscription_tier|title }}</span>
+                    {% if request.tenant.is_trial_active %}
+                    <span class="badge bg-warning">Trial Active</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-4 text-end">
+                    <small class="text-muted">
+                        <i class="fas fa-globe"></i> {{ request.tenant.country.currency_code }}
+                        <i class="fas fa-clock ms-2"></i> {{ request.tenant.country.timezone }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="container-fluid py-4">
+        {% block content %}
+        <div class="row">
+            <div class="col-12">
+                <h1>{% trans "Welcome to LegacyGrid School Management" %}</h1>
+                <p class="lead">{% trans "International school management system with multi-tenant support" %}</p>
+            </div>
+        </div>
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>LegacyGrid School Management</h5>
+                    <p class="mb-2">{% trans "International school management platform" %}</p>
+                    <p class="mb-0">
+                        <small>
+                            {% trans "Powered by" %} <strong>Uncle-T36</strong> | 
+                            {% trans "Serving" %} {{ total_countries|default:"18" }} {% trans "countries" %}
+                        </small>
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <h6>{% trans "Support" %}</h6>
+                    <p class="mb-1">
+                        <i class="fas fa-envelope"></i> support@legacygrid.co.zw
+                    </p>
+                    <p class="mb-1">
+                        <i class="fas fa-book"></i> 
+                        <a href="{{ DOCUMENTATION_URL }}" target="_blank" class="text-light">
+                            {% trans "Documentation" %}
+                        </a>
+                    </p>
+                    {% if user.username == 'Uncle-T36' %}
+                    <p class="mb-0">
+                        <span class="badge bg-danger">
+                            <i class="fas fa-shield-alt"></i> {% trans "Owner Access Active" %}
+                        </span>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <small>
+                        © {% now "Y" %} LegacyGrid. {% trans "All rights reserved." %} | 
+                        {% trans "Version" %} 2.0 International
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+        
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert-dismissible');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
