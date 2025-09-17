@@ -1,12 +1,311 @@
 {% extends "base.html" %}
+
+{% block title %}School Profile - LegacyGrid School Management{% endblock %}
+
 {% block content %}
-  <h2>School Profile</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-  </form>
-  {% if school.logo %}
-    <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" width="150">
-  {% endif %}
+<div class="container py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'schools_list' %}">Schools</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">School Profile</li>
+                </ol>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-0">
+                        <i class="bi bi-person-badge me-3"></i>School Profile
+                    </h1>
+                    <p class="text-muted">Manage your school's information and settings</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-printer me-1"></i>Print Profile
+                    </button>
+                    <a href="{% url 'schools_list' %}" class="btn btn-lg-primary">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Schools
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Profile Form -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pencil-square me-2"></i>Edit School Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- School Logo Upload -->
+                            <div class="col-md-12 mb-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">
+                                            <i class="bi bi-image me-2"></i>School Logo
+                                        </h6>
+                                        
+                                        <!-- Current Logo Display -->
+                                        <div class="mb-3">
+                                            {% if school.logo %}
+                                                <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" 
+                                                     class="img-thumbnail mb-3" style="max-width: 200px; max-height: 200px;">
+                                                <br>
+                                                <small class="text-muted">Current logo</small>
+                                            {% else %}
+                                                <div class="bg-secondary bg-opacity-10 rounded d-inline-flex align-items-center justify-content-center mb-3" 
+                                                     style="width: 150px; height: 150px;">
+                                                    <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                                </div>
+                                                <br>
+                                                <small class="text-muted">No logo uploaded</small>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- File Upload -->
+                                        <div class="mb-3">
+                                            {{ form.logo.label_tag }}
+                                            {{ form.logo }}
+                                            {% if form.logo.help_text %}
+                                                <div class="form-text">{{ form.logo.help_text }}</div>
+                                            {% endif %}
+                                            {% if form.logo.errors %}
+                                                <div class="text-danger small">
+                                                    {% for error in form.logo.errors %}
+                                                        {{ error }}<br>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <p class="text-muted small">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Upload a square logo (recommended: 300x300px) in JPG, PNG, or GIF format. Maximum size: 2MB.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Other Form Fields -->
+                        <div class="row">
+                            {% for field in form %}
+                                {% if field.name != 'logo' %}
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ field.id_for_label }}" class="form-label">
+                                            {{ field.label }}
+                                            {% if field.field.required %}
+                                                <span class="text-danger">*</span>
+                                            {% endif %}
+                                        </label>
+                                        
+                                        {% if field.field.widget.input_type == 'textarea' %}
+                                            <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                                    class="form-control{% if field.errors %} is-invalid{% endif %}" 
+                                                    rows="4">{{ field.value|default_if_none:'' }}</textarea>
+                                        {% elif field.field.widget.input_type == 'select' %}
+                                            <select name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                                  class="form-select{% if field.errors %} is-invalid{% endif %}">
+                                                {{ field }}
+                                            </select>
+                                        {% else %}
+                                            <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                                                   name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                                   class="form-control{% if field.errors %} is-invalid{% endif %}" 
+                                                   value="{{ field.value|default_if_none:'' }}"
+                                                   {% if field.field.required %}required{% endif %}>
+                                        {% endif %}
+                                        
+                                        {% if field.help_text %}
+                                            <div class="form-text">{{ field.help_text }}</div>
+                                        {% endif %}
+                                        
+                                        {% if field.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in field.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-lg-primary">
+                                        <i class="bi bi-check2 me-2"></i>Save Changes
+                                    </button>
+                                    <button type="reset" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-clockwise me-2"></i>Reset Form
+                                    </button>
+                                    <a href="{% url 'schools_list' %}" class="btn btn-outline-danger">
+                                        <i class="bi bi-x-lg me-2"></i>Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar Information -->
+        <div class="col-lg-4">
+            <!-- School Information Summary -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Quick Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if school %}
+                        <div class="mb-3">
+                            <small class="text-muted">School Name</small>
+                            <p class="mb-1 fw-bold">{{ school.name|default:"Not set" }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Type</small>
+                            <p class="mb-1">{{ school.school_type|default:"Not specified" }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Status</small>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Last Updated</small>
+                            <p class="mb-1">{{ school.updated_at|date:"M d, Y" }}</p>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">School information will appear here after saving.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightning me-2"></i>Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-people me-2"></i>Manage Students
+                        </button>
+                        <button class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-person-check me-2"></i>Manage Staff
+                        </button>
+                        <button class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-graph-up me-2"></i>View Reports
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-gear me-2"></i>School Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Help & Support -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-question-circle me-2"></i>Need Help?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted mb-3">
+                        If you need assistance with updating your school profile, our support team is here to help.
+                    </p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-book me-2"></i>View Documentation
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-envelope me-2"></i>Contact Support
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // File input preview
+    const logoInput = document.querySelector('input[type="file"]');
+    if (logoInput) {
+        logoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Create preview if doesn't exist
+                    let preview = document.querySelector('.logo-preview');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.className = 'logo-preview img-thumbnail mt-2';
+                        preview.style.maxWidth = '150px';
+                        preview.style.maxHeight = '150px';
+                        logoInput.parentNode.appendChild(preview);
+                    }
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Form validation feedback
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Add any custom validation here
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+    }
+    
+    // Auto-save draft functionality (placeholder)
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            // Placeholder for auto-save functionality
+            console.log('Auto-saving field:', this.name);
+        });
+    });
+});
+</script>
 {% endblock %}

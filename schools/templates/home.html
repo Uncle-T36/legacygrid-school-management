@@ -1,10 +1,407 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>LegacyGrid School Management - Home</title>
-</head>
-<body>
-    <h1>Welcome to LegacyGrid School Management!</h1>
-    <p>Use the navigation to explore schools, billing, and other features.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Home - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="bi bi-mortarboard-fill me-3"></i>Welcome to LegacyGrid School Management!
+                </h1>
+                <p class="lead mb-4">
+                    Comprehensive school management solution with secure billing, student tracking, 
+                    and powerful analytics. Built for modern educational institutions.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'schools_list' %}" class="btn btn-light btn-lg">
+                        <i class="bi bi-building me-2"></i>Explore Schools
+                    </a>
+                    {% if user.username == 'Uncle-T36' %}
+                        <a href="{% url 'billing_dashboard' %}" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-graph-up me-2"></i>View Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <i class="bi bi-mortarboard display-1 text-white opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Actions & Features -->
+<section class="py-5">
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-center mb-3">
+                            <i class="bi bi-search me-2"></i>Quick Search
+                        </h5>
+                        <form class="d-flex" role="search">
+                            <div class="input-group">
+                                <select class="form-select" style="max-width: 150px;">
+                                    <option value="all">All</option>
+                                    <option value="schools">Schools</option>
+                                    <option value="students">Students</option>
+                                    <option value="staff">Staff</option>
+                                </select>
+                                <input class="form-control" type="search" placeholder="Search for schools, students, or staff..." aria-label="Search">
+                                <button class="btn btn-lg-primary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        <small class="text-muted d-block mt-2 text-center">
+                            Try searching for "Primary School" or "Grade 10" to see results
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="row g-4">
+            <!-- Schools Management -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-building display-5 text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Schools Management</h5>
+                        <p class="card-text">
+                            Manage multiple schools, view profiles, update information, and track performance metrics.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'schools_list' %}" class="btn btn-lg-primary">
+                                <i class="bi bi-eye me-1"></i>View Schools
+                            </a>
+                            <a href="{% url 'school_profile' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-pencil me-1"></i>Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Management -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-people display-5 text-success"></i>
+                        </div>
+                        <h5 class="card-title">Student Management</h5>
+                        <p class="card-text">
+                            Comprehensive student tracking, enrollment management, grades, and academic progress monitoring.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'students_list' %}" class="btn btn-success">
+                                <i class="bi bi-person-lines-fill me-1"></i>All Students
+                            </a>
+                            <a href="{% url 'student_enrollment' %}" class="btn btn-outline-success">
+                                <i class="bi bi-person-plus me-1"></i>New Enrollment
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Finance & Billing -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-currency-dollar display-5 text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Finance & Billing</h5>
+                        <p class="card-text">
+                            Secure billing system with subscription management, payment processing, and financial reports.
+                        </p>
+                        <div class="d-grid gap-2">
+                            {% if user.username == 'Uncle-T36' %}
+                                <a href="{% url 'billing_dashboard' %}" class="btn btn-warning text-dark">
+                                    <i class="bi bi-graph-up me-1"></i>Billing Dashboard
+                                </a>
+                                <a href="{% url 'subscription_management' %}" class="btn btn-outline-warning text-dark">
+                                    <i class="bi bi-credit-card me-1"></i>Subscriptions
+                                </a>
+                            {% else %}
+                                <button class="btn btn-warning text-dark" disabled>
+                                    <i class="bi bi-lock me-1"></i>Owner Only
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics & Reports -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-bar-chart-line display-5 text-info"></i>
+                        </div>
+                        <h5 class="card-title">Analytics & Reports</h5>
+                        <p class="card-text">
+                            Comprehensive analytics dashboard with performance metrics, trends, and detailed reporting.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'analytics' %}" class="btn btn-info text-white">
+                                <i class="bi bi-graph-up-arrow me-1"></i>View Analytics
+                            </a>
+                            <button class="btn btn-outline-info" disabled>
+                                <i class="bi bi-file-earmark-text me-1"></i>Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings & Configuration -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-gear display-5 text-secondary"></i>
+                        </div>
+                        <h5 class="card-title">Settings</h5>
+                        <p class="card-text">
+                            System configuration, user management, security settings, and application preferences.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'settings' %}" class="btn btn-secondary">
+                                <i class="bi bi-gear me-1"></i>System Settings
+                            </a>
+                            <button class="btn btn-outline-secondary" disabled>
+                                <i class="bi bi-shield-check me-1"></i>Security Center
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications & Messages -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="bi bi-bell display-5 text-danger"></i>
+                        </div>
+                        <h5 class="card-title">Notifications</h5>
+                        <p class="card-text">
+                            Message center, notifications, alerts, and communication hub for all stakeholders.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                                <i class="bi bi-bell me-1"></i>View Messages
+                            </button>
+                            <button class="btn btn-outline-danger" disabled>
+                                <i class="bi bi-envelope me-1"></i>Send Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="bi bi-speedometer2 me-2"></i>System Overview
+        </h2>
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 bg-transparent">
+                    <div class="card-body">
+                        <i class="bi bi-building display-4 text-primary mb-3"></i>
+                        <h3 class="fw-bold text-primary">12</h3>
+                        <p class="text-muted">Registered Schools</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 bg-transparent">
+                    <div class="card-body">
+                        <i class="bi bi-people display-4 text-success mb-3"></i>
+                        <h3 class="fw-bold text-success">2,847</h3>
+                        <p class="text-muted">Active Students</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 bg-transparent">
+                    <div class="card-body">
+                        <i class="bi bi-person-check display-4 text-warning mb-3"></i>
+                        <h3 class="fw-bold text-warning">156</h3>
+                        <p class="text-muted">Teaching Staff</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card border-0 bg-transparent">
+                    <div class="card-body">
+                        <i class="bi bi-graph-up display-4 text-info mb-3"></i>
+                        <h3 class="fw-bold text-info">98.5%</h3>
+                        <p class="text-muted">System Uptime</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Filters -->
+        <div class="row mt-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-funnel me-2"></i>Quick Filters
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option value="">Select School</option>
+                                    <option value="primary">Primary Schools</option>
+                                    <option value="secondary">Secondary Schools</option>
+                                    <option value="combined">Combined Schools</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option value="">Select Grade</option>
+                                    <option value="1-7">Grade 1-7</option>
+                                    <option value="8-12">Form 1-6</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option value="">Select Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                    <option value="pending">Pending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-lg-primary w-100">
+                                    <i class="bi bi-search me-1"></i>Apply Filters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Activity Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">
+            <i class="bi bi-clock-history me-2"></i>Recent Activity
+        </h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="list-group">
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-person-plus-fill text-success"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">New student enrollment</h6>
+                            <p class="mb-1 text-muted">Sarah Johnson enrolled in Grade 10, Mufakose High School</p>
+                            <small class="text-muted">2 minutes ago</small>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-building text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">School profile updated</h6>
+                            <p class="mb-1 text-muted">Harare Primary School updated contact information</p>
+                            <small class="text-muted">15 minutes ago</small>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-graph-up text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">Analytics report generated</h6>
+                            <p class="mb-1 text-muted">Monthly performance report for November 2024</p>
+                            <small class="text-muted">1 hour ago</small>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="bi bi-credit-card text-info"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">Payment processed</h6>
+                            <p class="mb-1 text-muted">Premium subscription renewed successfully</p>
+                            <small class="text-muted">3 hours ago</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-down me-1"></i>Load More Activity
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize sample functionality for filters and search
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality placeholder
+        const searchForm = document.querySelector('form[role="search"]');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const searchTerm = this.querySelector('input[type="search"]').value;
+                const category = this.querySelector('select').value;
+                
+                if (searchTerm.trim()) {
+                    alert(`Searching for "${searchTerm}" in ${category === 'all' ? 'all categories' : category}.\nThis feature will be fully implemented in future updates!`);
+                } else {
+                    alert('Please enter a search term.');
+                }
+            });
+        }
+        
+        // Filter functionality placeholder
+        const filterButton = document.querySelector('.card-body button:last-child');
+        if (filterButton) {
+            filterButton.addEventListener('click', function() {
+                const filters = this.closest('.card-body').querySelectorAll('select');
+                let filterText = 'Applied filters:\n';
+                filters.forEach(filter => {
+                    if (filter.value) {
+                        filterText += `${filter.previousElementSibling?.textContent || 'Filter'}: ${filter.options[filter.selectedIndex].text}\n`;
+                    }
+                });
+                alert(filterText || 'No filters selected.\nFilter functionality will be fully implemented in future updates!');
+            });
+        }
+    });
+</script>
+{% endblock %}

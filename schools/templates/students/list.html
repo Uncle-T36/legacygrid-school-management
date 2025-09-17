@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+
+{% block title %}Students Directory - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-0">
+                        <i class="bi bi-people me-3"></i>Students Directory
+                    </h1>
+                    <p class="text-muted">Manage student records, enrollment, and academic progress</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success">
+                        <i class="bi bi-download me-1"></i>Export List
+                    </button>
+                    <a href="{% url 'student_enrollment' %}" class="btn btn-lg-primary">
+                        <i class="bi bi-person-plus me-2"></i>New Student
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Search students..." id="studentSearch">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="gradeFilter">
+                                <option value="">All Grades</option>
+                                <option value="grade1">Grade 1</option>
+                                <option value="grade2">Grade 2</option>
+                                <option value="grade3">Grade 3</option>
+                                <option value="grade4">Grade 4</option>
+                                <option value="grade5">Grade 5</option>
+                                <option value="grade6">Grade 6</option>
+                                <option value="grade7">Grade 7</option>
+                                <option value="form1">Form 1</option>
+                                <option value="form2">Form 2</option>
+                                <option value="form3">Form 3</option>
+                                <option value="form4">Form 4</option>
+                                <option value="form5">Form 5</option>
+                                <option value="form6">Form 6</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="schoolFilter">
+                                <option value="">All Schools</option>
+                                <option value="harare-primary">Harare Primary</option>
+                                <option value="mufakose-high">Mufakose High</option>
+                                <option value="mutare-combined">Mutare Combined</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="graduated">Graduated</option>
+                                <option value="transferred">Transferred</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary flex-fill" id="resetFilters">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                </button>
+                                <button class="btn btn-outline-info flex-fill" id="advancedSearch">
+                                    <i class="bi bi-sliders me-1"></i>Advanced
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-table me-2"></i>Student Records
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Grid View">
+                            <i class="bi bi-grid-3x3-gap"></i>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" title="Table View">
+                            <i class="bi bi-list"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="selectAll">
+                                        </div>
+                                    </th>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Grade/Form</th>
+                                    <th>School</th>
+                                    <th>Status</th>
+                                    <th>Enrollment Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Sample Student Records -->
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="001">
+                                        </div>
+                                    </td>
+                                    <td><strong>LG2024001</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                                <i class="bi bi-person text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Sarah Johnson</div>
+                                                <small class="text-muted">sarah.johnson@student.lg.zw</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-primary">Grade 10</span></td>
+                                    <td>Mufakose High School</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>Jan 15, 2024</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit Details</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'student_grades' %}"><i class="bi bi-journal-text me-2"></i>View Grades</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Remove</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="002">
+                                        </div>
+                                    </td>
+                                    <td><strong>LG2024002</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                                <i class="bi bi-person text-success"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Michael Chen</div>
+                                                <small class="text-muted">michael.chen@student.lg.zw</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-info">Grade 7</span></td>
+                                    <td>Harare Primary School</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>Feb 03, 2024</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit Details</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'student_grades' %}"><i class="bi bi-journal-text me-2"></i>View Grades</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Remove</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="003">
+                                        </div>
+                                    </td>
+                                    <td><strong>LG2024003</strong></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                                <i class="bi bi-person text-warning"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Emily Mukamuri</div>
+                                                <small class="text-muted">emily.mukamuri@student.lg.zw</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-secondary">Form 4</span></td>
+                                    <td>Mutare Combined School</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>Mar 12, 2024</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Profile</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit Details</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'student_grades' %}"><i class="bi bi-journal-text me-2"></i>View Grades</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Remove</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Add more student rows as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Showing 3 of 2,847 students</span>
+                        <nav aria-label="Students pagination">
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Actions Modal -->
+<div class="modal fade" id="bulkActionsModal" tabindex="-1" aria-labelledby="bulkActionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bulkActionsModalLabel">
+                    <i class="bi bi-check2-square me-2"></i>Bulk Actions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select an action to perform on selected students:</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-envelope me-2"></i>Send Message
+                    </button>
+                    <button class="btn btn-outline-success">
+                        <i class="bi bi-download me-2"></i>Export Selected
+                    </button>
+                    <button class="btn btn-outline-warning">
+                        <i class="bi bi-arrow-right me-2"></i>Transfer Students
+                    </button>
+                    <button class="btn btn-outline-danger">
+                        <i class="bi bi-person-x me-2"></i>Deactivate Students
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Select all functionality
+    const selectAll = document.getElementById('selectAll');
+    const studentCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+    
+    selectAll.addEventListener('change', function() {
+        studentCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateBulkActionsVisibility();
+    });
+
+    // Individual checkbox handling
+    studentCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateBulkActionsVisibility);
+    });
+
+    function updateBulkActionsVisibility() {
+        const checkedBoxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+        if (checkedBoxes.length > 0) {
+            // Show bulk actions (placeholder)
+            console.log(`${checkedBoxes.length} students selected`);
+        }
+    }
+
+    // Search and filter functionality
+    const searchInput = document.getElementById('studentSearch');
+    const gradeFilter = document.getElementById('gradeFilter');
+    const schoolFilter = document.getElementById('schoolFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const resetButton = document.getElementById('resetFilters');
+
+    function filterStudents() {
+        // Placeholder for filtering logic
+        console.log('Filtering students...');
+    }
+
+    searchInput.addEventListener('input', filterStudents);
+    gradeFilter.addEventListener('change', filterStudents);
+    schoolFilter.addEventListener('change', filterStudents);
+    statusFilter.addEventListener('change', filterStudents);
+
+    resetButton.addEventListener('click', function() {
+        searchInput.value = '';
+        gradeFilter.value = '';
+        schoolFilter.value = '';
+        statusFilter.value = '';
+        filterStudents();
+    });
+
+    // Advanced search placeholder
+    document.getElementById('advancedSearch').addEventListener('click', function() {
+        alert('Advanced search functionality will be implemented in future updates!');
+    });
+});
+</script>
+{% endblock %}
