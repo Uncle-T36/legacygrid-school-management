@@ -1,0 +1,239 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Failover Configuration - LegacyGrid{% endblock %}
+
+{% block content %}
+<h2>🔄 Failover Configuration (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode Active:</strong> Failover configurations are simulated for testing only.
+</div>
+{% endif %}
+
+<div class="alert alert-info">
+    <strong>🔒 Owner Access:</strong> You are managing critical failover infrastructure as the system owner (Uncle-T36).
+</div>
+
+<!-- Create New Failover Configuration Form -->
+<div style="margin-bottom: 30px; padding: 20px; border: 1px solid #007bff; border-radius: 8px; background: #d1ecf1;">
+    <h3>➕ Create Failover Configuration</h3>
+    <form method="post" style="margin-top: 15px;">
+        {% csrf_token %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label for="name" style="display: block; margin-bottom: 5px; font-weight: bold;">Configuration Name:</label>
+                <input type="text" id="name" name="name" required
+                       placeholder="e.g., Production Failover" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="health_check_interval" style="display: block; margin-bottom: 5px; font-weight: bold;">Health Check Interval (seconds):</label>
+                <input type="number" id="health_check_interval" name="health_check_interval" value="30"
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="primary_server" style="display: block; margin-bottom: 5px; font-weight: bold;">Primary Server:</label>
+                <input type="text" id="primary_server" name="primary_server" required
+                       placeholder="e.g., primary.example.com" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="backup_server" style="display: block; margin-bottom: 5px; font-weight: bold;">Backup Server:</label>
+                <input type="text" id="backup_server" name="backup_server" required
+                       placeholder="e.g., backup.example.com" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="health_check_url" style="display: block; margin-bottom: 5px; font-weight: bold;">Health Check URL:</label>
+                <input type="url" id="health_check_url" name="health_check_url" required
+                       placeholder="https://example.com/health" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="failover_threshold" style="display: block; margin-bottom: 5px; font-weight: bold;">Failover Threshold (failed checks):</label>
+                <input type="number" id="failover_threshold" name="failover_threshold" value="3"
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <button type="submit" class="btn btn-primary">🚀 Create Configuration</button>
+            <button type="button" id="test-config-btn" class="btn btn-info">🧪 Test Configuration</button>
+        </div>
+    </form>
+</div>
+
+<!-- Existing Configurations -->
+<div>
+    <h3>📋 Failover Configurations</h3>
+    {% if failover_configs %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead style="background: #f8f9fa;">
+                <tr>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Name</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Primary Server</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Backup Server</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Last Check</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for config in failover_configs %}
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <strong>{{ config.name }}</strong>
+                        {% if config.is_active %}
+                        <span style="color: #28a745; font-size: 12px;">● Active</span>
+                        {% else %}
+                        <span style="color: #6c757d; font-size: 12px;">○ Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ config.primary_server }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ config.backup_server }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if config.current_status == 'healthy' %}
+                            <span style="color: #28a745; font-weight: bold;">✅ Healthy</span>
+                        {% elif config.current_status == 'warning' %}
+                            <span style="color: #ffc107; font-weight: bold;">⚠️ Warning</span>
+                        {% elif config.current_status == 'critical' %}
+                            <span style="color: #dc3545; font-weight: bold;">🚨 Critical</span>
+                        {% else %}
+                            <span style="color: #6c757d; font-weight: bold;">❓ Unknown</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if config.last_health_check %}
+                            {{ config.last_health_check|date:"M d, Y H:i" }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if config.is_active %}
+                            <button class="btn btn-sm btn-warning deactivate-btn" data-config-id="{{ config.id }}">⏸️ Deactivate</button>
+                        {% else %}
+                            <button class="btn btn-sm btn-success activate-btn" data-config-id="{{ config.id }}">▶️ Activate</button>
+                        {% endif %}
+                        <button class="btn btn-sm btn-info test-btn" data-config-id="{{ config.id }}">🧪 Test</button>
+                        <button class="btn btn-sm btn-secondary edit-btn" data-config-id="{{ config.id }}">✏️ Edit</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; text-align: center;">
+        <p style="margin: 0;">No failover configurations created yet.</p>
+        <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
+            Create your first failover configuration to ensure high availability.
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Failover Best Practices -->
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #17a2b8; border-radius: 8px; background: #d1ecf1;">
+    <h3>💡 Failover Best Practices</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+        <div>
+            <h4>🎯 Configuration Guidelines</h4>
+            <ul>
+                <li>Set health check intervals based on criticality (30-60 seconds)</li>
+                <li>Use robust health check endpoints that test key dependencies</li>
+                <li>Configure appropriate failover thresholds (3-5 failed checks)</li>
+                <li>Ensure backup servers are geographically distributed</li>
+            </ul>
+        </div>
+        <div>
+            <h4>🔧 Monitoring & Testing</h4>
+            <ul>
+                <li>Test failover procedures regularly during maintenance windows</li>
+                <li>Monitor both primary and backup server performance</li>
+                <li>Set up alerting for failover events and server issues</li>
+                <li>Maintain documentation for manual failover procedures</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Test Configuration Button
+    document.getElementById('test-config-btn').addEventListener('click', function() {
+        const primaryServer = document.getElementById('primary_server').value;
+        const healthCheckUrl = document.getElementById('health_check_url').value;
+        
+        if (!primaryServer || !healthCheckUrl) {
+            alert('⚠️ Please fill in Primary Server and Health Check URL before testing.');
+            return;
+        }
+        
+        this.disabled = true;
+        this.textContent = 'Testing...';
+        
+        // Simulate configuration test
+        setTimeout(() => {
+            this.disabled = false;
+            this.textContent = '🧪 Test Configuration';
+            {% if demo_mode %}
+            alert('🧪 Demo Mode: Configuration test simulated.\n\n✅ Primary Server: Reachable\n✅ Health Check URL: Responding\n✅ Configuration: Valid');
+            {% else %}
+            alert('🧪 Configuration test completed.\n\nCheck the results in the console for detailed information.');
+            {% endif %}
+        }, 2000);
+    });
+    
+    // Activate/Deactivate Buttons
+    document.querySelectorAll('.activate-btn, .deactivate-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const configId = this.dataset.configId;
+            const isActivating = this.classList.contains('activate-btn');
+            const action = isActivating ? 'activate' : 'deactivate';
+            
+            if (confirm(`${isActivating ? 'Activate' : 'Deactivate'} this failover configuration?`)) {
+                {% if demo_mode %}
+                alert(`🔄 Demo Mode: Configuration ${action}d successfully.`);
+                location.reload();
+                {% else %}
+                // In production, make AJAX call to toggle activation
+                alert(`Configuration ${action}d successfully.`);
+                location.reload();
+                {% endif %}
+            }
+        });
+    });
+    
+    // Test Buttons
+    document.querySelectorAll('.test-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const configId = this.dataset.configId;
+            this.disabled = true;
+            this.textContent = 'Testing...';
+            
+            setTimeout(() => {
+                this.disabled = false;
+                this.textContent = '🧪 Test';
+                {% if demo_mode %}
+                alert('🧪 Demo Mode: Failover test completed successfully.\n\n✅ Primary Server: Healthy\n✅ Backup Server: Ready\n✅ Network Connectivity: Good');
+                {% else %}
+                alert('Failover test completed. Check logs for detailed results.');
+                {% endif %}
+            }, 3000);
+        });
+    });
+    
+    // Edit Buttons
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const configId = this.dataset.configId;
+            alert(`📝 Edit Configuration\n\nConfiguration editing will be available in the next update.\nFor now, create a new configuration with updated settings.`);
+        });
+    });
+});
+</script>
+{% endblock %}

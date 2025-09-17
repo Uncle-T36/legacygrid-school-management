@@ -6,5 +6,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("schools/", include("schools.urls")),
     path("billing/", include("billing.urls")),
+    path("disaster-recovery/", include("disaster_recovery.urls")),
+    path("compliance-automation/", include("compliance_automation.urls")),
     path('', home, name='home'),  # Homepage route
 ]

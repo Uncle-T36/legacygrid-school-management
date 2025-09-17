@@ -1,0 +1,267 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Downtime Notifications - LegacyGrid{% endblock %}
+
+{% block content %}
+<h2>🔔 Downtime Notification Management (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode Active:</strong> Notifications are simulated for testing only.
+</div>
+{% endif %}
+
+<div class="alert alert-info">
+    <strong>🔒 Owner Access:</strong> You are managing critical system notifications as the system owner (Uncle-T36).
+</div>
+
+<!-- Create New Notification Form -->
+<div style="margin-bottom: 30px; padding: 20px; border: 1px solid #ffc107; border-radius: 8px; background: #fff3cd;">
+    <h3>📝 Create Notification</h3>
+    <form method="post" style="margin-top: 15px;">
+        {% csrf_token %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label for="title" style="display: block; margin-bottom: 5px; font-weight: bold;">Title:</label>
+                <input type="text" id="title" name="title" required
+                       placeholder="e.g., Scheduled Maintenance" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="notification_type" style="display: block; margin-bottom: 5px; font-weight: bold;">Notification Type:</label>
+                <select id="notification_type" name="notification_type" required
+                        style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="email">📧 Email</option>
+                    <option value="sms">📱 SMS</option>
+                    <option value="webhook">🔗 Webhook</option>
+                    <option value="in_app">📲 In-App</option>
+                </select>
+            </div>
+            <div style="grid-column: span 2;">
+                <label for="message" style="display: block; margin-bottom: 5px; font-weight: bold;">Message:</label>
+                <textarea id="message" name="message" required rows="4"
+                          placeholder="Enter your notification message here..." 
+                          style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+            </div>
+            <div>
+                <label for="recipients" style="display: block; margin-bottom: 5px; font-weight: bold;">Recipients (comma-separated):</label>
+                <input type="text" id="recipients" name="recipients"
+                       placeholder="email1@example.com, email2@example.com" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="priority" style="display: block; margin-bottom: 5px; font-weight: bold;">Priority:</label>
+                <select id="priority" name="priority"
+                        style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="low">🟢 Low</option>
+                    <option value="medium" selected>🟡 Medium</option>
+                    <option value="high">🟠 High</option>
+                    <option value="critical">🔴 Critical</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <button type="submit" class="btn btn-warning">📤 Send Notification</button>
+            <button type="button" id="schedule-btn" class="btn btn-info">⏰ Schedule for Later</button>
+            <button type="button" id="preview-btn" class="btn btn-secondary">👁️ Preview</button>
+        </div>
+    </form>
+</div>
+
+<!-- Notification History -->
+<div>
+    <h3>📋 Notification History</h3>
+    {% if notifications %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead style="background: #f8f9fa;">
+                <tr>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Title</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Type</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Priority</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Recipients</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Scheduled</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Sent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for notification in notifications %}
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <strong>{{ notification.title }}</strong>
+                        <br><small style="color: #666;">{{ notification.message|truncatechars:50 }}</small>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <span style="padding: 4px 8px; border-radius: 4px; background: #e9ecef; font-size: 12px;">
+                            {% if notification.notification_type == 'email' %}📧{% elif notification.notification_type == 'sms' %}📱{% elif notification.notification_type == 'webhook' %}🔗{% else %}📲{% endif %}
+                            {{ notification.get_notification_type_display }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if notification.priority == 'critical' %}
+                            <span style="color: #dc3545; font-weight: bold;">🔴 Critical</span>
+                        {% elif notification.priority == 'high' %}
+                            <span style="color: #fd7e14; font-weight: bold;">🟠 High</span>
+                        {% elif notification.priority == 'medium' %}
+                            <span style="color: #ffc107; font-weight: bold;">🟡 Medium</span>
+                        {% else %}
+                            <span style="color: #28a745; font-weight: bold;">🟢 Low</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <small>{{ notification.recipients|length }} recipient{{ notification.recipients|length|pluralize }}</small>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if notification.is_sent %}
+                            <span style="color: #28a745; font-weight: bold;">✅ Sent</span>
+                        {% else %}
+                            <span style="color: #ffc107; font-weight: bold;">⏳ Pending</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ notification.scheduled_at|date:"M d, Y H:i" }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if notification.sent_at %}
+                            {{ notification.sent_at|date:"M d, Y H:i" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; text-align: center;">
+        <p style="margin: 0;">No notifications sent yet.</p>
+        <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
+            Create your first notification to communicate with users during maintenance or incidents.
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Notification Templates -->
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #17a2b8; border-radius: 8px; background: #d1ecf1;">
+    <h3>📄 Quick Templates</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>🔧 Maintenance Notice</h4>
+            <p style="font-size: 14px; color: #666;">Scheduled maintenance with expected downtime</p>
+            <button class="btn btn-sm btn-primary use-template-btn" 
+                    data-title="Scheduled Maintenance Notice"
+                    data-message="We will be performing scheduled maintenance on our systems. Expected downtime: 2 hours. We apologize for any inconvenience.">
+                Use Template
+            </button>
+        </div>
+        
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>🚨 Emergency Alert</h4>
+            <p style="font-size: 14px; color: #666;">Critical system issues requiring immediate attention</p>
+            <button class="btn btn-sm btn-danger use-template-btn" 
+                    data-title="URGENT: System Emergency"
+                    data-message="We are experiencing critical system issues. Our team is working to resolve this immediately. Updates will follow shortly."
+                    data-priority="critical">
+                Use Template
+            </button>
+        </div>
+        
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>✅ Service Restored</h4>
+            <p style="font-size: 14px; color: #666;">Notification when services are back online</p>
+            <button class="btn btn-sm btn-success use-template-btn" 
+                    data-title="Service Restored"
+                    data-message="All services have been restored and are functioning normally. Thank you for your patience during the maintenance window.">
+                Use Template
+            </button>
+        </div>
+        
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>📊 Performance Update</h4>
+            <p style="font-size: 14px; color: #666;">System performance and optimization updates</p>
+            <button class="btn btn-sm btn-info use-template-btn" 
+                    data-title="System Performance Update"
+                    data-message="We have completed system optimizations to improve performance. You may notice faster loading times and improved responsiveness.">
+                Use Template
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Schedule Button
+    document.getElementById('schedule-btn').addEventListener('click', function() {
+        alert('⏰ Schedule Notification\n\nThis feature allows you to schedule notifications for future delivery.\nChoose date and time in the advanced scheduling panel.');
+    });
+    
+    // Preview Button
+    document.getElementById('preview-btn').addEventListener('click', function() {
+        const title = document.getElementById('title').value;
+        const message = document.getElementById('message').value;
+        const type = document.getElementById('notification_type').value;
+        const priority = document.getElementById('priority').value;
+        
+        if (!title || !message) {
+            alert('⚠️ Please fill in the title and message before previewing.');
+            return;
+        }
+        
+        const priorityIcon = {
+            'low': '🟢',
+            'medium': '🟡', 
+            'high': '🟠',
+            'critical': '🔴'
+        }[priority];
+        
+        const typeIcon = {
+            'email': '📧',
+            'sms': '📱',
+            'webhook': '🔗',
+            'in_app': '📲'
+        }[type];
+        
+        alert(`📋 Notification Preview\n\n` +
+              `${priorityIcon} Priority: ${priority.toUpperCase()}\n` +
+              `${typeIcon} Type: ${type.toUpperCase()}\n\n` +
+              `Title: ${title}\n\n` +
+              `Message: ${message}`);
+    });
+    
+    // Template Usage Buttons
+    document.querySelectorAll('.use-template-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const title = this.dataset.title;
+            const message = this.dataset.message;
+            const priority = this.dataset.priority || 'medium';
+            
+            document.getElementById('title').value = title;
+            document.getElementById('message').value = message;
+            document.getElementById('priority').value = priority;
+            
+            // Scroll to form
+            document.querySelector('form').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    
+    // Notification Type Change Handler
+    document.getElementById('notification_type').addEventListener('change', function() {
+        const recipientsInput = document.getElementById('recipients');
+        const type = this.value;
+        
+        if (type === 'email') {
+            recipientsInput.placeholder = 'email1@example.com, email2@example.com';
+        } else if (type === 'sms') {
+            recipientsInput.placeholder = '+1234567890, +0987654321';
+        } else if (type === 'webhook') {
+            recipientsInput.placeholder = 'https://webhook1.example.com, https://webhook2.example.com';
+        } else {
+            recipientsInput.placeholder = 'user1, user2, user3';
+        }
+    });
+});
+</script>
+{% endblock %}
