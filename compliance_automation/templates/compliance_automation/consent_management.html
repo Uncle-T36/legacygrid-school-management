@@ -1,0 +1,238 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Consent Management - LegacyGrid{% endblock %}
+
+{% block content %}
+<h2>✅ Consent Management (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode Active:</strong> Consent management operations are simulated for testing only.
+</div>
+{% endif %}
+
+<div class="alert alert-info">
+    <strong>🔒 Owner Access:</strong> You are managing user consents as the system owner (Uncle-T36).
+</div>
+
+<!-- Consent Overview -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+    <div style="padding: 15px; border: 1px solid #28a745; border-radius: 8px; background: #d4edda; text-align: center;">
+        <h4>✅ Granted</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">{{ consents|length }}</p>
+    </div>
+    <div style="padding: 15px; border: 1px solid #dc3545; border-radius: 8px; background: #f8d7da; text-align: center;">
+        <h4>❌ Denied</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">0</p>
+    </div>
+    <div style="padding: 15px; border: 1px solid #ffc107; border-radius: 8px; background: #fff3cd; text-align: center;">
+        <h4>⚠️ Withdrawn</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">0</p>
+    </div>
+    <div style="padding: 15px; border: 1px solid #6c757d; border-radius: 8px; background: #f8f9fa; text-align: center;">
+        <h4>⏳ Expired</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">0</p>
+    </div>
+</div>
+
+<!-- Consent Filter Form -->
+<div style="margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa;">
+    <h3>🔍 Filter Consents</h3>
+    <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
+        <div>
+            <label for="framework" style="display: block; margin-bottom: 5px; font-weight: bold;">Framework:</label>
+            <select name="framework" id="framework" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">All Frameworks</option>
+                {% for framework in frameworks %}
+                <option value="{{ framework.id }}" {% if framework.id|stringformat:"s" == selected_framework %}selected{% endif %}>
+                    {{ framework.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="status" style="display: block; margin-bottom: 5px; font-weight: bold;">Status:</label>
+            <select name="status" id="status" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">All Statuses</option>
+                <option value="granted" {% if selected_status == 'granted' %}selected{% endif %}>Granted</option>
+                <option value="denied" {% if selected_status == 'denied' %}selected{% endif %}>Denied</option>
+                <option value="withdrawn" {% if selected_status == 'withdrawn' %}selected{% endif %}>Withdrawn</option>
+                <option value="expired" {% if selected_status == 'expired' %}selected{% endif %}>Expired</option>
+            </select>
+        </div>
+        <div>
+            <label for="consent_type" style="display: block; margin-bottom: 5px; font-weight: bold;">Consent Type:</label>
+            <select name="consent_type" id="consent_type" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">All Types</option>
+                <option value="data_processing" {% if selected_consent_type == 'data_processing' %}selected{% endif %}>Data Processing</option>
+                <option value="marketing" {% if selected_consent_type == 'marketing' %}selected{% endif %}>Marketing</option>
+                <option value="cookies" {% if selected_consent_type == 'cookies' %}selected{% endif %}>Cookies</option>
+                <option value="third_party_sharing" {% if selected_consent_type == 'third_party_sharing' %}selected{% endif %}>Third Party Sharing</option>
+                <option value="analytics" {% if selected_consent_type == 'analytics' %}selected{% endif %}>Analytics</option>
+                <option value="educational_records" {% if selected_consent_type == 'educational_records' %}selected{% endif %}>Educational Records</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">🔍 Filter</button>
+            <a href="{% url 'consent_management' %}" class="btn btn-secondary">🔄 Reset</a>
+        </div>
+    </form>
+</div>
+
+<!-- Consents Table -->
+<div>
+    <h3>📋 User Consents</h3>
+    {% if consents %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead style="background: #f8f9fa;">
+                <tr>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">
+                        <input type="checkbox" id="select-all">
+                    </th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">User</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Consent Type</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Framework</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Granted</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Expires</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consent in consents %}
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <input type="checkbox" name="consent_ids" value="{{ consent.id }}">
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ consent.user.username }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <span style="padding: 4px 8px; border-radius: 4px; background: #e9ecef; font-size: 12px;">
+                            {{ consent.get_consent_type_display }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ consent.framework.name }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if consent.status == 'granted' %}
+                            <span style="color: #28a745; font-weight: bold;">✅ Granted</span>
+                        {% elif consent.status == 'denied' %}
+                            <span style="color: #dc3545; font-weight: bold;">❌ Denied</span>
+                        {% elif consent.status == 'withdrawn' %}
+                            <span style="color: #ffc107; font-weight: bold;">⚠️ Withdrawn</span>
+                        {% else %}
+                            <span style="color: #6c757d; font-weight: bold;">⏳ Expired</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if consent.granted_at %}
+                            {{ consent.granted_at|date:"M d, Y H:i" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if consent.expires_at %}
+                            {{ consent.expires_at|date:"M d, Y H:i" }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bulk Actions -->
+    <div style="margin-top: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa;">
+        <h4>📦 Bulk Actions</h4>
+        <form method="post" style="display: flex; align-items: center; gap: 15px;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="bulk_update">
+            <select name="new_status" required style="padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="">Select new status...</option>
+                <option value="granted">✅ Grant</option>
+                <option value="denied">❌ Deny</option>
+                <option value="withdrawn">⚠️ Withdraw</option>
+                <option value="expired">⏳ Mark Expired</option>
+            </select>
+            <button type="submit" class="btn btn-warning">📦 Update Selected</button>
+        </form>
+    </div>
+    {% else %}
+    <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; text-align: center;">
+        <p style="margin: 0;">No consent records found.</p>
+        <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
+            Consent records will appear here as users interact with the system.
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Consent Management Guidelines -->
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #17a2b8; border-radius: 8px; background: #d1ecf1;">
+    <h3>💡 Consent Management Best Practices</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+        <div>
+            <h4>📋 Record Keeping</h4>
+            <ul>
+                <li>Maintain detailed records of all consent interactions</li>
+                <li>Track IP addresses and timestamps for audit trails</li>
+                <li>Document the exact consent text shown to users</li>
+                <li>Version control consent forms and policies</li>
+            </ul>
+        </div>
+        <div>
+            <h4>🔄 Consent Lifecycle</h4>
+            <ul>
+                <li>Regularly review and update consent forms</li>
+                <li>Set appropriate expiration dates for consents</li>
+                <li>Respect withdrawal requests immediately</li>
+                <li>Provide clear mechanisms for users to update preferences</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select All Checkbox
+    const selectAllCheckbox = document.getElementById('select-all');
+    const consentCheckboxes = document.querySelectorAll('input[name="consent_ids"]');
+    
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            consentCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+    
+    // Bulk Update Form
+    const bulkForm = document.querySelector('form[method="post"]');
+    if (bulkForm) {
+        bulkForm.addEventListener('submit', function(e) {
+            const selectedCheckboxes = document.querySelectorAll('input[name="consent_ids"]:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                e.preventDefault();
+                alert('⚠️ Please select at least one consent record to update.');
+                return;
+            }
+            
+            const newStatus = this.querySelector('select[name="new_status"]').value;
+            if (!newStatus) {
+                e.preventDefault();
+                alert('⚠️ Please select a new status for the consent records.');
+                return;
+            }
+            
+            if (!confirm(`Update ${selectedCheckboxes.length} consent record(s) to "${newStatus}"?`)) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

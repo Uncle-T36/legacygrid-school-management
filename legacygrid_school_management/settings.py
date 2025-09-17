@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'schools',
     'billing',  # New billing app for payment management
     'disaster_recovery',  # Advanced disaster recovery and backup management
+    'compliance_automation',  # GDPR/CCPA/POPIA compliance automation
 ]
 
 MIDDLEWARE = [

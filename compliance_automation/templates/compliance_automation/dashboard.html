@@ -1,0 +1,231 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Compliance Automation Dashboard - LegacyGrid{% endblock %}
+
+{% block content %}
+<h2>⚖️ Compliance Automation Control Center (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode Active:</strong> All compliance operations are simulated for testing only.
+</div>
+{% endif %}
+
+<div class="alert alert-info">
+    <strong>🔒 Owner Access:</strong> You are viewing this page as the system owner (Uncle-T36). 
+    This module manages critical compliance and legal requirements.
+</div>
+
+<!-- Compliance Overview -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="padding: 20px; border: 1px solid #28a745; border-radius: 8px; background: #d4edda;">
+        <h4>📋 Active Frameworks</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">{{ active_frameworks_count }}</p>
+        <p>Out of {{ frameworks_count }} total frameworks</p>
+        <a href="{% url 'framework_management' %}" class="btn btn-success btn-sm">Manage Frameworks</a>
+    </div>
+    
+    <div style="padding: 20px; border: 1px solid #007bff; border-radius: 8px; background: #d1ecf1;">
+        <h4>📊 Compliance Score</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0; color: {% if compliance_score >= 90 %}#28a745{% elif compliance_score >= 70 %}#ffc107{% else %}#dc3545{% endif %};">{{ compliance_score }}%</p>
+        <p>Overall compliance rating</p>
+        <a href="{% url 'audit_logs' %}" class="btn btn-primary btn-sm">View Audits</a>
+    </div>
+    
+    <div style="padding: 20px; border: 1px solid #ffc107; border-radius: 8px; background: #fff3cd;">
+        <h4>⏰ Pending Reviews</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">{{ upcoming_reviews|length }}</p>
+        <p>Framework reviews due soon</p>
+        <a href="{% url 'compliance_reports' %}" class="btn btn-warning btn-sm">Generate Reports</a>
+    </div>
+    
+    <div style="padding: 20px; border: 1px solid #17a2b8; border-radius: 8px; background: #d1ecf1;">
+        <h4>✅ Consents Managed</h4>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">{{ recent_consents|length }}</p>
+        <p>Recent consent changes</p>
+        <a href="{% url 'consent_management' %}" class="btn btn-info btn-sm">Manage Consents</a>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div style="margin-bottom: 30px;">
+    <h3>📋 Recent Consent Changes</h3>
+    {% if recent_consents %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead style="background: #f8f9fa;">
+                <tr>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">User</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Consent Type</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Framework</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consent in recent_consents %}
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ consent.user.username }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <span style="padding: 4px 8px; border-radius: 4px; background: #e9ecef; font-size: 12px;">
+                            {{ consent.get_consent_type_display }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ consent.framework.name }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if consent.status == 'granted' %}
+                            <span style="color: #28a745; font-weight: bold;">✅ {{ consent.get_status_display }}</span>
+                        {% elif consent.status == 'denied' %}
+                            <span style="color: #dc3545; font-weight: bold;">❌ {{ consent.get_status_display }}</span>
+                        {% elif consent.status == 'withdrawn' %}
+                            <span style="color: #ffc107; font-weight: bold;">⚠️ {{ consent.get_status_display }}</span>
+                        {% else %}
+                            <span style="color: #6c757d; font-weight: bold;">⏸️ {{ consent.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ consent.updated_at|date:"M d, Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; text-align: center;">
+        No recent consent changes recorded.
+    </p>
+    {% endif %}
+</div>
+
+<!-- Recent Audit Activity -->
+<div style="margin-bottom: 30px;">
+    <h3>🔍 Recent Audit Activity</h3>
+    {% if recent_audits %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead style="background: #f8f9fa;">
+                <tr>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Audit Type</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">User</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Framework</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for audit in recent_audits %}
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <span style="padding: 4px 8px; border-radius: 4px; background: #e9ecef; font-size: 12px;">
+                            {{ audit.get_audit_type_display }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ audit.user.username }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ audit.framework.name }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if audit.compliance_status == 'compliant' %}
+                            <span style="color: #28a745; font-weight: bold;">✅ Compliant</span>
+                        {% elif audit.compliance_status == 'non_compliant' %}
+                            <span style="color: #dc3545; font-weight: bold;">❌ Non-Compliant</span>
+                        {% elif audit.compliance_status == 'under_review' %}
+                            <span style="color: #ffc107; font-weight: bold;">🔍 Under Review</span>
+                        {% else %}
+                            <span style="color: #17a2b8; font-weight: bold;">✓ Remediated</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ audit.timestamp|date:"M d, Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; text-align: center;">
+        No recent audit activities recorded.
+    </p>
+    {% endif %}
+</div>
+
+<!-- Quick Actions -->
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #007bff; border-radius: 8px; background: #f8f9fa;">
+    <h3>⚡ Quick Actions</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+        <a href="{% url 'framework_management' %}" class="btn btn-primary">📋 Manage Frameworks</a>
+        <a href="{% url 'consent_management' %}" class="btn btn-info">✅ Review Consents</a>
+        <a href="{% url 'data_retention_policies' %}" class="btn btn-warning">⏰ Data Policies</a>
+        <a href="{% url 'legal_disclaimers' %}" class="btn btn-secondary">📄 Legal Disclaimers</a>
+        <a href="{% url 'compliance_reports' %}" class="btn btn-success">📊 Generate Report</a>
+        <a href="{% url 'audit_logs' %}" class="btn btn-dark">🔍 Audit Logs</a>
+    </div>
+</div>
+
+<!-- Framework Reviews Due -->
+{% if upcoming_reviews %}
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #ffc107; border-radius: 8px; background: #fff3cd;">
+    <h3>⚠️ Framework Reviews Due Soon</h3>
+    <div style="margin-top: 15px;">
+        {% for framework in upcoming_reviews %}
+        <div style="padding: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4 style="margin: 0 0 10px 0;">{{ framework.name }}</h4>
+            <p style="margin: 5px 0;"><strong>Type:</strong> {{ framework.get_framework_type_display }}</p>
+            <p style="margin: 5px 0;"><strong>Review Due:</strong> {{ framework.review_date|date:"M d, Y" }}</p>
+            <p style="margin: 5px 0;"><strong>Regions:</strong> {{ framework.applicable_regions|join:", " }}</p>
+            <div style="margin-top: 10px;">
+                <a href="{% url 'compliance_reports' %}" class="btn btn-sm btn-warning">📊 Generate Review Report</a>
+                <a href="{% url 'framework_management' %}" class="btn btn-sm btn-info">✏️ Edit Framework</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Compliance Best Practices -->
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #17a2b8; border-radius: 8px; background: #d1ecf1;">
+    <h3>💡 Compliance Best Practices</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+        <div>
+            <h4>📋 Framework Management</h4>
+            <ul>
+                <li>Review compliance frameworks quarterly</li>
+                <li>Keep documentation up-to-date with regulatory changes</li>
+                <li>Monitor consent withdrawal rates and trends</li>
+                <li>Maintain audit trails for all data processing activities</li>
+            </ul>
+        </div>
+        <div>
+            <h4>🛡️ Data Protection</h4>
+            <ul>
+                <li>Implement automated data retention policies</li>
+                <li>Regularly test data deletion procedures</li>
+                <li>Ensure consent forms are clear and accessible</li>
+                <li>Conduct regular compliance training for staff</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Security Notice -->
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #dc3545; border-radius: 8px; background: #f8d7da;">
+    <h3>⚠️ Critical Compliance Notice</h3>
+    <p><strong>Legal Compliance Access:</strong> This module contains sensitive legal and compliance controls and is accessible only to the verified owner account (Uncle-T36).</p>
+    <p><strong>Data Protection:</strong> All compliance data is encrypted and protected according to the highest industry standards.</p>
+    <p><strong>Legal Support:</strong> For legal compliance issues or regulatory inquiries, contact {{ support_email|default:"support@legacygrid.co.zw" }}</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-refresh compliance score every 5 minutes
+    setInterval(function() {
+        fetch('/compliance-automation/api/stats/')
+            .then(response => response.json())
+            .then(data => {
+                // Update stats if needed
+                console.log('Compliance stats updated:', data);
+            })
+            .catch(error => console.error('Error fetching stats:', error));
+    }, 300000); // 5 minutes
+});
+</script>
+{% endblock %}

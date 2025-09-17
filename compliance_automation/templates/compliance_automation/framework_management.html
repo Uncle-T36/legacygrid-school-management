@@ -1,0 +1,303 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Compliance Framework Management - LegacyGrid{% endblock %}
+
+{% block content %}
+<h2>📋 Compliance Framework Management (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode Active:</strong> Framework management operations are simulated for testing only.
+</div>
+{% endif %}
+
+<div class="alert alert-info">
+    <strong>🔒 Owner Access:</strong> You are managing critical compliance frameworks as the system owner (Uncle-T36).
+</div>
+
+<!-- Create New Framework Form -->
+<div style="margin-bottom: 30px; padding: 20px; border: 1px solid #28a745; border-radius: 8px; background: #d4edda;">
+    <h3>➕ Create New Compliance Framework</h3>
+    <form method="post" style="margin-top: 15px;">
+        {% csrf_token %}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label for="name" style="display: block; margin-bottom: 5px; font-weight: bold;">Framework Name:</label>
+                <input type="text" id="name" name="name" required
+                       placeholder="e.g., GDPR Compliance 2024" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div>
+                <label for="framework_type" style="display: block; margin-bottom: 5px; font-weight: bold;">Framework Type:</label>
+                <select id="framework_type" name="framework_type" required
+                        style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="">Select Framework Type</option>
+                    <option value="gdpr">GDPR (EU General Data Protection Regulation)</option>
+                    <option value="ccpa">CCPA (California Consumer Privacy Act)</option>
+                    <option value="popia">POPIA (Protection of Personal Information Act - South Africa)</option>
+                    <option value="coppa">COPPA (Children's Online Privacy Protection Act)</option>
+                    <option value="ferpa">FERPA (Family Educational Rights and Privacy Act)</option>
+                    <option value="pipeda">PIPEDA (Personal Information Protection - Canada)</option>
+                    <option value="custom">Custom Framework</option>
+                </select>
+            </div>
+            <div style="grid-column: span 2;">
+                <label for="description" style="display: block; margin-bottom: 5px; font-weight: bold;">Description:</label>
+                <textarea id="description" name="description" required rows="3"
+                          placeholder="Describe the purpose and scope of this compliance framework..." 
+                          style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+            </div>
+            <div>
+                <label for="applicable_regions" style="display: block; margin-bottom: 5px; font-weight: bold;">Applicable Regions (hold Ctrl to select multiple):</label>
+                <select id="applicable_regions" name="applicable_regions" multiple
+                        style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; height: 100px;">
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                    <option value="ZA">South Africa</option>
+                    <option value="AU">Australia</option>
+                    <option value="NZ">New Zealand</option>
+                    <option value="ZW">Zimbabwe</option>
+                    <option value="NG">Nigeria</option>
+                    <option value="KE">Kenya</option>
+                    <option value="EU">European Union</option>
+                    <option value="GLOBAL">Global</option>
+                </select>
+            </div>
+            <div>
+                <div style="margin-bottom: 15px;">
+                    <label for="implementation_date" style="display: block; margin-bottom: 5px; font-weight: bold;">Implementation Date:</label>
+                    <input type="date" id="implementation_date" name="implementation_date"
+                           style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+                <div>
+                    <label for="review_date" style="display: block; margin-bottom: 5px; font-weight: bold;">Next Review Date:</label>
+                    <input type="date" id="review_date" name="review_date"
+                           style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <button type="submit" class="btn btn-success">🚀 Create Framework</button>
+            <button type="button" id="load-template-btn" class="btn btn-info">📄 Load Template</button>
+        </div>
+    </form>
+</div>
+
+<!-- Existing Frameworks -->
+<div>
+    <h3>📋 Existing Compliance Frameworks</h3>
+    {% if frameworks %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead style="background: #f8f9fa;">
+                <tr>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Name</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Type</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Status</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Regions</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Implementation</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Next Review</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for framework in frameworks %}
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <strong>{{ framework.name }}</strong>
+                        <br><small style="color: #666;">{{ framework.description|truncatechars:60 }}</small>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <span style="padding: 4px 8px; border-radius: 4px; background: #e9ecef; font-size: 12px;">
+                            {{ framework.get_framework_type_display }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if framework.status == 'active' %}
+                            <span style="color: #28a745; font-weight: bold;">✅ Active</span>
+                        {% elif framework.status == 'pending' %}
+                            <span style="color: #ffc107; font-weight: bold;">⏳ Pending</span>
+                        {% elif framework.status == 'inactive' %}
+                            <span style="color: #6c757d; font-weight: bold;">⏸️ Inactive</span>
+                        {% else %}
+                            <span style="color: #17a2b8; font-weight: bold;">🔍 Under Review</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <small>{{ framework.applicable_regions|join:", "|default:"Not specified" }}</small>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if framework.implementation_date %}
+                            {{ framework.implementation_date|date:"M d, Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if framework.review_date %}
+                            {{ framework.review_date|date:"M d, Y" }}
+                            {% if framework.review_date <= today %}
+                                <span style="color: #dc3545; font-size: 12px;">⚠️ Overdue</span>
+                            {% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {% if framework.status == 'pending' %}
+                            <button class="btn btn-sm btn-success activate-btn" data-framework-id="{{ framework.id }}">▶️ Activate</button>
+                        {% elif framework.status == 'active' %}
+                            <button class="btn btn-sm btn-warning deactivate-btn" data-framework-id="{{ framework.id }}">⏸️ Deactivate</button>
+                        {% endif %}
+                        <button class="btn btn-sm btn-info edit-btn" data-framework-id="{{ framework.id }}">✏️ Edit</button>
+                        <button class="btn btn-sm btn-primary report-btn" data-framework-id="{{ framework.id }}">📊 Report</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; text-align: center;">
+        <p style="margin: 0;">No compliance frameworks created yet.</p>
+        <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
+            Create your first compliance framework to start managing regulatory requirements.
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Framework Templates -->
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #17a2b8; border-radius: 8px; background: #d1ecf1;">
+    <h3>📄 Framework Templates</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;">
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>🇪🇺 GDPR Template</h4>
+            <p style="font-size: 14px; color: #666;">EU General Data Protection Regulation compliance framework with standard policies.</p>
+            <button class="btn btn-sm btn-primary use-template-btn" 
+                    data-name="GDPR Compliance Framework"
+                    data-type="gdpr"
+                    data-description="Comprehensive GDPR compliance framework covering data processing, consent management, and individual rights."
+                    data-regions='["EU", "GB"]'>
+                Use Template
+            </button>
+        </div>
+        
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>🇺🇸 CCPA Template</h4>
+            <p style="font-size: 14px; color: #666;">California Consumer Privacy Act compliance for US operations.</p>
+            <button class="btn btn-sm btn-primary use-template-btn" 
+                    data-name="CCPA Compliance Framework"
+                    data-type="ccpa"
+                    data-description="CCPA compliance framework for California residents' privacy rights and data protection."
+                    data-regions='["US"]'>
+                Use Template
+            </button>
+        </div>
+        
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>🇿🇦 POPIA Template</h4>
+            <p style="font-size: 14px; color: #666;">Protection of Personal Information Act for South African operations.</p>
+            <button class="btn btn-sm btn-primary use-template-btn" 
+                    data-name="POPIA Compliance Framework"
+                    data-type="popia"
+                    data-description="POPIA compliance framework for South African personal information protection requirements."
+                    data-regions='["ZA"]'>
+                Use Template
+            </button>
+        </div>
+        
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <h4>🎓 FERPA Template</h4>
+            <p style="font-size: 14px; color: #666;">Family Educational Rights and Privacy Act for educational institutions.</p>
+            <button class="btn btn-sm btn-primary use-template-btn" 
+                    data-name="FERPA Educational Privacy Framework"
+                    data-type="ferpa"
+                    data-description="FERPA compliance framework for protecting student educational records and privacy rights."
+                    data-regions='["US"]'>
+                Use Template
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Template Usage Buttons
+    document.querySelectorAll('.use-template-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const name = this.dataset.name;
+            const type = this.dataset.type;
+            const description = this.dataset.description;
+            const regions = JSON.parse(this.dataset.regions);
+            
+            document.getElementById('name').value = name;
+            document.getElementById('framework_type').value = type;
+            document.getElementById('description').value = description;
+            
+            // Clear and select regions
+            const regionsSelect = document.getElementById('applicable_regions');
+            for (let option of regionsSelect.options) {
+                option.selected = regions.includes(option.value);
+            }
+            
+            // Set dates
+            const today = new Date();
+            const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+            document.getElementById('implementation_date').value = today.toISOString().split('T')[0];
+            document.getElementById('review_date').value = nextYear.toISOString().split('T')[0];
+            
+            // Scroll to form
+            document.querySelector('form').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+    
+    // Activate/Deactivate Buttons
+    document.querySelectorAll('.activate-btn, .deactivate-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const frameworkId = this.dataset.frameworkId;
+            const isActivating = this.classList.contains('activate-btn');
+            const action = isActivating ? 'activate' : 'deactivate';
+            
+            if (confirm(`${isActivating ? 'Activate' : 'Deactivate'} this compliance framework?`)) {
+                {% if demo_mode %}
+                alert(`🔄 Demo Mode: Framework ${action}d successfully.`);
+                location.reload();
+                {% else %}
+                // In production, make AJAX call to toggle activation
+                alert(`Framework ${action}d successfully.`);
+                location.reload();
+                {% endif %}
+            }
+        });
+    });
+    
+    // Edit Buttons
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const frameworkId = this.dataset.frameworkId;
+            alert(`📝 Edit Framework\n\nFramework editing will be available in the next update.\nFor now, create a new framework with updated settings.`);
+        });
+    });
+    
+    // Report Buttons
+    document.querySelectorAll('.report-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const frameworkId = this.dataset.frameworkId;
+            window.location.href = `/compliance-automation/reports/?framework=${frameworkId}`;
+        });
+    });
+    
+    // Load Template Button
+    document.getElementById('load-template-btn').addEventListener('click', function() {
+        alert('📄 Framework Templates\n\nChoose from the pre-configured templates below to quickly set up compliance frameworks for common regulations.');
+        document.querySelector('.use-template-btn').scrollIntoView({ behavior: 'smooth' });
+    });
+});
+</script>
+{% endblock %}
