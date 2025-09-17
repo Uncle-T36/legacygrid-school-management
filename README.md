@@ -1,5 +1,15 @@
 # LegacyGrid School Management System
 
+**OWNER-ONLY LICENSE**
+
+This project is protected by a custom OWNER-ONLY LICENSE. Only the original owner (Uncle-T36) is permitted to use this code for commercial, production, or monetized purposes. All other use is strictly limited to non-commercial, educational, or personal experimentation.
+
+**Absolutely no cloning, redistribution, resale, or monetization is permitted. Violators will be subject to legal action under the laws of Zimbabwe.**
+
+See the [LICENSE](LICENSE) file for details.
+
+---
+
 A comprehensive Django-based school management system with secure billing and subscription management.
 
 ## 🔐 Security Features
@@ -177,4 +187,4 @@ All errors are logged in `email_error.log`.
 
 ---
 
-**⚠️ IMPORTANT**: This system contains sensitive financial data and is protected by strict access controls. Only authorized personnel should have access to production credentials and billing information.
+**⚠️ IMPORTANT**: This system contains sensitive financial data and is protected by strict access controls. Only authorized personnel should have access to production credentials and billing features. Unauthorized use is strictly prohibited and subject to legal action.
