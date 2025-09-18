@@ -1,3 +1,388 @@
-{% if school.logo %}
-  <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" width="120">
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS for LegacyGrid Theme -->
+    <style>
+        :root {
+            --lg-primary: #0066cc;
+            --lg-secondary: #28a745;
+            --lg-accent: #ffc107;
+            --lg-dark: #2c3e50;
+            --lg-light: #f8f9fa;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--lg-primary) !important;
+        }
+        
+        .btn-lg-primary {
+            background-color: var(--lg-primary);
+            border-color: var(--lg-primary);
+            color: white;
+        }
+        
+        .btn-lg-primary:hover {
+            background-color: #0052a3;
+            border-color: #0052a3;
+        }
+        
+        .security-badge {
+            background: var(--lg-secondary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .feature-card {
+            transition: transform 0.2s ease-in-out;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--lg-primary), var(--lg-secondary));
+            color: white;
+            padding: 4rem 0;
+        }
+        
+        .footer {
+            background-color: var(--lg-dark);
+            color: var(--lg-light);
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        main {
+            flex: 1;
+        }
+        
+        /* Mobile responsiveness improvements */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="bi bi-mortarboard-fill me-2"></i>LegacyGrid School Management
+                {% if user.username == 'Uncle-T36' %}
+                    <span class="security-badge">OWNER ACCESS</span>
+                {% endif %}
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <!-- Core Features -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="bi bi-house-fill me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="schoolsDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building me-1"></i>Schools
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="schoolsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'schools_list' %}">
+                                <i class="bi bi-list-ul me-2"></i>All Schools
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'school_profile' %}">
+                                <i class="bi bi-person-badge me-2"></i>School Profile
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addSchoolModal">
+                                <i class="bi bi-plus-circle me-2"></i>Add New School
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Finance/Billing Section -->
+                    {% if user.username == 'Uncle-T36' %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-currency-dollar me-1"></i>Finance
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="financeDropdown">
+                            <li><a class="dropdown-item" href="{% url 'billing_dashboard' %}">
+                                <i class="bi bi-graph-up me-2"></i>Billing Dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'subscription_management' %}">
+                                <i class="bi bi-credit-card me-2"></i>Subscriptions
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'billing_settings' %}">
+                                <i class="bi bi-gear me-2"></i>Billing Settings
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    
+                    <!-- Future Features (Placeholder) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="studentsDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people me-1"></i>Students
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="studentsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'students_list' %}">
+                                <i class="bi bi-person-lines-fill me-2"></i>All Students
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'student_enrollment' %}">
+                                <i class="bi bi-person-plus me-2"></i>Enrollment
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'student_grades' %}">
+                                <i class="bi bi-journal-text me-2"></i>Grades
+                            </a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'analytics' %}">
+                            <i class="bi bi-bar-chart-line me-1"></i>Analytics
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- User Actions -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'settings' %}">
+                                    <i class="bi bi-gear me-2"></i>Settings
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                                    <i class="bi bi-bell me-2"></i>Notifications
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="/admin/logout/">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-lg-primary" href="/admin/login/">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Alert Messages -->
+        {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% block content %}
+        <!-- Default content goes here -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="mb-3">
+                        <i class="bi bi-mortarboard-fill me-2"></i>LegacyGrid School Management
+                    </h6>
+                    <p class="mb-2">Comprehensive school management solution with secure billing and modern features.</p>
+                    <p class="text-muted small">
+                        <i class="bi bi-shield-check me-1"></i>Protected by industry-standard security measures
+                    </p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="text-light text-decoration-none">Home</a></li>
+                        <li><a href="{% url 'schools_list' %}" class="text-light text-decoration-none">Schools</a></li>
+                        <li><a href="{% url 'students_list' %}" class="text-light text-decoration-none">Students</a></li>
+                        <li><a href="{% url 'analytics' %}" class="text-light text-decoration-none">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Documentation</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Contact Support</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3 text-muted">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted small">© 2024 LegacyGrid School Management. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <small class="text-muted">
+                        Version 1.0 | 
+                        <i class="bi bi-clock me-1"></i>Last updated: {% now "Y-m-d" %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Base Modal Template for Notifications -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">
+                        <i class="bi bi-bell me-2"></i>Notifications
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex align-items-center">
+                            <i class="bi bi-info-circle text-primary me-3"></i>
+                            <div>
+                                <h6 class="mb-1">Welcome to LegacyGrid!</h6>
+                                <p class="mb-1 text-muted small">Your school management system is ready to use.</p>
+                                <small class="text-muted">2 hours ago</small>
+                            </div>
+                        </div>
+                        <!-- More notifications will be added dynamically -->
+                        <div class="list-group-item text-center text-muted">
+                            <small>No more notifications</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-lg-primary">Mark All as Read</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add School Modal -->
+    <div class="modal fade" id="addSchoolModal" tabindex="-1" aria-labelledby="addSchoolModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSchoolModalLabel">
+                        <i class="bi bi-plus-circle me-2"></i>Add New School
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addSchoolForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="schoolName" class="form-label">School Name</label>
+                            <input type="text" class="form-control" id="schoolName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="schoolAddress" class="form-label">Address</label>
+                            <textarea class="form-control" id="schoolAddress" name="address" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="schoolPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="schoolPhone" name="phone">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="addSchoolForm" class="btn btn-lg-primary">
+                        <i class="bi bi-check2 me-1"></i>Add School
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JavaScript Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+        
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+        
+        // Simple form handling for add school modal
+        document.getElementById('addSchoolForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // TODO: Implement AJAX form submission
+            alert('School addition feature will be implemented in future updates!');
+            bootstrap.Modal.getInstance(document.getElementById('addSchoolModal')).hide();
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,534 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Grades - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'students_list' %}">Students</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Grades</li>
+                </ol>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-0">
+                        <i class="bi bi-journal-text me-3"></i>Student Grades
+                    </h1>
+                    <p class="text-muted">Manage student academic performance and assessments</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-info">
+                        <i class="bi bi-download me-1"></i>Export Grades
+                    </button>
+                    <button class="btn btn-lg-primary" data-bs-toggle="modal" data-bs-target="#addGradeModal">
+                        <i class="bi bi-plus-lg me-2"></i>Add Grade
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Selection and Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="studentSelect" class="form-label">Select Student</label>
+                            <select class="form-select" id="studentSelect">
+                                <option value="">Choose student...</option>
+                                <option value="lg2024001">Sarah Johnson (LG2024001)</option>
+                                <option value="lg2024002">Michael Chen (LG2024002)</option>
+                                <option value="lg2024003">Emily Mukamuri (LG2024003)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="termFilter" class="form-label">Term</label>
+                            <select class="form-select" id="termFilter">
+                                <option value="">All Terms</option>
+                                <option value="term1">Term 1 2024</option>
+                                <option value="term2">Term 2 2024</option>
+                                <option value="term3">Term 3 2024</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="subjectFilter" class="form-label">Subject</label>
+                            <select class="form-select" id="subjectFilter">
+                                <option value="">All Subjects</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="english">English</option>
+                                <option value="science">Science</option>
+                                <option value="history">History</option>
+                                <option value="geography">Geography</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="gradeFilter" class="form-label">Grade Range</label>
+                            <select class="form-select" id="gradeFilter">
+                                <option value="">All Grades</option>
+                                <option value="a">A (80-100%)</option>
+                                <option value="b">B (70-79%)</option>
+                                <option value="c">C (60-69%)</option>
+                                <option value="d">D (50-59%)</option>
+                                <option value="f">F (Below 50%)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary flex-fill" id="resetFilters">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                                </button>
+                                <button class="btn btn-outline-primary flex-fill" id="generateReport">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Student Display -->
+    <div class="row mb-4" id="currentStudentCard" style="display: none;">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-0" id="currentStudentName">Sarah Johnson</h6>
+                            <small id="currentStudentDetails">Grade 10 • Mufakose High School • ID: LG2024001</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="h4 mb-0" id="currentGPA">3.8</div>
+                            <small>Overall GPA</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grades Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-table me-2"></i>Academic Records
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary active">Table View</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Chart View</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Assessment Type</th>
+                                    <th>Date</th>
+                                    <th>Score</th>
+                                    <th>Grade</th>
+                                    <th>Weight</th>
+                                    <th>Term</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody">
+                                <!-- Sample grade records -->
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-calculator text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Mathematics</div>
+                                                <small class="text-muted">Advanced Level</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-info">Mid-Term Exam</span></td>
+                                    <td>Nov 15, 2024</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold me-2">87/100</span>
+                                            <div class="progress" style="width: 60px; height: 8px;">
+                                                <div class="progress-bar bg-success" style="width: 87%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-success">A</span></td>
+                                    <td>30%</td>
+                                    <td>Term 3 2024</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Details</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit Grade</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-success bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-book text-success"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">English Literature</div>
+                                                <small class="text-muted">Advanced Level</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-warning">Assignment</span></td>
+                                    <td>Nov 10, 2024</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold me-2">92/100</span>
+                                            <div class="progress" style="width: 60px; height: 8px;">
+                                                <div class="progress-bar bg-success" style="width: 92%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-success">A</span></td>
+                                    <td>20%</td>
+                                    <td>Term 3 2024</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Details</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit Grade</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-info bg-opacity-10 rounded p-2 me-3">
+                                                <i class="bi bi-flask text-info"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold">Chemistry</div>
+                                                <small class="text-muted">Advanced Level</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-primary">Quiz</span></td>
+                                    <td>Nov 08, 2024</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-bold me-2">78/100</span>
+                                            <div class="progress" style="width: 60px; height: 8px;">
+                                                <div class="progress-bar bg-warning" style="width: 78%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge bg-warning">B</span></td>
+                                    <td>15%</td>
+                                    <td>Term 3 2024</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Details</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit Grade</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Showing 3 of 24 grade records</span>
+                        <nav aria-label="Grades pagination">
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Summary Cards -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <h5 class="mb-3">
+                <i class="bi bi-bar-chart me-2"></i>Subject Performance Summary
+            </h5>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-calculator display-6 text-primary mb-3"></i>
+                    <h6 class="card-title">Mathematics</h6>
+                    <div class="h4 text-primary mb-2">85.5%</div>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-primary" style="width: 85.5%"></div>
+                    </div>
+                    <small class="text-muted">Average: A Grade</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-book display-6 text-success mb-3"></i>
+                    <h6 class="card-title">English Literature</h6>
+                    <div class="h4 text-success mb-2">89.2%</div>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-success" style="width: 89.2%"></div>
+                    </div>
+                    <small class="text-muted">Average: A Grade</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-flask display-6 text-info mb-3"></i>
+                    <h6 class="card-title">Chemistry</h6>
+                    <div class="h4 text-warning mb-2">76.8%</div>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-warning" style="width: 76.8%"></div>
+                    </div>
+                    <small class="text-muted">Average: B Grade</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-globe display-6 text-secondary mb-3"></i>
+                    <h6 class="card-title">Geography</h6>
+                    <div class="h4 text-secondary mb-2">82.1%</div>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-secondary" style="width: 82.1%"></div>
+                    </div>
+                    <small class="text-muted">Average: A Grade</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Grade Modal -->
+<div class="modal fade" id="addGradeModal" tabindex="-1" aria-labelledby="addGradeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addGradeModalLabel">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Grade
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addGradeForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="gradeStudent" class="form-label">Student</label>
+                            <select class="form-select" id="gradeStudent" required>
+                                <option value="">Select student...</option>
+                                <option value="lg2024001">Sarah Johnson (LG2024001)</option>
+                                <option value="lg2024002">Michael Chen (LG2024002)</option>
+                                <option value="lg2024003">Emily Mukamuri (LG2024003)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="gradeSubject" class="form-label">Subject</label>
+                            <select class="form-select" id="gradeSubject" required>
+                                <option value="">Select subject...</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="english">English Literature</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="geography">Geography</option>
+                                <option value="history">History</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="assessmentType" class="form-label">Assessment Type</label>
+                            <select class="form-select" id="assessmentType" required>
+                                <option value="">Select type...</option>
+                                <option value="exam">Exam</option>
+                                <option value="assignment">Assignment</option>
+                                <option value="quiz">Quiz</option>
+                                <option value="project">Project</option>
+                                <option value="presentation">Presentation</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="assessmentDate" class="form-label">Assessment Date</label>
+                            <input type="date" class="form-control" id="assessmentDate" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="scoreObtained" class="form-label">Score Obtained</label>
+                            <input type="number" class="form-control" id="scoreObtained" min="0" max="100" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="totalMarks" class="form-label">Total Marks</label>
+                            <input type="number" class="form-control" id="totalMarks" min="1" value="100" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="gradeWeight" class="form-label">Weight (%)</label>
+                            <input type="number" class="form-control" id="gradeWeight" min="1" max="100" value="25">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="gradeTerm" class="form-label">Term</label>
+                            <select class="form-select" id="gradeTerm" required>
+                                <option value="">Select term...</option>
+                                <option value="term1">Term 1 2024</option>
+                                <option value="term2">Term 2 2024</option>
+                                <option value="term3">Term 3 2024</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="gradeComments" class="form-label">Comments (Optional)</label>
+                            <textarea class="form-control" id="gradeComments" rows="2" placeholder="Additional notes..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="addGradeForm" class="btn btn-lg-primary">
+                    <i class="bi bi-check2 me-1"></i>Add Grade
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const studentSelect = document.getElementById('studentSelect');
+    const currentStudentCard = document.getElementById('currentStudentCard');
+    const addGradeForm = document.getElementById('addGradeForm');
+
+    // Show/hide current student card based on selection
+    studentSelect.addEventListener('change', function() {
+        if (this.value) {
+            currentStudentCard.style.display = 'block';
+            // Update student details based on selection
+            updateCurrentStudentDisplay(this.value);
+        } else {
+            currentStudentCard.style.display = 'none';
+        }
+    });
+
+    function updateCurrentStudentDisplay(studentId) {
+        const studentData = {
+            'lg2024001': { name: 'Sarah Johnson', details: 'Grade 10 • Mufakose High School • ID: LG2024001', gpa: '3.8' },
+            'lg2024002': { name: 'Michael Chen', details: 'Grade 7 • Harare Primary School • ID: LG2024002', gpa: '3.6' },
+            'lg2024003': { name: 'Emily Mukamuri', details: 'Form 4 • Mutare Combined School • ID: LG2024003', gpa: '3.9' }
+        };
+
+        const student = studentData[studentId];
+        if (student) {
+            document.getElementById('currentStudentName').textContent = student.name;
+            document.getElementById('currentStudentDetails').textContent = student.details;
+            document.getElementById('currentGPA').textContent = student.gpa;
+        }
+    }
+
+    // Add grade form submission
+    addGradeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Calculate percentage and grade
+        const obtained = parseFloat(document.getElementById('scoreObtained').value);
+        const total = parseFloat(document.getElementById('totalMarks').value);
+        const percentage = (obtained / total) * 100;
+        
+        let grade = 'F';
+        if (percentage >= 80) grade = 'A';
+        else if (percentage >= 70) grade = 'B';
+        else if (percentage >= 60) grade = 'C';
+        else if (percentage >= 50) grade = 'D';
+        
+        alert(`Grade Added Successfully!\n\nScore: ${obtained}/${total} (${percentage.toFixed(1)}%)\nGrade: ${grade}\n\nThis is a demo. In the actual system, the grade would be saved to the database.`);
+        
+        // Reset form and close modal
+        this.reset();
+        bootstrap.Modal.getInstance(document.getElementById('addGradeModal')).hide();
+    });
+
+    // Filter functionality
+    const filters = ['termFilter', 'subjectFilter', 'gradeFilter'];
+    filters.forEach(filterId => {
+        document.getElementById(filterId).addEventListener('change', applyFilters);
+    });
+
+    function applyFilters() {
+        // Placeholder for filtering logic
+        console.log('Applying filters...');
+    }
+
+    // Reset filters
+    document.getElementById('resetFilters').addEventListener('click', function() {
+        filters.forEach(filterId => {
+            document.getElementById(filterId).value = '';
+        });
+        studentSelect.value = '';
+        currentStudentCard.style.display = 'none';
+        applyFilters();
+    });
+
+    // Generate report
+    document.getElementById('generateReport').addEventListener('click', function() {
+        alert('Report generation functionality will be implemented in future updates!\n\nThis will generate a comprehensive PDF report of student grades.');
+    });
+
+    // Set default assessment date to today
+    document.getElementById('assessmentDate').value = new Date().toISOString().split('T')[0];
+});
+</script>
+{% endblock %}
