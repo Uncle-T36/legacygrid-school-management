@@ -2,15 +2,155 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block head %}
+    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
+    
+    <!-- Preload fonts for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    {% endblock %}
+    
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Meta tags for better SEO and PWA -->
+    <meta name="description" content="{% block description %}Modern school management system with advanced features and futuristic design{% endblock %}">
+    <meta name="theme-color" content="#1a1f36">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
-    {% block content %}
-    <!-- Main content goes here -->
-    {% endblock %}
+    <div class="app-container">
+        <!-- Mobile Sidebar Toggle -->
+        <button class="sidebar-toggle" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" aria-label="Main navigation">
+            <div class="sidebar-header">
+                <a href="{% url 'home' %}" class="logo">
+                    LegacyGrid
+                </a>
+            </div>
+            
+            <div class="sidebar-nav">
+                {% block navigation %}
+                <div class="nav-item">
+                    <a href="{% url 'home' %}" class="nav-link">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a href="{% url 'school_profile' %}" class="nav-link">
+                        <span class="nav-icon">🏫</span>
+                        <span class="nav-text">School Profile</span>
+                    </a>
+                </div>
+                
+                {% if user.username == "Uncle-T36" %}
+                <div class="nav-item">
+                    <a href="{% url 'billing_dashboard' %}" class="nav-link">
+                        <span class="nav-icon">💳</span>
+                        <span class="nav-text">Billing</span>
+                    </a>
+                </div>
+                {% endif %}
+                
+                <div class="nav-item">
+                    <a href="/admin/" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Admin</span>
+                    </a>
+                </div>
+                
+                {% if user.is_authenticated %}
+                <div class="nav-item">
+                    <a href="/admin/logout/" class="nav-link">
+                        <span class="nav-icon">🚪</span>
+                        <span class="nav-text">Logout</span>
+                    </a>
+                </div>
+                {% else %}
+                <div class="nav-item">
+                    <a href="/admin/login/" class="nav-link">
+                        <span class="nav-icon">🔑</span>
+                        <span class="nav-text">Login</span>
+                    </a>
+                </div>
+                {% endif %}
+                {% endblock navigation %}
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Content Header -->
+            <header class="content-header">
+                {% block header %}
+                <div class="user-welcome">
+                    <div>
+                        <h1 class="page-title">
+                            {% block page_title %}LegacyGrid School Management{% endblock %}
+                            {% if user.username == 'Uncle-T36' %}
+                                <span class="security-badge">Owner Access</span>
+                            {% endif %}
+                        </h1>
+                        {% if user.is_authenticated %}
+                            <p class="user-info">Welcome back, {{ user.username }}!</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="user-actions">
+                        {% block header_actions %}
+                        {% if user.is_authenticated %}
+                            <button onclick="toggleTheme()" class="btn btn-secondary">
+                                <span id="theme-icon">🌙</span>
+                            </button>
+                        {% endif %}
+                        {% endblock header_actions %}
+                    </div>
+                </div>
+                {% endblock header %}
+            </header>
+
+            <!-- Content Body -->
+            <div class="content-body">
+                {% block messages %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} animate-fade-in">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endblock messages %}
+
+                {% block content %}
+                <!-- Page content goes here -->
+                {% endblock content %}
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Service Worker for PWA (future enhancement) -->
+    {% comment %}
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js');
+            });
+        }
+    </script>
+    {% endcomment %}
 </body>
 </html>

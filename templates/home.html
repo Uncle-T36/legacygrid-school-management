@@ -1,106 +1,179 @@
 {% extends "base.html" %}
 {% load static %}
+
+{% block title %}Dashboard - LegacyGrid School Management{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
 {% block content %}
+<div class="home-header text-center">
+  <h2 style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
+    Your Futuristic Admin Dashboard
+  </h2>
+  <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+    Manage your entire school network with advanced tools and real-time insights. Everything you need at your fingertips.
+  </p>
+</div>
+
+<div class="feature-grid">
+  <a href="{% url 'school_profile' %}" class="feature-card">
+    <span class="feature-icon">🏫</span>
+    <h3>School Profile</h3>
+    <p>View and manage school information, details, and settings.</p>
+  </a>
+  
+  {% if user.username == "Uncle-T36" %}
+  <a href="{% url 'billing_dashboard' %}" class="feature-card">
+    <span class="feature-icon">💳</span>
+    <h3>Billing & Payments</h3>
+    <p>Manage subscriptions, payments, and financial operations (owner-only access).</p>
+  </a>
+  {% endif %}
+  
+  <a href="/admin/" class="feature-card">
+    <span class="feature-icon">⚙️</span>
+    <h3>System Administration</h3>
+    <p>Advanced settings, user management, and system configuration tools.</p>
+  </a>
+  
+  <a href="/admin/auth/user/" class="feature-card">
+    <span class="feature-icon">👤</span>
+    <h3>User Management</h3>
+    <p>Manage user accounts, permissions, and access levels.</p>
+  </a>
+</div>
+
+<!-- Quick Stats Section -->
+<div class="grid grid-cols-4 mt-4">
+  <div class="card text-center">
+    <div class="card-header">
+      <h4 class="card-title">Total Schools</h4>
+    </div>
+    <div style="font-size: 2.5rem; font-weight: 700; color: var(--neon-cyan);">
+      {{ school_count|default:"0" }}
+    </div>
+    <p class="text-secondary">Active institutions</p>
+  </div>
+  
+  <div class="card text-center">
+    <div class="card-header">
+      <h4 class="card-title">Students</h4>
+    </div>
+    <div style="font-size: 2.5rem; font-weight: 700; color: var(--neon-green);">
+      {{ student_count|default:"0" }}
+    </div>
+    <p class="text-secondary">Enrolled students</p>
+  </div>
+  
+  <div class="card text-center">
+    <div class="card-header">
+      <h4 class="card-title">Staff Members</h4>
+    </div>
+    <div style="font-size: 2.5rem; font-weight: 700; color: var(--neon-purple);">
+      {{ staff_count|default:"0" }}
+    </div>
+    <p class="text-secondary">Teaching & admin staff</p>
+  </div>
+  
+  <div class="card text-center">
+    <div class="card-header">
+      <h4 class="card-title">System Status</h4>
+    </div>
+    <div style="font-size: 2rem; font-weight: 700; color: var(--success);">
+      ✓ Online
+    </div>
+    <p class="text-secondary">All systems operational</p>
+  </div>
+</div>
+
+<!-- Recent Activity Section -->
+<div class="card mt-4">
+  <div class="card-header">
+    <h3 class="card-title">Recent Activity</h3>
+    <p class="card-subtitle">Latest updates and system events</p>
+  </div>
+  
+  <div class="activity-feed">
+    <div class="activity-item">
+      <span class="activity-icon" style="color: var(--neon-cyan);">👥</span>
+      <div class="activity-content">
+        <p><strong>System Access:</strong> Welcome back, {{ user.username }}!</p>
+        <small class="text-secondary">Just now</small>
+      </div>
+    </div>
+    
+    {% if user.username == "Uncle-T36" %}
+    <div class="activity-item">
+      <span class="activity-icon" style="color: var(--success);">🔒</span>
+      <div class="activity-content">
+        <p><strong>Security Status:</strong> Owner access level confirmed</p>
+        <small class="text-secondary">Session active</small>
+      </div>
+    </div>
+    {% endif %}
+    
+    <div class="activity-item">
+      <span class="activity-icon" style="color: var(--info);">🎯</span>
+      <div class="activity-content">
+        <p><strong>System Health:</strong> All services running optimally</p>
+        <small class="text-secondary">Last checked: Now</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Additional CSS for this page -->
 <style>
-body {
-  background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
-  color: #fff;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-}
-.home-header {
-  text-align: center;
-  margin-top: 40px;
-  margin-bottom: 40px;
-}
-.home-header h1 {
-  font-size: 2.9rem;
-  letter-spacing: 2px;
-  font-weight: 700;
-  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.home-header p {
-  font-size: 1.2rem;
-  color: #c2c7f6;
-  margin-top: 15px;
-}
-.feature-grid {
+.activity-feed {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 40px;
+  flex-direction: column;
+  gap: var(--spacing-md);
 }
-.feature-card {
-  background: rgba(35, 40, 107, 0.8);
-  box-shadow: 0 8px 32px 0 rgba(62, 243, 255, 0.22);
-  border-radius: 18px;
-  padding: 28px 32px;
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.activity-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.activity-icon {
+  font-size: 1.5rem;
+  width: 40px;
   text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-width: 220px;
-  max-width: 280px;
-  flex: 1 1 220px;
+  flex-shrink: 0;
 }
-.feature-card:hover {
-  transform: translateY(-10px) scale(1.04);
-  box-shadow: 0 16px 40px 0 rgba(110, 63, 255, 0.32);
-  background: linear-gradient(135deg, #2fffdc 0%, #6e3fff 100%);
-  color: #fff;
+
+.activity-content {
+  flex: 1;
 }
-.feature-icon {
-  font-size: 2.7rem;
-  margin-bottom: 10px;
-  color: #3ef3ff;
-  transition: color 0.2s;
+
+.activity-content p {
+  margin: 0;
+  color: var(--text-primary);
 }
-.feature-card:hover .feature-icon {
-  color: #fff8a8;
+
+.activity-content small {
+  color: var(--text-muted);
 }
+
 @media (max-width: 768px) {
-  .feature-grid {
+  .home-header h2 {
+    font-size: 1.8rem !important;
+  }
+  
+  .activity-item {
     flex-direction: column;
-    gap: 1.5rem;
+    text-align: center;
   }
 }
 </style>
-<div class="home-header">
-  <h1>LegacyGrid School Management</h1>
-  <p>Welcome, {{ user.username }}! Your futuristic admin dashboard awaits.</p>
-</div>
-<div class="feature-grid">
-  <a href="{% url 'schools:list' %}" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#128218;</span>
-    <h4>Schools</h4>
-    <p>View & manage all schools, students, and staff.</p>
-  </a>
-  <a href="{% url 'messaging:inbox' %}" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#128172;</span>
-    <h4>Messaging</h4>
-    <p>Communicate across your school network securely.</p>
-  </a>
-  <a href="{% url 'reports:overview' %}" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#128202;</span>
-    <h4>Reports</h4>
-    <p>Analyze performance, finances, and registrations.</p>
-  </a>
-  {% if user.username == "Uncle-T36" %}
-  <a href="{% url 'billing:dashboard' %}" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#128179;</span>
-    <h4>Billing</h4>
-    <p>Subscription & payments (owner only).</p>
-  </a>
-  {% endif %}
-  <a href="/admin/" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#9881;</span>
-    <h4>Admin Panel</h4>
-    <p>Advanced settings, users & data management.</p>
-  </a>
-  <a href="{% url 'account:profile' %}" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#128100;</span>
-    <h4>Profile</h4>
-    <p>View and edit your account and preferences.</p>
-  </a>
-</div>
 {% endblock %}
