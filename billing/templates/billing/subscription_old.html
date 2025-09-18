@@ -1,0 +1,117 @@
+{% extends 'billing/base.html' %}
+
+{% block title %}Subscription Management - LegacyGrid{% endblock %}
+
+{% block page_title %}Subscription Management{% endblock %}
+
+{% block billing_content %}
+<h2>📋 Subscription Management (Owner Only)</h2>
+
+{% if demo_mode %}
+<div class="alert alert-warning">
+    <strong>⚠️ Demo Mode Active:</strong> No real charges will be made. All transactions are for testing only.
+</div>
+{% endif %}
+
+<div class="alert alert-info">
+    <strong>🔒 Owner Access:</strong> You are viewing this page as the system owner (Uncle-T36). 
+    This page manages all user subscriptions and billing across the platform.
+</div>
+
+<div style="margin-bottom: 30px;">
+    <h3>💎 Upgrade to Premium</h3>
+    <p>Unlock advanced features including AI-powered reports, advanced messaging, and premium dashboard access.</p>
+    
+    <div style="border: 1px solid #007bff; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        <h4>Premium Features Include:</h4>
+        <ul>
+            <li>🤖 AI-powered student performance reports</li>
+            <li>💬 Advanced messaging system with multi-language support</li>
+            <li>📊 Premium analytics dashboard</li>
+            <li>🔄 Real-time data synchronization</li>
+            <li>📧 Automated email notifications</li>
+            <li>🎯 Custom report generation</li>
+        </ul>
+        
+        {% if demo_mode %}
+            <button id="checkout-button" class="btn btn-primary" disabled>
+                💳 Demo Mode - Payments Disabled
+            </button>
+            <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                In demo mode, payments are disabled for testing purposes.
+            </p>
+        {% else %}
+            <button id="checkout-button" class="btn btn-primary">
+                💳 Upgrade to Premium ($29.99/month)
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+<div style="margin-top: 30px;">
+    <h3>⚙️ Subscription Settings</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+            <h4>🔧 Billing Configuration</h4>
+            <p><strong>Currency:</strong> USD</p>
+            <p><strong>Billing Cycle:</strong> Monthly</p>
+            <p><strong>Auto-renewal:</strong> Enabled</p>
+            <a href="{% url 'billing_settings' %}" class="btn btn-primary">Modify Settings</a>
+        </div>
+        
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+            <h4>🛡️ Security Status</h4>
+            <p><strong>SSL Certificate:</strong> ✅ Active</p>
+            <p><strong>Payment Encryption:</strong> ✅ 256-bit</p>
+            <p><strong>Owner Access:</strong> ✅ Verified</p>
+            <p style="color: #28a745; font-weight: bold;">All systems secure</p>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; border: 1px solid #dc3545; border-radius: 8px; background: #f8d7da;">
+    <h3>⚠️ Important Security Notice</h3>
+    <p><strong>Access Restriction:</strong> This subscription management system is accessible only to the verified owner account (Uncle-T36).</p>
+    <p><strong>Data Protection:</strong> All payment and subscription data is encrypted and protected according to industry standards.</p>
+    <p><strong>Support:</strong> For security issues, contact {{ support_email|default:"support@legacygrid.co.zw" }}</p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if stripe_public_key and not demo_mode %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ stripe_public_key }}');
+    
+    document.getElementById('checkout-button').addEventListener('click', function() {
+        fetch('/billing/create-checkout-session/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({
+                'price_id': '{{ stripe_price_id }}',
+                'success_url': '{{ domain }}/billing/success/',
+                'cancel_url': '{{ domain }}/billing/cancel/',
+            })
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(session) {
+            return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .then(function(result) {
+            if (result.error) {
+                alert(result.error.message);
+            }
+        })
+        .catch(function(error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,118 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}LegacyGrid School Management{% endblock %}</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-        .security-badge {
-            background: #28a745;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-        }
-        .alert-warning {
-            color: #856404;
-            background-color: #fff3cd;
-            border-color: #ffeaa7;
-        }
-        .alert-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-        }
-        .alert-info {
-            color: #0c5460;
-            background-color: #d1ecf1;
-            border-color: #bee5eb;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-        .navigation {
-            margin-bottom: 20px;
-        }
-        .navigation a {
-            margin-right: 20px;
-            text-decoration: none;
-            color: #007bff;
-        }
-        .navigation a:hover {
-            text-decoration: underline;
-        }
-    </style>
-    {% block extra_css %}{% endblock %}
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>
-                LegacyGrid School Management
-                {% if user.username == 'Uncle-T36' %}
-                    <span class="security-badge">OWNER ACCESS</span>
-                {% endif %}
-            </h1>
-            {% if user.is_authenticated %}
-                <p>Welcome, {{ user.username }}!</p>
-                {% if user.username == 'Uncle-T36' %}
-                    <div class="navigation">
-                        <a href="{% url 'billing_dashboard' %}">Billing Dashboard</a>
-                        <a href="{% url 'subscription_management' %}">Subscriptions</a>
-                        <a href="{% url 'billing_settings' %}">Billing Settings</a>
-                    </div>
-                {% endif %}
-            {% else %}
-                <p><a href="/admin/login/">Login</a></p>
-            {% endif %}
-        </div>
+{% extends "base.html" %}
+{% load static %}
 
-        {% block content %}{% endblock %}
-    </div>
+{% block extra_css %}
+<style>
+/* Billing-specific styles */
+.billing-header {
+  background: linear-gradient(135deg, var(--accent-bg) 0%, var(--secondary-bg) 100%);
+  border: 1px solid rgba(62, 243, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
 
-    {% block extra_js %}{% endblock %}
-</body>
-</html>
+.billing-navigation {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.billing-nav-link {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.billing-nav-link:hover {
+  background: var(--neon-cyan);
+  color: var(--primary-bg);
+  transform: translateY(-2px);
+}
+
+.billing-nav-link.active {
+  background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .billing-navigation {
+    flex-direction: column;
+  }
+  
+  .billing-nav-link {
+    text-align: center;
+  }
+}
+</style>
+{% endblock %}
+
+{% block navigation %}
+{{ block.super }}
+{% if user.username == 'Uncle-T36' %}
+<div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: var(--spacing-lg); padding-top: var(--spacing-lg);">
+  <div class="nav-item">
+    <a href="{% url 'billing_dashboard' %}" class="nav-link">
+      <span class="nav-icon">📊</span>
+      <span class="nav-text">Billing Dashboard</span>
+    </a>
+  </div>
+  
+  <div class="nav-item">
+    <a href="{% url 'subscription_management' %}" class="nav-link">
+      <span class="nav-icon">💎</span>
+      <span class="nav-text">Subscriptions</span>
+    </a>
+  </div>
+  
+  <div class="nav-item">
+    <a href="{% url 'billing_settings' %}" class="nav-link">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-text">Billing Settings</span>
+    </a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block header %}
+<div class="user-welcome">
+  <div>
+    <h1 class="page-title">
+      {% block page_title %}Billing Management{% endblock %}
+      {% if user.username == 'Uncle-T36' %}
+        <span class="security-badge">Owner Access</span>
+      {% endif %}
+    </h1>
+    <p class="user-info">Secure payment and subscription management</p>
+  </div>
+  
+  <div class="user-actions">
+    {% block header_actions %}
+    <a href="{% url 'billing_dashboard' %}" class="btn btn-secondary">
+      Dashboard
+    </a>
+    {% endblock header_actions %}
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if user.username != 'Uncle-T36' %}
+<div class="alert alert-danger">
+  <strong>🔒 Access Denied:</strong> This billing management system is restricted to the system owner (Uncle-T36) only. 
+  Unauthorized access attempts are logged and monitored.
+</div>
+{% else %}
+
+<div class="billing-header">
+  <h2 style="margin: 0; color: var(--neon-cyan);">💳 Billing & Payment Management</h2>
+  <p style="margin: var(--spacing-sm) 0 0; color: var(--text-secondary);">
+    Comprehensive financial management for LegacyGrid School Management System
+  </p>
+</div>
+
+<nav class="billing-navigation">
+  <a href="{% url 'billing_dashboard' %}" class="billing-nav-link">
+    📊 Dashboard
+  </a>
+  <a href="{% url 'subscription_management' %}" class="billing-nav-link">
+    💎 Subscriptions
+  </a>
+  <a href="{% url 'billing_settings' %}" class="billing-nav-link">
+    ⚙️ Settings
+  </a>
+</nav>
+
+{% block billing_content %}
+<!-- Billing-specific content goes here -->
+{% endblock billing_content %}
+
+{% endif %}
+{% endblock %}

@@ -2,9 +2,9 @@
 
 {% block title %}Subscription Management - LegacyGrid{% endblock %}
 
-{% block content %}
-<h2>📋 Subscription Management (Owner Only)</h2>
+{% block page_title %}Subscription Management{% endblock %}
 
+{% block billing_content %}
 {% if demo_mode %}
 <div class="alert alert-warning">
     <strong>⚠️ Demo Mode Active:</strong> No real charges will be made. All transactions are for testing only.
@@ -16,63 +16,300 @@
     This page manages all user subscriptions and billing across the platform.
 </div>
 
-<div style="margin-bottom: 30px;">
-    <h3>💎 Upgrade to Premium</h3>
-    <p>Unlock advanced features including AI-powered reports, advanced messaging, and premium dashboard access.</p>
+<!-- Premium Upgrade Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">💎 Premium Subscription</h3>
+        <p class="card-subtitle">Unlock advanced features and capabilities</p>
+    </div>
     
-    <div style="border: 1px solid #007bff; border-radius: 8px; padding: 20px; margin: 20px 0;">
-        <h4>Premium Features Include:</h4>
-        <ul>
-            <li>🤖 AI-powered student performance reports</li>
-            <li>💬 Advanced messaging system with multi-language support</li>
-            <li>📊 Premium analytics dashboard</li>
-            <li>🔄 Real-time data synchronization</li>
-            <li>📧 Automated email notifications</li>
-            <li>🎯 Custom report generation</li>
-        </ul>
+    <div class="premium-features">
+        <div class="features-grid grid grid-cols-2">
+            <div class="feature-item">
+                <span class="feature-icon">🤖</span>
+                <div>
+                    <h5>AI-Powered Analytics</h5>
+                    <p>Advanced student performance analysis with machine learning insights</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-icon">💬</span>
+                <div>
+                    <h5>Advanced Messaging</h5>
+                    <p>Multi-language support and encrypted communication channels</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <div>
+                    <h5>Premium Dashboard</h5>
+                    <p>Real-time analytics and customizable reporting tools</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-icon">🔄</span>
+                <div>
+                    <h5>Real-time Sync</h5>
+                    <p>Instant data synchronization across all platforms</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-icon">📧</span>
+                <div>
+                    <h5>Automated Notifications</h5>
+                    <p>Smart email alerts and system notifications</p>
+                </div>
+            </div>
+            
+            <div class="feature-item">
+                <span class="feature-icon">🎯</span>
+                <div>
+                    <h5>Custom Reports</h5>
+                    <p>Generate tailored reports with advanced filtering</p>
+                </div>
+            </div>
+        </div>
         
-        {% if demo_mode %}
-            <button id="checkout-button" class="btn btn-primary" disabled>
-                💳 Demo Mode - Payments Disabled
-            </button>
-            <p style="font-size: 12px; color: #666; margin-top: 10px;">
-                In demo mode, payments are disabled for testing purposes.
-            </p>
-        {% else %}
-            <button id="checkout-button" class="btn btn-primary">
-                💳 Upgrade to Premium ($29.99/month)
-            </button>
-        {% endif %}
+        <div class="pricing-section text-center mt-4">
+            <div class="price-display">
+                <span class="currency">$</span>
+                <span class="amount">29.99</span>
+                <span class="period">/month</span>
+            </div>
+            
+            {% if demo_mode %}
+                <button id="checkout-button" class="btn btn-primary" disabled>
+                    💳 Demo Mode - Payments Disabled
+                </button>
+                <p class="demo-notice">
+                    In demo mode, payments are disabled for testing purposes.
+                </p>
+            {% else %}
+                <button id="checkout-button" class="btn btn-primary">
+                    💳 Upgrade to Premium
+                </button>
+            {% endif %}
+        </div>
     </div>
 </div>
 
-<div style="margin-top: 30px;">
-    <h3>⚙️ Subscription Settings</h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
-            <h4>🔧 Billing Configuration</h4>
-            <p><strong>Currency:</strong> USD</p>
-            <p><strong>Billing Cycle:</strong> Monthly</p>
-            <p><strong>Auto-renewal:</strong> Enabled</p>
-            <a href="{% url 'billing_settings' %}" class="btn btn-primary">Modify Settings</a>
+<!-- Subscription Settings Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">⚙️ Subscription Settings</h3>
+        <p class="card-subtitle">Manage your subscription preferences</p>
+    </div>
+    
+    <div class="settings-grid grid grid-cols-1">
+        <div class="setting-item">
+            <div class="setting-info">
+                <h5>Current Plan</h5>
+                <p>Free Tier - Basic features included</p>
+            </div>
+            <div class="setting-action">
+                <span class="badge badge-secondary">Active</span>
+            </div>
         </div>
         
-        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
-            <h4>🛡️ Security Status</h4>
-            <p><strong>SSL Certificate:</strong> ✅ Active</p>
-            <p><strong>Payment Encryption:</strong> ✅ 256-bit</p>
-            <p><strong>Owner Access:</strong> ✅ Verified</p>
-            <p style="color: #28a745; font-weight: bold;">All systems secure</p>
+        <div class="setting-item">
+            <div class="setting-info">
+                <h5>Billing Cycle</h5>
+                <p>Monthly recurring billing</p>
+            </div>
+            <div class="setting-action">
+                <button class="btn btn-secondary">Change</button>
+            </div>
+        </div>
+        
+        <div class="setting-item">
+            <div class="setting-info">
+                <h5>Payment Method</h5>
+                <p>No payment method on file</p>
+            </div>
+            <div class="setting-action">
+                <button class="btn btn-secondary">Add Card</button>
+            </div>
         </div>
     </div>
 </div>
 
-<div style="margin-top: 30px; padding: 20px; border: 1px solid #dc3545; border-radius: 8px; background: #f8d7da;">
-    <h3>⚠️ Important Security Notice</h3>
-    <p><strong>Access Restriction:</strong> This subscription management system is accessible only to the verified owner account (Uncle-T36).</p>
-    <p><strong>Data Protection:</strong> All payment and subscription data is encrypted and protected according to industry standards.</p>
-    <p><strong>Support:</strong> For security issues, contact {{ support_email|default:"support@legacygrid.co.zw" }}</p>
+<!-- Security Notice Card -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">🔒 Security & Compliance</h3>
+    </div>
+    
+    <div class="security-info">
+        <div class="security-item">
+            <span class="security-icon" style="color: var(--success);">✓</span>
+            <div>
+                <h5>PCI DSS Compliant</h5>
+                <p>All payment processing meets industry security standards</p>
+            </div>
+        </div>
+        
+        <div class="security-item">
+            <span class="security-icon" style="color: var(--success);">✓</span>
+            <div>
+                <h5>Data Encryption</h5>
+                <p>End-to-end encryption for all financial transactions</p>
+            </div>
+        </div>
+        
+        <div class="security-item">
+            <span class="security-icon" style="color: var(--success);">✓</span>
+            <div>
+                <h5>Access Control</h5>
+                <p>Restricted to verified owner account (Uncle-T36)</p>
+            </div>
+        </div>
+        
+        <div class="contact-support">
+            <p><strong>Support Contact:</strong> {{ support_email|default:"support@legacygrid.co.zw" }}</p>
+        </div>
+    </div>
 </div>
+
+<!-- Additional CSS for this page -->
+<style>
+.features-grid {
+  gap: var(--spacing-lg);
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  color: var(--neon-cyan);
+  flex-shrink: 0;
+}
+
+.feature-item h5 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.feature-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.pricing-section {
+  background: var(--glass-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+
+.price-display {
+  margin-bottom: var(--spacing-lg);
+}
+
+.currency {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.amount {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--neon-cyan);
+}
+
+.period {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.demo-notice {
+  margin-top: var(--spacing-md);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.settings-grid,
+.security-info {
+  gap: var(--spacing-md);
+}
+
+.setting-item,
+.security-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+}
+
+.security-item {
+  justify-content: flex-start;
+  gap: var(--spacing-md);
+}
+
+.security-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.setting-info h5,
+.security-item h5 {
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.setting-info p,
+.security-item p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.contact-support {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+  
+  .setting-action {
+    width: 100%;
+    text-align: center;
+  }
+}
+</style>
 {% endblock %}
 
 {% block extra_js %}
@@ -102,12 +339,12 @@
         })
         .then(function(result) {
             if (result.error) {
-                alert(result.error.message);
+                LegacyGrid.showAlert(result.error.message, 'danger');
             }
         })
         .catch(function(error) {
             console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            LegacyGrid.showAlert('An error occurred. Please try again.', 'danger');
         });
     });
 </script>
