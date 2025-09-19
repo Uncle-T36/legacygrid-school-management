@@ -75,11 +75,6 @@ body {
     <h4>Schools</h4>
     <p>View & manage all schools, students, and staff.</p>
   </a>
-  <a href="{% url 'reports:overview' %}" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#128202;</span>
-    <h4>Reports</h4>
-    <p>Analyze performance, finances, and registrations.</p>
-  </a>
   {% if user.username == "Uncle-T36" %}
   <a href="{% url 'billing:dashboard' %}" class="feature-card text-decoration-none">
     <span class="feature-icon">&#128179;</span>
