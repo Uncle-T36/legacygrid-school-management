@@ -76,7 +76,7 @@ body {
     <p>View & manage all schools, students, and staff.</p>
   </a>
   {% if user.username == "Uncle-T36" %}
-  <a href="{% url 'billing:dashboard' %}" class="feature-card text-decoration-none">
+  <a href="{% url 'billing:billing_dashboard' %}" class="feature-card text-decoration-none">
     <span class="feature-icon">&#128179;</span>
     <h4>Billing</h4>
     <p>Subscription & payments (owner only).</p>
