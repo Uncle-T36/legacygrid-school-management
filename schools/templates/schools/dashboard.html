@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - LegacyGrid School Management{% endblock %}
+
+{% block content %}
+<style>
+body {
+  background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 30px 0;
+}
+
+.dashboard-header h1 {
+  font-size: 2.8rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.dashboard-header p {
+  font-size: 1.2rem;
+  color: #c2c7f6;
+  margin: 0;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: rgba(35, 40, 107, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(62, 243, 255, 0.22);
+  border-radius: 18px;
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(62, 243, 255, 0.1);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px 0 rgba(110, 63, 255, 0.32);
+  background: linear-gradient(135deg, rgba(46, 255, 220, 0.1) 0%, rgba(110, 63, 255, 0.1) 100%);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  color: #3ef3ff;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #c2c7f6;
+  font-weight: 500;
+}
+
+.dashboard-navigation {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.nav-card {
+  background: rgba(35, 40, 107, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(62, 243, 255, 0.22);
+  border-radius: 18px;
+  padding: 28px 32px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(62, 243, 255, 0.1);
+}
+
+.nav-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 16px 40px 0 rgba(110, 63, 255, 0.32);
+  background: linear-gradient(135deg, #2fffdc 0%, #6e3fff 100%);
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav-icon {
+  font-size: 2.7rem;
+  margin-bottom: 15px;
+  color: #3ef3ff;
+  transition: color 0.2s;
+  display: block;
+}
+
+.nav-card:hover .nav-icon {
+  color: #fff8a8;
+}
+
+.nav-card h4 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.nav-card p {
+  font-size: 1rem;
+  color: #c2c7f6;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.nav-card:hover p {
+  color: #fff;
+}
+
+.welcome-section {
+  background: rgba(35, 40, 107, 0.6);
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(62, 243, 255, 0.2);
+}
+
+.welcome-section h3 {
+  color: #3ef3ff;
+  margin-bottom: 10px;
+  font-size: 1.4rem;
+}
+
+.welcome-section p {
+  color: #c2c7f6;
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .dashboard-navigation {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 2.2rem;
+  }
+}
+</style>
+
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>Welcome back, {{ user.username }}! Here's your overview.</p>
+  </div>
+
+  <div class="welcome-section">
+    <h3>🚀 Welcome to Your Dashboard</h3>
+    <p>Your central hub for managing schools, viewing statistics, and accessing all features of LegacyGrid School Management System.</p>
+  </div>
+
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <span class="stat-icon">👥</span>
+      <div class="stat-number">{{ total_users }}</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+    
+    <div class="stat-card">
+      <span class="stat-icon">🏫</span>
+      <div class="stat-number">{{ total_schools }}</div>
+      <div class="stat-label">Total Schools</div>
+    </div>
+    
+    <div class="stat-card">
+      <span class="stat-icon">🎓</span>
+      <div class="stat-number">{{ user_schools }}</div>
+      <div class="stat-label">Your Schools</div>
+    </div>
+    
+    <div class="stat-card">
+      <span class="stat-icon">📊</span>
+      <div class="stat-number">100%</div>
+      <div class="stat-label">System Status</div>
+    </div>
+  </div>
+
+  <div class="dashboard-navigation">
+    <a href="{% url 'schools:school_profile' %}" class="nav-card">
+      <span class="nav-icon">🏫</span>
+      <h4>School Profile</h4>
+      <p>Manage your school information, upload logos, and update details.</p>
+    </a>
+
+    {% if user.username == "Uncle-T36" %}
+    <a href="{% url 'billing:billing_dashboard' %}" class="nav-card">
+      <span class="nav-icon">💳</span>
+      <h4>Billing Dashboard</h4>
+      <p>Owner-only access to billing, subscriptions, and payment management.</p>
+    </a>
+    {% endif %}
+
+    <a href="/admin/" class="nav-card">
+      <span class="nav-icon">⚙️</span>
+      <h4>Admin Panel</h4>
+      <p>Advanced system settings, user management, and data administration.</p>
+    </a>
+
+    <a href="{% url 'home' %}" class="nav-card">
+      <span class="nav-icon">🏠</span>
+      <h4>Home</h4>
+      <p>Return to the main homepage and feature overview.</p>
+    </a>
+  </div>
+</div>
+{% endblock %}
