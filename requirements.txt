@@ -1,3 +1,9 @@
 # No external packages required for basic email sending.
 # Uses Python's built-in smtplib and email modules.
 # If you use third-party email services later, add their packages here.
+
+# Main dependencies
+django>=5.0
+pillow
+stripe
+python-dotenv

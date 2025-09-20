@@ -1,10 +1,14 @@
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, redirect
+from django.conf import settings
 from .models import School
 from .forms import SchoolLogoForm
 
 def home(request):
-    return render(request, "home.html")
+    context = {
+        'billing_owner_username': settings.BILLING_OWNER_USERNAME,
+    }
+    return render(request, "home.html", context)
 
 def is_owner(user):
     return user.is_superuser or user.groups.filter(name='Owner').exists()

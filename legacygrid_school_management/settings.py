@@ -1,16 +1,20 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-your-secret-key-here-change-in-production'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-here-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes', 'on')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -22,7 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schools',
     'billing',  # New billing app for payment management
-    'account',  # <-- Added account app
+    'account',  # Account app for user profile management
 ]
 
 MIDDLEWARE = [
@@ -102,15 +106,15 @@ LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # === STRIPE PAYMENT SETTINGS ===
-# IMPORTANT: Replace these with your actual Stripe keys in production
-STRIPE_SECRET_KEY = 'sk_test_your_stripe_secret_key_here'  # Add your actual secret key
-STRIPE_PUBLIC_KEY = 'pk_test_your_stripe_public_key_here'  # Add your actual public key  
-STRIPE_PRICE_ID = 'price_your_stripe_price_id_here'  # Add your actual price ID
-STRIPE_WEBHOOK_SECRET = 'whsec_your_webhook_secret_here'  # Add your webhook secret
-DOMAIN = 'http://localhost:8000'  # Change to your domain in production
+# Load from environment variables for production security
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', 'sk_test_your_stripe_secret_key_here')
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', 'pk_test_your_stripe_public_key_here')
+STRIPE_PRICE_ID = os.getenv('STRIPE_PRICE_ID', 'price_your_stripe_price_id_here')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', 'whsec_your_webhook_secret_here')
+DOMAIN = os.getenv('DOMAIN', 'http://localhost:8000')
 
 # === OPENAI API SETTINGS ===
-OPENAI_API_KEY = 'sk-your-openai-api-key-here'  # Add your OpenAI API key
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', 'sk-your-openai-api-key-here')
 
 # === PAYMENT SETTINGS ===
 PAYMENT_GATEWAYS = {
@@ -121,28 +125,28 @@ PAYMENT_GATEWAYS = {
         'mode': 'test',  # change to 'live' when ready
     },
     'paypal': {
-        'client_id': 'test-client-id',
-        'client_secret': 'test-client-secret',
-        'mode': 'sandbox',  # change to 'live'
+        'client_id': os.getenv('PAYPAL_CLIENT_ID', 'test-client-id'),
+        'client_secret': os.getenv('PAYPAL_CLIENT_SECRET', 'test-client-secret'),
+        'mode': os.getenv('PAYPAL_MODE', 'sandbox'),  # change to 'live'
     },
-    # Zimbabwe Mobile Money Placeholders
+    # Zimbabwe Mobile Money
     'ecocash': {
-        'merchant_code': 'test-merchant',
-        'api_url': 'https://api.sandbox.ecocash.co.zw/',
-        'mode': 'test',
+        'merchant_code': os.getenv('ECOCASH_MERCHANT_CODE', 'test-merchant'),
+        'api_url': os.getenv('ECOCASH_API_URL', 'https://api.sandbox.ecocash.co.zw/'),
+        'mode': os.getenv('ECOCASH_MODE', 'test'),
     },
     'onemoney': {
-        'merchant_code': 'test-merchant',
-        'api_url': 'https://sandbox.onemoney.co.zw/api/',
-        'mode': 'test',
+        'merchant_code': os.getenv('ONEMONEY_MERCHANT_CODE', 'test-merchant'),
+        'api_url': os.getenv('ONEMONEY_API_URL', 'https://sandbox.onemoney.co.zw/api/'),
+        'mode': os.getenv('ONEMONEY_MODE', 'test'),
     },
     # Add more as needed
 }
 
 
 # === CURRENCY CONVERSION ===
-DEFAULT_CURRENCY = 'USD'
-SUPPORTED_CURRENCIES = ['USD', 'ZWL', 'ZAR', 'NGN', 'GBP', 'EUR']
+DEFAULT_CURRENCY = os.getenv('DEFAULT_CURRENCY', 'USD')
+SUPPORTED_CURRENCIES = os.getenv('SUPPORTED_CURRENCIES', 'USD,ZWL,ZAR,NGN,GBP,EUR').split(',')
 CURRENCY_CONVERSION_API_URL = 'https://api.exchangeratesapi.io/latest'  # Free for dev, use premium for live
 
 # === SUBSCRIPTION TIERS ===
@@ -158,41 +162,42 @@ SUBSCRIPTION_TIERS = {
         'description': 'Premium plan with full access to all features including AI.',
     }
 }
-DEFAULT_TIER = 'free'
-PREMIUM_TIER = 'premium'
-AUTO_ACTIVATE_ON_PAYMENT = True  # instantly upgrades user tier on payment webhook
+DEFAULT_TIER = os.getenv('DEFAULT_TIER', 'free')
+PREMIUM_TIER = os.getenv('PREMIUM_TIER', 'premium')
+AUTO_ACTIVATE_ON_PAYMENT = os.getenv('AUTO_ACTIVATE_ON_PAYMENT', 'True').lower() in ('true', '1', 'yes', 'on')
 
 # === AI SETTINGS ===
-AI_PROVIDER = 'openai'     # You pay for this one subscription only
+AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai')     # You pay for this one subscription only
 AI_API_KEY = OPENAI_API_KEY  # Reference the secure key defined above
 
 # === PAID FEATURE LOGIC ===
-AI_FEATURES_REQUIRE_PAYMENT = True
-PREMIUM_FEATURES_REQUIRE_PAYMENT = True
+AI_FEATURES_REQUIRE_PAYMENT = os.getenv('AI_FEATURES_REQUIRE_PAYMENT', 'True').lower() in ('true', '1', 'yes', 'on')
+PREMIUM_FEATURES_REQUIRE_PAYMENT = os.getenv('PREMIUM_FEATURES_REQUIRE_PAYMENT', 'True').lower() in ('true', '1', 'yes', 'on')
 
 # === OWNER-ONLY BILLING ===
-BILLING_OWNER_USERNAME = 'Uncle-T36'
-ALLOW_ONLY_OWNER_BILLING = True
+BILLING_OWNER_USERNAME = os.getenv('OWNER_USERNAME', 'Uncle-T36')
+ALLOW_ONLY_OWNER_BILLING = os.getenv('ALLOW_ONLY_OWNER_BILLING', 'True').lower() in ('true', '1', 'yes', 'on')
 
 # === MESSAGING SETTINGS ===
-DEFAULT_LANGUAGES = ['en', 'sn', 'nd']  # English, Shona, Ndebele
+DEFAULT_LANGUAGES = os.getenv('DEFAULT_LANGUAGES', 'en,sn,nd').split(',')  # English, Shona, Ndebele
 LANGUAGE_TEMPLATES = {
     'en': 'templates/messages_en.txt',
     'sn': 'templates/messages_sn.txt',
     'nd': 'templates/messages_nd.txt',
 }
-SEND_SMS = True
-SEND_EMAIL = True
+SEND_SMS = os.getenv('SEND_SMS', 'True').lower() in ('true', '1', 'yes', 'on')
+SEND_EMAIL = os.getenv('SEND_EMAIL', 'True').lower() in ('true', '1', 'yes', 'on')
 
 # === PARENT PROFILE ===
 PARENT_LANGUAGE_FIELD = 'preferred_language'
 
 # === SECURITY ===
-ALLOW_ONLY_OWNER_BILLING = True  # Only Uncle-T36 can see/manage billing
+# Duplicate line - remove this one
+# ALLOW_ONLY_OWNER_BILLING = True  # Only Uncle-T36 can see/manage billing
 
 # === DOCS & SUPPORT ===
-DOCUMENTATION_URL = 'https://github.com/Uncle-T36/legacygrid-school-management/blob/main/README.md'
-SUPPORT_EMAIL = 'support@legacygrid.co.zw'
+DOCUMENTATION_URL = os.getenv('DOCUMENTATION_URL', 'https://github.com/Uncle-T36/legacygrid-school-management/blob/main/README.md')
+SUPPORT_EMAIL = os.getenv('SUPPORT_EMAIL', 'support@legacygrid.co.zw')
 
 # === DEMO MODE ===
-DEMO_MODE = True  # disables real payments until you switch to live mode
+DEMO_MODE = os.getenv('DEMO_MODE', 'True').lower() in ('true', '1', 'yes', 'on')  # disables real payments until you switch to live mode

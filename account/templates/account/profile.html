@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(35, 40, 107, 0.8);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(62, 243, 255, 0.22);
+}
+.profile-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.profile-header h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.profile-info {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+.profile-info h3 {
+  color: #3ef3ff;
+  margin-bottom: 15px;
+}
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+.info-label {
+  font-weight: bold;
+  color: #c2c7f6;
+}
+.info-value {
+  color: #fff;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #3ef3ff 0%, #6e3fff 100%);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 0.2s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  color: white;
+}
+</style>
+
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>👤 Account Profile</h1>
+    <p>Manage your account information and preferences</p>
+  </div>
+
+  <div class="profile-info">
+    <h3>Account Information</h3>
+    <div class="info-item">
+      <span class="info-label">Username:</span>
+      <span class="info-value">{{ user.username }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Email:</span>
+      <span class="info-value">{{ user.email|default:"Not provided" }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">First Name:</span>
+      <span class="info-value">{{ user.first_name|default:"Not provided" }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Last Name:</span>
+      <span class="info-value">{{ user.last_name|default:"Not provided" }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Date Joined:</span>
+      <span class="info-value">{{ user.date_joined|date:"F d, Y" }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Last Login:</span>
+      <span class="info-value">{{ user.last_login|date:"F d, Y g:i A"|default:"Never" }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Staff Status:</span>
+      <span class="info-value">{% if user.is_staff %}Yes{% else %}No{% endif %}</span>
+    </div>
+  </div>
+
+  <div style="text-align: center;">
+    <a href="/admin/auth/user/{{ user.id }}/change/" class="btn-primary">
+      ✏️ Edit Profile in Admin
+    </a>
+    <a href="{% url 'home' %}" class="btn-primary" style="margin-left: 15px;">
+      🏠 Back to Dashboard
+    </a>
+  </div>
+</div>
+{% endblock %}
