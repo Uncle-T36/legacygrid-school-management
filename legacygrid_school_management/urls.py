@@ -6,5 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("schools/", include("schools.urls", namespace="schools")),
     path("billing/", include("billing.urls", namespace="billing")),
+    path('account/', include('account.urls', namespace='account')),  # <-- Added account app URLs
     path('', home, name='home'),  # Homepage route
 ]
