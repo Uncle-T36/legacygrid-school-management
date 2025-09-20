@@ -6,6 +6,10 @@ from .forms import SchoolLogoForm
 def home(request):
     return render(request, "home.html")
 
+def schools_home(request):
+    """Homepage view for the schools app at /schools/"""
+    return render(request, "schools/home.html")
+
 def is_owner(user):
     return user.is_superuser or user.groups.filter(name='Owner').exists()
 

@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Schools Dashboard - LegacyGrid School Management{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<style>
+.schools-hero {
+    background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
+    color: #fff;
+    padding: 3rem 2rem;
+    text-align: center;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.schools-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.schools-hero p {
+    font-size: 1.2rem;
+    color: #c2c7f6;
+    margin-bottom: 0;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: inherit;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: inherit;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.feature-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #2d3748;
+}
+
+.feature-card p {
+    color: #718096;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.navigation-section {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.navigation-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2d3748;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.nav-link {
+    background: #007bff;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.nav-link:hover {
+    background: #0056b3;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-link.secondary {
+    background: #6c757d;
+}
+
+.nav-link.secondary:hover {
+    background: #5a6268;
+}
+
+@media (max-width: 768px) {
+    .schools-hero {
+        padding: 2rem 1rem;
+    }
+    
+    .schools-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="schools-hero">
+    <h1>{% block header %}Schools Management Dashboard{% endblock %}</h1>
+    <p>Welcome to your comprehensive school management system. Manage schools, students, staff, and more from this central hub.</p>
+</div>
+
+<div class="feature-grid">
+    <div class="feature-card">
+        <span class="feature-icon">🏫</span>
+        <h3>School Profile</h3>
+        <p>View and manage your school's profile, including basic information, logo, and settings.</p>
+    </div>
+    
+    <div class="feature-card">
+        <span class="feature-icon">👥</span>
+        <h3>Student Management</h3>
+        <p>Comprehensive student information system for enrollment, records, and academic tracking.</p>
+    </div>
+    
+    <div class="feature-card">
+        <span class="feature-icon">👨‍🏫</span>
+        <h3>Staff Management</h3>
+        <p>Manage teaching and administrative staff, their roles, and responsibilities.</p>
+    </div>
+    
+    <div class="feature-card">
+        <span class="feature-icon">📊</span>
+        <h3>Reports & Analytics</h3>
+        <p>Generate comprehensive reports and view analytics about school performance.</p>
+    </div>
+    
+    <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <h3>Financial Management</h3>
+        <p>Track fees, payments, and financial records for transparent school operations.</p>
+    </div>
+    
+    <div class="feature-card">
+        <span class="feature-icon">📚</span>
+        <h3>Academic Management</h3>
+        <p>Curriculum planning, class schedules, and academic year management tools.</p>
+    </div>
+</div>
+
+<div class="navigation-section">
+    <h2>Quick Actions</h2>
+    <div class="nav-links">
+        <a href="{% url 'schools:school_profile' %}" class="nav-link">School Profile</a>
+        <a href="{% url 'billing:billing_dashboard' %}" class="nav-link">Billing Dashboard</a>
+        <a href="{% url 'admin:index' %}" class="nav-link secondary">Admin Panel</a>
+        <a href="/" class="nav-link secondary">Main Dashboard</a>
+    </div>
+</div>
+
+<div class="navigation-section">
+    <h2>About This System</h2>
+    <p>LegacyGrid School Management System is designed to streamline educational administration. This schools module provides comprehensive tools for managing all aspects of your educational institution, from student enrollment to staff management and financial tracking.</p>
+    
+    <p><strong>Features:</strong></p>
+    <ul>
+        <li>Comprehensive school profile management</li>
+        <li>Student and staff information systems</li>
+        <li>Financial tracking and billing integration</li>
+        <li>Reporting and analytics tools</li>
+        <li>Scalable architecture for future expansion</li>
+    </ul>
+</div>
+{% endblock %}
