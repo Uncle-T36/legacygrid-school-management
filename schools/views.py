@@ -9,6 +9,10 @@ def home(request):
 def is_owner(user):
     return user.is_superuser or user.groups.filter(name='Owner').exists()
 
+def school_list(request):
+    schools = School.objects.all()
+    return render(request, "schools/list.html", {"schools": schools})
+
 @login_required
 @user_passes_test(is_owner)
 def school_profile(request):

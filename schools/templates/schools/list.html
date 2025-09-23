@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+.schools-header {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.schools-header h1 {
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.schools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 40px;
+  padding: 0 20px;
+}
+.school-card {
+  background: linear-gradient(135deg, #2a2d47 0%, #303656 100%);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 24px 0 rgba(110, 63, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+.school-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px 0 rgba(110, 63, 255, 0.25);
+}
+.school-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+.school-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #fff;
+}
+.school-address {
+  color: #c2c7f6;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+.no-schools {
+  text-align: center;
+  padding: 60px 20px;
+  color: #c2c7f6;
+}
+.back-link {
+  display: inline-block;
+  margin: 20px;
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.back-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(110, 63, 255, 0.3);
+  color: white;
+  text-decoration: none;
+}
+</style>
+
+<a href="{% url 'home' %}" class="back-link">← Back to Home</a>
+
+<div class="schools-header">
+  <h1>Schools Directory</h1>
+</div>
+
+{% if schools %}
+<div class="schools-grid">
+  {% for school in schools %}
+  <div class="school-card">
+    {% if school.logo %}
+      <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" class="school-logo">
+    {% else %}
+      <div class="school-logo" style="background: linear-gradient(135deg, #3ef3ff 0%, #6e3fff 100%); display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+        🏫
+      </div>
+    {% endif %}
+    <div class="school-name">{{ school.name }}</div>
+    {% if school.address %}
+      <div class="school-address">📍 {{ school.address }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="no-schools">
+  <h2>No Schools Found</h2>
+  <p>There are currently no schools in the system.</p>
+</div>
+{% endif %}
+
+{% endblock %}
