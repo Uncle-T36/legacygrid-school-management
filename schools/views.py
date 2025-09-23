@@ -21,3 +21,7 @@ def school_profile(request):
     else:
         form = SchoolLogoForm(instance=school)
     return render(request, "schools/profile.html", {"form": form, "school": school})
+
+def school_list(request):
+    schools = School.objects.all()
+    return render(request, "schools/list.html", {"schools": schools})
