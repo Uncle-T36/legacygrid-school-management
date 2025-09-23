@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+.schools-header {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.schools-header h1 {
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.schools-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 40px;
+}
+.school-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 10px;
+  width: 300px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.school-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(62, 243, 255, 0.3);
+}
+.school-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 15px;
+  display: block;
+  border: 2px solid #3ef3ff;
+}
+.school-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #3ef3ff;
+}
+.school-address {
+  font-size: 1rem;
+  color: #c2c7f6;
+  text-align: center;
+  line-height: 1.4;
+}
+.no-schools {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #c2c7f6;
+  margin-top: 50px;
+}
+@media (max-width: 768px) {
+  .schools-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  .school-card {
+    width: 90%;
+    max-width: 350px;
+  }
+}
+</style>
+
+<div class="schools-header">
+  <h1>Schools Directory</h1>
+  <p>Explore all schools in our network</p>
+</div>
+
+<div class="schools-grid">
+  {% for school in schools %}
+    <div class="school-card">
+      {% if school.logo %}
+        <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" class="school-logo">
+      {% else %}
+        <div class="school-logo" style="background: linear-gradient(45deg, #3ef3ff, #6e3fff); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold;">
+          {{ school.name|first }}
+        </div>
+      {% endif %}
+      
+      <div class="school-name">{{ school.name }}</div>
+      
+      {% if school.address %}
+        <div class="school-address">{{ school.address }}</div>
+      {% else %}
+        <div class="school-address">Address not provided</div>
+      {% endif %}
+    </div>
+  {% empty %}
+    <div class="no-schools">
+      <p>No schools found in the directory.</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -6,6 +6,10 @@ from .forms import SchoolLogoForm
 def home(request):
     return render(request, "home.html")
 
+def list(request):
+    schools = School.objects.all()
+    return render(request, "schools/list.html", {"schools": schools})
+
 def is_owner(user):
     return user.is_superuser or user.groups.filter(name='Owner').exists()
 
