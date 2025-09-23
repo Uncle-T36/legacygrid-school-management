@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schools',
     'billing',  # New billing app for payment management
-    'account',  # <-- Added account app
+    'account',  # Account app for user profile management
 ]
 
 MIDDLEWARE = [
@@ -176,6 +176,11 @@ ALLOW_ONLY_OWNER_BILLING = True
 
 # === MESSAGING SETTINGS ===
 DEFAULT_LANGUAGES = ['en', 'sn', 'nd']  # English, Shona, Ndebele
+LANGUAGES = [
+    ('en', 'English'),
+    ('sn', 'Shona'), 
+    ('nd', 'Ndebele'),
+]
 LANGUAGE_TEMPLATES = {
     'en': 'templates/messages_en.txt',
     'sn': 'templates/messages_sn.txt',
