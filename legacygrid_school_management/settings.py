@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schools',
     'billing',  # New billing app for payment management
-    'account',  # <-- Added account app
+    # 'account',  # <-- Removed account app (does not exist)
 ]
 
 MIDDLEWARE = [

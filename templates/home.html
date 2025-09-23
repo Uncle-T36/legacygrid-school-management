@@ -70,13 +70,13 @@ body {
   <p>Welcome, {{ user.username }}! Your futuristic admin dashboard awaits.</p>
 </div>
 <div class="feature-grid">
-  <a href="{% url 'schools:list' %}" class="feature-card text-decoration-none">
+  <a href="/schools/" class="feature-card text-decoration-none">
     <span class="feature-icon">&#128218;</span>
     <h4>Schools</h4>
     <p>View & manage all schools, students, and staff.</p>
   </a>
   {% if user.username == "Uncle-T36" %}
-  <a href="{% url 'billing:billing_dashboard' %}" class="feature-card text-decoration-none">
+  <a href="/billing/" class="feature-card text-decoration-none">
     <span class="feature-icon">&#128179;</span>
     <h4>Billing</h4>
     <p>Subscription & payments (owner only).</p>
@@ -86,11 +86,6 @@ body {
     <span class="feature-icon">&#9881;</span>
     <h4>Admin Panel</h4>
     <p>Advanced settings, users & data management.</p>
-  </a>
-  <a href="{% url 'account:profile' %}" class="feature-card text-decoration-none">
-    <span class="feature-icon">&#128100;</span>
-    <h4>Profile</h4>
-    <p>View and edit your account and preferences.</p>
   </a>
 </div>
 {% endblock %}
