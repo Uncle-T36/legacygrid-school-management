@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Schools</h1>
+<p>School management functionality would be implemented here.</p>
+{% if schools %}
+    <ul>
+    {% for school in schools %}
+        <li>{{ school.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No schools found.</p>
+{% endif %}
+<a href="{% url 'home' %}">Back to Home</a>
+{% endblock %}
