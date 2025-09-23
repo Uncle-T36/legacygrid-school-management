@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(135deg, #1a1f36 0%, #23286b 100%);
+  color: #fff;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+.schools-header {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.schools-header h1 {
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #3ef3ff 10%, #6e3fff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.schools-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 40px;
+}
+.school-card {
+  background: rgba(35, 40, 107, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(62, 243, 255, 0.22);
+  border-radius: 18px;
+  padding: 28px 32px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 280px;
+  max-width: 350px;
+  flex: 1 1 280px;
+}
+.school-card:hover {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 16px 40px 0 rgba(110, 63, 255, 0.32);
+  background: linear-gradient(135deg, #2fffdc 0%, #6e3fff 100%);
+}
+.school-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  object-fit: cover;
+  border: 3px solid #3ef3ff;
+}
+.school-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #fff;
+}
+.school-address {
+  font-size: 1rem;
+  color: #c2c7f6;
+  margin-bottom: 15px;
+}
+.no-schools {
+  text-align: center;
+  padding: 40px;
+  color: #c2c7f6;
+  font-size: 1.2rem;
+}
+@media (max-width: 768px) {
+  .schools-grid {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+</style>
+
+<div class="schools-header">
+  <h1>Schools Directory</h1>
+  <p>View all registered schools in the system</p>
+</div>
+
+{% if schools %}
+  <div class="schools-grid">
+    {% for school in schools %}
+      <div class="school-card">
+        {% if school.logo %}
+          <img src="{{ school.logo.url }}" alt="{{ school.name }} logo" class="school-logo">
+        {% else %}
+          <div class="school-logo" style="background: linear-gradient(135deg, #3ef3ff 0%, #6e3fff 100%); display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+            🏫
+          </div>
+        {% endif %}
+        <h3 class="school-name">{{ school.name }}</h3>
+        {% if school.address %}
+          <p class="school-address">📍 {{ school.address }}</p>
+        {% else %}
+          <p class="school-address">📍 Address not provided</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="no-schools">
+    <p>No schools are currently registered in the system.</p>
+  </div>
+{% endif %}
+{% endblock %}
